@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>You're on the founding list · 3:17</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#F7F1E6">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Figtree:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="thanks.css">
+  <script src="config.js" defer></script>
+  <script src="thanks.js" defer></script>
+</head>
+<body class="parchment">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header thanks-header">
+    <div class="rail header-row">
+      <a class="wordmark wordmark-light" href="./" aria-label="3:17 home">3:17</a>
+    </div>
+  </header>
+
+  <main id="main" class="thanks">
+    <div class="rail thanks-grid">
+      <section class="thanks-intro" aria-labelledby="thanks-title">
+        <p class="time">Morning</p>
+        <h1 id="thanks-title" class="display">You're on the founding list.</h1>
+        <p class="position" data-position hidden></p>
+        <p class="body-lg">We'll email you once when 3:17 launches, with early access to the first batch and a note from our founder.</p>
+        <p class="preview-note" data-preview hidden>Preview mode: this page isn't connected to an email list yet, so nothing was saved.</p>
+      </section>
+
+      <section class="card share" aria-labelledby="share-title">
+        <h2 id="share-title" class="h3">Know someone else who's awake at 3 a.m.?</h2>
+        <p>Most women going through this feel alone with it. Send her your link.</p>
+        <div class="share-actions">
+          <a class="btn btn-dark" data-share-sms href="#">Send by text</a>
+          <a class="btn btn-outline" data-share-wa href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
+          <button class="btn btn-outline" type="button" data-share-native hidden>More ways to share</button>
+        </div>
+        <div class="copy-row">
+          <label for="share-link" class="copy-label">Your link</label>
+          <div class="copy-field">
+            <input id="share-link" type="text" readonly data-share-link>
+            <button class="btn btn-outline" type="button" data-copy>Copy link</button>
+          </div>
+          <p class="status" role="status" data-copy-status></p>
+        </div>
+      </section>
+
+      <section class="card quiz" aria-labelledby="quiz-title">
+        <h2 id="quiz-title" class="h3">Help us help you</h2>
+        <p>Three quick, optional questions so we only send what's useful to you.</p>
+        <form data-quiz>
+          <fieldset>
+            <legend>When do you usually wake up?</legend>
+            <div class="choices">
+              <label><input type="radio" name="wakeTime" value="before-2am"><span>Before 2 a.m.</span></label>
+              <label><input type="radio" name="wakeTime" value="2-3am"><span>2 to 3 a.m.</span></label>
+              <label><input type="radio" name="wakeTime" value="3-4am"><span>3 to 4 a.m.</span></label>
+              <label><input type="radio" name="wakeTime" value="after-4am"><span>After 4 a.m.</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Where are you in menopause?</legend>
+            <div class="choices">
+              <label><input type="radio" name="stage" value="perimenopause"><span>Perimenopause</span></label>
+              <label><input type="radio" name="stage" value="menopause"><span>Menopause</span></label>
+              <label><input type="radio" name="stage" value="postmenopause"><span>Post-menopause</span></label>
+              <label><input type="radio" name="stage" value="not-sure"><span>Not sure</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>What should we make after 3:17?</legend>
+            <div class="choices">
+              <label><input type="radio" name="next" value="cool"><span>Cool <small>for hot flashes</small></span></label>
+              <label><input type="radio" name="next" value="calm"><span>Calm <small>for evenings</small></span></label>
+              <label><input type="radio" name="next" value="travel"><span>Travel <small>for jet lag</small></span></label>
+              <label><input type="radio" name="next" value="restore"><span>Restore <small>for mornings</small></span></label>
+            </div>
+          </fieldset>
+          <button class="btn btn-dark" type="submit">Send my answers</button>
+          <p class="status" role="status" data-quiz-status></p>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="rail footer-grid">
+      <div>
+        <span class="wordmark" aria-hidden="true">3:17</span>
+        <p class="footer-faith">Made with faith, honesty and care.</p>
+      </div>
+      <nav aria-label="Footer">
+        <ul>
+          <li><a href="privacy.html">Privacy</a></li>
+          <li><a href="mailto:hello@example.com">Contact <span class="ph">[email]</span></a></li>
+        </ul>
+      </nav>
+      <p class="disclaimer">*These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.</p>
+      <p class="copyright">© <span data-year>2026</span> 3:17</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,24 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local agent workspace (includes private uploads such as the brand vision PDF)
+.ezcoder/
+
+# Generated screenshots from local UI checks
+site/.shots/
+
+# Python (research/build_deck.py)
+__pycache__/
+*.pyc
+.venv/
+
+# Node tooling, if added later
+node_modules/
+
+# Secrets and local env
+.env
+.env.*
+!.env.example
