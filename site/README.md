@@ -37,5 +37,5 @@ Until an email service is connected it runs in **preview mode**. Signups aren't 
 
 ```bash
 cd site
-npx -p typescript@5.9.3 tsc --noEmit --allowJs --checkJs --target es2019 --lib es2019,dom,dom.iterable globals.d.ts config.js app.js thanks.js
+npx --yes -p typescript@5.9.3 tsc --noEmit --allowJs --checkJs --target es2019 --lib es2019,dom,dom.iterable globals.d.ts config.js app.js thanks.js
 ```

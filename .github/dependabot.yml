@@ -1,0 +1,10 @@
+version: 2
+updates:
+  # Static site with no package manifest: GitHub Actions is the only dependency ecosystem.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
