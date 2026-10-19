@@ -12,6 +12,14 @@
 - **Hers perimenopause** (`f0497969`): validate first ("what you're feeling is real"), then offer help.
 - **Contrast case, Drepute** (`aa138c1f`): a night-sky "Launching Soon" page with no reason to sign up. The mood worked, the message didn't.
 
+## October 2026 update: one screen
+The landing page is now a single screen: the night hero only (header, headline, one email form, the bottle, a one-line FDA disclaimer in the footer). The recognition, founder letter, ritual, formula, product system, FAQ, final CTA and sticky mobile button were removed.
+- **Audience:** women in menopause only (no perimenopause/post-menopause variants in the copy).
+- **Message:** follow the product being made and join the waitlist for the first batch of 2,500, targeted for December 1, 2026. No symptom-question headline.
+- **CTA:** one button, "Be the first".
+- **Bottle label:** "Middle of the night sleep shot" (not "night waking", which read like a wake-up product), tagline "Quickly return to sleep". Never "liquid dietary supplement" on the front.
+- The tokens and contrast ratios below are unchanged. The thesis that follows describes the original multi-section page and is kept for reference.
+
 ## Thesis
 **The page moves through one night.** It opens at 3:17 a.m. in lamp light, stays in the dark while she recognises herself (3:24 a.m.), then warms into morning (parchment, sand) as the founder, the ritual and the formula build trust. It returns to night for the last ask ("The next time you wake at 3:17, be ready"). The thank-you page is "Morning".
 

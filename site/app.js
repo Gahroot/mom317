@@ -117,28 +117,4 @@
       }).then(done, fail);
     });
   });
-
-  // ---------- Sticky mobile CTA ----------
-  var sticky = /** @type {HTMLElement | null} */ (document.querySelector("[data-sticky]"));
-  var heroForm = document.getElementById("join-hero");
-  var finalForm = document.getElementById("join-final");
-  if (sticky && heroForm && "IntersectionObserver" in window) {
-    var heroVisible = true, finalVisible = false;
-    var update = function () {
-      var show = !heroVisible && !finalVisible && window.innerWidth <= 900;
-      sticky.hidden = !show;
-      document.body.classList.toggle("has-sticky", show);
-    };
-    new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.target === heroForm) heroVisible = e.isIntersecting;
-        if (e.target === finalForm) finalVisible = e.isIntersecting;
-      });
-      update();
-    }).observe(heroForm);
-    if (finalForm) new IntersectionObserver(function (entries) {
-      finalVisible = entries[0].isIntersecting; update();
-    }).observe(finalForm);
-    window.addEventListener("resize", update);
-  }
 })();

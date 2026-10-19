@@ -90,7 +90,7 @@
   // Share link
   var base = (cfg.siteUrl || (location.origin + location.pathname.replace(/thanks\.html$/, ""))).replace(/\/?$/, "/");
   var link = data.referralCode ? base + "?ref=" + encodeURIComponent(data.referralCode) : base;
-  var message = "I just joined the founding list for 3:17, sleep support for when you wake in the middle of the night and can't fall back asleep. Thought of you: " + link;
+  var message = "I just joined the waitlist for 3:17, a middle of the night sleep shot made for women in menopause. The first batch is 2,500 bottles. Thought of you: " + link;
 
   var linkInput = /** @type {HTMLInputElement | null} */ (document.querySelector("[data-share-link]"));
   if (linkInput) linkInput.value = link;

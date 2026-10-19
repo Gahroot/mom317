@@ -15,8 +15,8 @@ window.WAITLIST_CONFIG = {
   // Only fill in a real number from your email list. Leave null to hide the count.
   realSignupCount: null,
 
-  // Size of the founding batch, e.g. 317. Used only with a real position from your endpoint.
-  foundingBatchSize: null,
+  // Size of the first batch (2,500, targeted for December 1, 2026). Used only with a real position from your endpoint.
+  foundingBatchSize: 2500,
 
   // Optional founding reservation on the thank-you page (step 2 after the email).
   // A checkout link (https only) for a small refundable deposit, e.g. a Stripe Payment Link.
