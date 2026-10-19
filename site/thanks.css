@@ -6,7 +6,7 @@
 .thanks-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-areas: "intro intro" "share quiz";
+  grid-template-areas: "intro intro" "reserve reserve" "share quiz";
   gap: clamp(24px, 3vw, 40px);
   align-items: start;
 }
@@ -14,6 +14,51 @@
 .thanks-intro .display { margin-bottom: 18px; }
 .share { grid-area: share; }
 .quiz { grid-area: quiz; }
+
+/* Founding reservation: step 2 after the email. Existing tokens only (contrast in DESIGN.md). */
+.reserve {
+  grid-area: reserve;
+  display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  grid-template-areas: "art body"; /* offer is first in the DOM; picture sits left on wide screens */
+  gap: clamp(24px, 4vw, 56px); align-items: center;
+}
+.reserve[hidden] { display: none; }
+.reserve-body { grid-area: body; }
+.reserve-art { /* stand-in until the product photo exists */
+  grid-area: art;
+  position: relative; min-height: 340px; align-self: stretch;
+  border-radius: var(--radius); overflow: hidden;
+  display: flex; justify-content: center; align-items: flex-end;
+  background:
+    radial-gradient(ellipse 60% 50% at 72% 22%, rgba(255, 250, 238, 0.95), transparent 70%),
+    linear-gradient(180deg, var(--c-parchment), #EFE4D0);
+}
+.reserve-art::after { /* the linen the bottle stands on */
+  content: ""; position: absolute; inset-inline: 0; bottom: 0; height: 22%;
+  background: linear-gradient(180deg, #DCC9A9, #CDB894);
+  border-top: 1px solid rgba(110, 58, 16, 0.25);
+}
+.reserve-art .bottle { width: clamp(110px, 11vw, 150px); margin-bottom: 14%; }
+.reserve-art .b-body { box-shadow: 0 24px 40px rgba(60, 30, 8, 0.28); }
+.reserve-body .h3 { margin-bottom: 12px; }
+.reserve-body > p:first-of-type { margin-bottom: 20px; }
+.reserve-facts { margin: 0 0 28px; border-top: 1px solid rgba(30, 24, 19, 0.25); }
+.reserve-facts div { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 12px 0; border-bottom: 1px solid rgba(30, 24, 19, 0.25); }
+.reserve-facts dt { font-size: 1rem; color: var(--c-muted); } /* 5.35:1 on sand */
+.reserve-facts dd { margin: 0; font-weight: 600; text-align: end; }
+.reserve-facts .was { margin-inline-start: 6px; font-weight: 400; color: var(--c-muted); } /* 5.35:1 on sand */
+.reserve-note { margin-top: 12px; font-size: 1rem; color: var(--c-muted); }
+a.btn:not([href]) { cursor: default; } /* preview: link has no destination yet */
+a.btn-dark:not([href]):hover { background: var(--c-espresso); }
+
+/* Referral reward line inside the share card */
+.reward {
+  background: var(--c-parchment); /* ink 15.6:1 */
+  border-inline-start: 3px solid var(--c-amber);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 12px 16px;
+}
+.reward[hidden] { display: none; }
 
 .position {
   font-family: var(--f-display); font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.2rem);
@@ -70,9 +115,13 @@
 .choices input:focus-visible + span { outline: 2px solid var(--focus-light); outline-offset: 3px; }
 
 @media (max-width: 900px) {
-  .thanks-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "intro" "share" "quiz"; }
+  .thanks-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "intro" "reserve" "share" "quiz"; }
+  .reserve { grid-template-columns: minmax(0, 1fr); grid-template-areas: "body" "art"; } /* heading and button first on phones */
+  .reserve-art { min-height: 240px; }
 }
 @media (max-width: 560px) {
+  .reserve .btn { width: 100%; }
+  .reserve-art { min-height: 200px; }
   .share-actions .btn { width: 100%; }
   .copy-field { flex-direction: column; }
   .choices { grid-template-columns: minmax(0, 1fr); }

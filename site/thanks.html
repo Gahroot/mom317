@@ -33,9 +33,31 @@
         <p class="preview-note" data-preview hidden>Preview mode: this page isn't connected to an email list yet, so nothing was saved.</p>
       </section>
 
+      <section class="card reserve" aria-labelledby="reserve-title" data-reserve hidden>
+        <div class="reserve-body">
+          <h2 id="reserve-title" class="h3">Reserve a bottle from the first batch.</h2>
+          <p>Reserve yours now for <span class="ph" data-reserve-amount>[amount]</span> and keep the founding price when 3:17 launches.</p>
+          <dl class="reserve-facts">
+            <div><dt>Founding price</dt><dd><span class="ph">[price]</span> <span class="sr-only">instead of the regular price of</span> <s class="was"><span class="ph">[regular price]</span></s></dd></div>
+            <div><dt>First batch ships</dt><dd><span class="ph">[Month]</span></dd></div>
+            <div><dt>Refunds</dt><dd>Full refund any time before it ships</dd></div>
+          </dl>
+          <a class="btn btn-dark" data-reserve-link>Reserve my bottle</a>
+          <p class="reserve-note">Secure checkout. Nothing else is charged today.</p>
+          <p class="preview-note" data-reserve-preview hidden>Preview mode: this button turns on when a payment link and amount are added in config.js.</p>
+        </div>
+        <div class="reserve-art" aria-hidden="true">
+          <div class="bottle">
+            <span class="b-cap"></span><span class="b-neck"></span>
+            <span class="b-body"><span class="b-label"><span class="b-wm">3:17</span><span class="b-desc">Middle-of-the-night<br>sleep support</span></span></span>
+          </div>
+        </div>
+      </section>
+
       <section class="card share" aria-labelledby="share-title">
         <h2 id="share-title" class="h3">Know someone else who's awake at 3 a.m.?</h2>
         <p>Most women going through this feel alone with it. Send her your link.</p>
+        <p class="reward" data-reward hidden>When <span class="ph">[number]</span> friends join with your link, you get <strong class="ph">[reward]</strong>.</p>
         <div class="share-actions">
           <a class="btn btn-dark" data-share-sms href="#">Send by text</a>
           <a class="btn btn-outline" data-share-wa href="#" target="_blank" rel="noopener">Send on WhatsApp</a>

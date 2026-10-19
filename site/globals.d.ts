@@ -5,6 +5,10 @@ interface WaitlistConfig {
   siteUrl?: string;
   realSignupCount?: number | null;
   foundingBatchSize?: number | null;
+  reservationUrl?: string;
+  reservationAmount?: string;
+  referralGoal?: number | null;
+  referralReward?: string;
 }
 interface Window {
   WAITLIST_CONFIG?: WaitlistConfig;

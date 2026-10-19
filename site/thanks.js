@@ -9,9 +9,71 @@
     el.textContent = String(new Date().getFullYear());
   });
 
-  if (data.preview || !cfg.signupEndpoint) {
+  var isPreview = !!data.preview || !cfg.signupEndpoint;
+  if (isPreview) {
     var pv = /** @type {HTMLElement | null} */ (document.querySelector("[data-preview]"));
     if (pv) pv.hidden = false;
+  }
+
+  /** @param {unknown} value @returns {URL | null} */
+  function httpsUrl(value) {
+    if (typeof value !== "string" || !value) return null;
+    try {
+      var u = new URL(value);
+      return u.protocol === "https:" ? u : null;
+    } catch (e) { return null; }
+  }
+
+  // Founding reservation: live only with a real https payment link and amount.
+  // In preview mode it shows with placeholders so the owner can see it.
+  var reserve = /** @type {HTMLElement | null} */ (document.querySelector("[data-reserve]"));
+  if (reserve) {
+    var payUrl = httpsUrl(cfg.reservationUrl);
+    var amount = typeof cfg.reservationAmount === "string" ? cfg.reservationAmount.trim() : "";
+    var live = !!(payUrl && amount);
+    if (live || isPreview) {
+      if (amount) {
+        reserve.querySelectorAll("[data-reserve-amount]").forEach(function (el) {
+          el.textContent = amount;
+          el.classList.remove("ph");
+        });
+      }
+      var payLink = /** @type {HTMLAnchorElement | null} */ (reserve.querySelector("[data-reserve-link]"));
+      if (live && payUrl && payLink) {
+        // Stripe Payment Links accept these: fills in her email and ties the deposit to her signup.
+        if (payUrl.hostname === "buy.stripe.com") {
+          if (data.email) payUrl.searchParams.set("prefilled_email", String(data.email));
+          if (typeof data.referralCode === "string" && /^[a-zA-Z0-9_-]{1,200}$/.test(data.referralCode)) {
+            payUrl.searchParams.set("client_reference_id", data.referralCode);
+          }
+        }
+        payLink.href = payUrl.href;
+        payLink.textContent = "Reserve for " + amount;
+      } else {
+        var rp = /** @type {HTMLElement | null} */ (reserve.querySelector("[data-reserve-preview]"));
+        if (rp) rp.hidden = false;
+      }
+      reserve.hidden = false;
+    }
+  }
+
+  // Referral reward: only the owner's real reward, never an invented one.
+  var reward = /** @type {HTMLElement | null} */ (document.querySelector("[data-reward]"));
+  if (reward) {
+    var goal = Number(cfg.referralGoal);
+    var rewardText = typeof cfg.referralReward === "string" ? cfg.referralReward.trim() : "";
+    if (goal >= 1 && Math.floor(goal) === goal && rewardText) {
+      reward.textContent = goal === 1
+        ? "When a friend joins with your link, you get "
+        : "When " + goal.toLocaleString("en-US") + " friends join with your link, you get ";
+      var strong = document.createElement("strong");
+      strong.textContent = rewardText;
+      reward.appendChild(strong);
+      reward.appendChild(document.createTextNode("."));
+      reward.hidden = false;
+    } else if (isPreview) {
+      reward.hidden = false;
+    }
   }
 
   // Position: only shown when the real signup service returned one.

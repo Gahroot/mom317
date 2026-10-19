@@ -15,17 +15,19 @@ Until an email service is connected it runs in **preview mode**. Signups aren't 
 ## Before going live
 
 1. **Connect the email list.** In `config.js`, set `signupEndpoint` to a URL that accepts a POST with JSON `{ email, ref, source }`. Klaviyo, Mailchimp, ConvertKit or Kit, Formspark, a Shopify app or a small serverless function all work. If it replies with `{ "referralCode": "...", "position": 182 }`, the thank-you page shows her real place in line and uses her real referral code. Set `quizEndpoint` the same way for the optional questions.
-2. **Fill every highlighted placeholder** (dashed outline): ship month, founder name, dose, the three ingredients with amounts, contact email.
+2. **Fill every highlighted placeholder** (dashed outline): ship month, founder name, dose, the three ingredients with amounts, contact email, and on the thank-you page the founding price, regular price and referral goal.
 3. **Replace the drawn bottle and portrait** with real photos (see `DESIGN.md` › Photography).
 4. **Show a signup count only once it's real.** Put it in `realSignupCount`. The batch size in `foundingBatchSize` must also be real.
-5. **Have a lawyer review** the privacy page, the claims wording and the referral rules before collecting real emails.
+5. **Optional: founding reservation** (thank-you page). Set `reservationUrl` to a checkout link for a small refundable deposit (a Stripe Payment Link works; the page pre-fills her email and passes her referral code as `client_reference_id`) and `reservationAmount` to the amount, e.g. `"$1"`. The card stays hidden on the live site until both are set. Before turning it on, the ship month must be a real date and refunds must work as the page says ("full refund any time before it ships"); US mail-order rules apply once you take money. See `research/317/preorder-research.md`.
+6. **Optional: referral reward** (thank-you page). Set `referralGoal` (a whole number) and `referralReward` (text, e.g. `"a free second bottle"`). Your email service has to count referrals from the `ref` field and send the reward; the page only describes it.
+7. **Have a lawyer review** the privacy page, the claims wording, the reservation terms and the referral rules before collecting real emails or money.
 
 ## Files
 
 | File | What it is |
 |---|---|
 | `index.html` | Landing page (night hero, then morning sections) |
-| `thanks.html` | After signup: share link, text/WhatsApp sharing, optional 3-question quiz |
+| `thanks.html` | After signup: optional founding reservation, share link with optional referral reward, text/WhatsApp sharing, optional 3-question quiz |
 | `privacy.html` | Draft placeholder, must be replaced |
 | `styles.css`, `thanks.css` | Design tokens and layout |
 | `app.js`, `thanks.js` | Form validation, submit, referral capture, sticky mobile button, share, quiz |
