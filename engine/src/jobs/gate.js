@@ -7,8 +7,9 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import * as GH from '../github.js';
-import { parsePost, setApproval } from '../frontmatter.js';
+import { parsePost, setApproval, serializePost } from '../frontmatter.js';
 import { verifySources, isTrustedUrl } from '../sources.js';
+import { scholarlyText } from '../scholar.js';
 import { createHash } from 'node:crypto';
 import { complete, extractJson, llmConfigured, BRAND_RULES } from '../llm.js';
 import { checkBudget } from '../cost.js';
@@ -88,6 +89,9 @@ async function saveCheck(db, key, verdict, reason) {
 
 export async function fetchSourceText(url, fetchImpl = globalThis.fetch) {
   if (!isTrustedUrl(url)) return null;
+  // Papers: the PubMed/Crossref abstract (publisher pages often block bots or show only a paywall).
+  const sch = await scholarlyText(url, { fetchImpl });
+  if (sch) return sch;
   try {
     const res = await fetchImpl(url, { method: 'GET', redirect: 'follow', headers: { 'User-Agent': UA, Accept: 'text/html,*/*' }, signal: AbortSignal.timeout(20_000) });
     if (res.status < 200 || res.status >= 400 || typeof res.text !== 'function') return null;
@@ -282,6 +286,47 @@ async function legacyApprove(db, pr, c, { env, deps }) {
   return { pr: pr.number, outcome: 'approved', mode: 'manual' };
 }
 
+// ---------- self-revision: the writer fixes what the gate found, then the gate runs again ----------
+const CONTENT_CHECK = /^(claims lint|independent fact-check|sources resolve) \(/;
+export const maxRevisions = (env) => Math.max(0, Number(env.GATE_MAX_REVISIONS ?? 2));
+
+/** Revise only when every failure is a content problem the writer can fix (not CI/build/infra). */
+export function revisable(g) {
+  const failing = g.checks.filter((c) => !c.ok);
+  if (!failing.length || failing.some((c) => !CONTENT_CHECK.test(c.name))) return false;
+  if (g.unlisted.some((u) => /^fact-check error:/.test(u))) return false; // infra error: retry later, don't rewrite
+  return true;
+}
+
+async function reviseInCheckout(dir, posts, g, { env, deps, db, round, branch }) {
+  const { reviseFromFeedback, finalizePost } = await import('./draft.js');
+  const revise = deps.revise || reviseFromFeedback;
+  const finalize = deps.finalize || finalizePost;
+  const changed = [];
+  for (const rel of posts) {
+    const slug = path.basename(rel, '.md');
+    const file = path.join(dir, rel);
+    const post = parsePost(await readFile(file, 'utf8'));
+    const detail = (name) => (g.checks.find((c) => c.name === `${name} (${slug})` && !c.ok) || {}).detail || '';
+    const next = await revise({
+      env, db, post,
+      verdicts: g.verdicts.filter((v) => v.slug === slug),
+      unlisted: g.unlisted,
+      lint: detail('claims lint').split('; ').filter(Boolean),
+      dropped: detail('sources resolve').split(', ').filter(Boolean),
+      completeImpl: deps.complete
+    });
+    const fin = await finalize(next, { fetchImpl: deps.fetch });
+    const out = { ...fin.post, status: 'draft', approved_by: '' };
+    await writeFile(file, serializePost(out));
+    await db.query('UPDATE posts SET draft_md = $2, updated_at = now() WHERE slug = $1', [slug, serializePost(out)]);
+    changed.push(slug);
+  }
+  await deps.buildBlog(dir);
+  await deps.commitAndPush(dir, branch, `Auto-revise post from fact-check feedback (round ${round}/${maxRevisions(env)})`);
+  return { changed, sha: await deps.headSha(dir) };
+}
+
 export async function processPr(db, pr, { env = process.env, deps: d = {}, log = console } = {}) {
   const deps = { ...defaultDeps(), ...d };
   const repo = GH.repoName(env);
@@ -318,19 +363,43 @@ export async function processPr(db, pr, { env = process.env, deps: d = {}, log =
   const budget = await checkBudget(db, 'gate', { env });
   if (!budget.ok) { log.log(`[gate] PR #${pr.number} deferred: AI budget ceiling`); return { pr: pr.number, outcome: 'deferred', reason: 'budget' }; }
 
+  const rounds = Number((await db.query("SELECT COUNT(*)::int AS n FROM gate_results WHERE pr_number = $1 AND outcome = 'revised'", [pr.number])).rows[0].n);
   const res = await deps.withCheckout(async (dir) => {
     const posts = await postFiles(pr, env, deps);
     const g = await runChecks(dir, posts, { env, deps, db });
     let sha = pr.head.sha;
     if (g.pass) { await deps.commitAndPush(dir, pr.head.ref, 'Auto-approve post (approval gate passed)'); sha = await deps.headSha(dir); }
+    else if (posts.length && rounds < maxRevisions(env) && revisable(g)) {
+      // Reset the working tree to the PR's draft files (runChecks marked them approved for the build check).
+      for (const rel of posts) {
+        const p = path.join(dir, rel);
+        const t = await readFile(p, 'utf8');
+        await writeFile(p, t.replace(/^status: approved$/m, 'status: draft').replace(/^approved_by: .*$/m, 'approved_by:'));
+      }
+      try {
+        const rv = await reviseInCheckout(dir, posts, g, { env, deps, db, round: rounds + 1, branch: pr.head.ref });
+        return { ...g, posts, sha: rv.sha, revised: rv.changed };
+      } catch (e) {
+        if (e && e.budget) throw e;
+        return { ...g, posts, sha, reviseError: e.message.slice(0, 300) };
+      }
+    }
     return { ...g, posts, sha };
   }, { branch: pr.head.ref, env });
   const slugs = res.posts.map((r) => path.basename(r, '.md'));
   const report = gateReport(res);
+  if (res.revised) {
+    const failing = res.checks.filter((x) => !x.ok).map((x) => x.name).join(', ');
+    await record(db, pr, { slugs, sha: res.sha, outcome: 'revised', checks: res.checks, verdicts: res.verdicts, detail: `round ${rounds + 1}: ${failing}` });
+    await deps.gh('POST', `/repos/${repo}/issues/${pr.number}/comments`, { body: `**Auto-revising (round ${rounds + 1}/${maxRevisions(env)}).** The writer rewrote the post from the fact-checker's feedback (failing: ${failing}). Re-checking now.\n\n<details><summary>What the gate found</summary>\n\n${report}\n</details>` }, env);
+    log.log(`[gate] PR #${pr.number} auto-revised (round ${rounds + 1})`);
+    const fresh = await deps.gh('GET', `/repos/${repo}/pulls/${pr.number}`, null, env);
+    return processPr(db, fresh || { ...pr, head: { ...pr.head, sha: res.sha } }, { env, deps: d, log });
+  }
   if (!res.pass) {
     log.log(`[gate] PR #${pr.number} held`);
     return hold(db, pr, { env, deps, slugs, sha: pr.head.sha, report, checks: res.checks, verdicts: res.verdicts,
-      why: `Failing: ${res.checks.filter((x) => !x.ok).map((x) => x.name).join(', ') || 'no post files in PR'}.` });
+      why: `Failing: ${res.checks.filter((x) => !x.ok).map((x) => x.name).join(', ') || 'no post files in PR'}.${rounds ? ` Still failing after ${rounds} automatic revision round(s).` : ''}${res.reviseError ? ` Auto-revision failed: ${res.reviseError}` : ''}` });
   }
   await deps.gh('POST', `/repos/${repo}/issues/${pr.number}/comments`, { body: `Approved by engine (automated approval gate passed): \`status: approved\`, \`approved_by: ${AUTO_APPROVER}\`, \`updated: ${today}\`. Merging once CI is green.\n\n${report}` }, env);
   for (const s of slugs) await db.query("UPDATE posts SET status = 'approved', updated_at = now() WHERE slug = $1", [s]);

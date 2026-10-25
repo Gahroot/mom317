@@ -54,7 +54,11 @@ Editorial guidelines for every evidence-backed blog post:
 - Cite with [^n] markers matching source ids. 4-8 sources, ONLY real peer-reviewed papers or NAMS/NIH/ACOG/AASM/CDC/NHS/Cochrane pages with exact URLs you are certain exist (DOI or PubMed preferred).
 - "answer": 40-60 word direct answer to the title question. "description": 150-160 characters.
 - 4-6 FAQ items (1-3 sentence answers).
-- "claims": EVERY medical or product statement in the post, each with the id of the source backing it.
+- "claims": EVERY sentence in the body, answer or FAQ that states a medical/health fact (causes, symptoms, prevalence, risks, what a treatment does, what a guideline or society recommends) must appear in "claims", each with the id of ONE source that states it directly. An independent fact-checker will compare each claim with that source's abstract/summary and will hold the post if a claim is missing, overstated or not in the source.
+- Write claims conservatively: say only what the cited source's abstract or summary actually says (same strength, same hedging, same population). Prefer "is linked with" over "causes" unless the source says causes. Don't add numbers the source doesn't give.
+- Cite the specific page that contains the statement (e.g. a NICE recommendations page, not a guideline overview; a paper's DOI or PubMed URL, not a journal home page). A guideline/position statement's recommendation should be cited to that statement's DOI or PubMed record.
+- Practical tips that aren't medical facts (e.g. "keep a glass of water by the bed") are fine without a citation only if phrased as personal suggestions ("What helped me…", "Some women find…") and making no health claim.
+- Never put 3:17, "the sleep shot" or the waitlist in the same sentence as words like fix, help, treat, relieve, work, improve or cure.
 - End with a short, non-promotional note that 3:17 is building a middle-of-the-night sleep shot for women in menopause and readers can join the founding list. No efficacy claims. Add "This is general information, not medical advice."
 Return JSON: {"title","slug","description","primary_keyword","secondary_keywords":[],"answer","faq":[{"q","a"}],"sources":[{"id","title","publisher","year","url"}],"claims":[{"text","source"}],"body"}`;
 
@@ -98,6 +102,32 @@ ${JSON.stringify(post)}`,
     { env, db, job: 'draft', cacheSystem: true }
   );
   return { ...buildPost(raw, { today, keyword: post.primary_keyword }), slug: post.slug };
+}
+
+/**
+ * Rewrite a post from the approval gate's feedback (fact-check verdicts, unlisted medical statements,
+ * lint problems, unverifiable sources). One LLM call; the caller re-verifies and re-gates the result.
+ */
+export async function reviseFromFeedback({ env, db, post, verdicts = [], unlisted = [], lint = [], dropped = [], completeImpl = completeJson }) {
+  const bad = verdicts.filter((v) => v.verdict !== 'supported').map((v) => ({ claim: v.claim || v.text, source: v.source, verdict: v.verdict, reason: v.reason }));
+  const raw = await completeImpl(
+    DRAFT_SYSTEM,
+    `An independent fact-checker compared this post with each cited source's abstract/summary and held it. Fix EVERY problem below, then return the COMPLETE post JSON (same fields).
+- Claims judged overstated or unsupported: rewrite the claim AND the matching sentence(s) in the body/answer/FAQ so they say only what the source supports (same strength and hedging), OR cite a different real source that states it directly, OR remove the statement everywhere.
+- Medical statements found in the post but missing from "claims": add each to "claims" with a source that states it, OR rephrase it as plain personal experience with no health claim, OR remove it.
+- Lint problems: fix them (e.g. never put 3:17 / the sleep shot near words like fix, help, treat, relieve, work).
+- Sources listed as unverifiable must not be used again.
+Keep the title, slug, voice and structure unless a fix requires changing them. Every "claims" entry needs a "source" id that exists in "sources", and every [^n] marker must match a source id.
+Claim verdicts: ${JSON.stringify(bad)}
+Unlisted medical statements: ${JSON.stringify(unlisted)}
+Lint problems: ${JSON.stringify(lint)}
+Unverifiable sources: ${JSON.stringify(dropped)}
+Current post JSON:
+${JSON.stringify(post)}`,
+    { env, db, job: 'draft', cacheSystem: true }
+  );
+  const next = buildPost(raw, { today: post.date, keyword: post.primary_keyword });
+  return { ...next, slug: post.slug, date: post.date, updated: post.updated || post.date };
 }
 
 export async function run({ db, env = process.env, log, deps = {} }) {

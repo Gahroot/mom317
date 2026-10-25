@@ -63,7 +63,8 @@ function harness({ post = basePost, comments = [], checkRuns = [{ name: 'check',
   };
   return { deps, calls, issues, pr, pushed: () => pushedText };
 }
-const env = { GITHUB_TOKEN: 't', GITHUB_REPO: 'Gahroot/mom317', GATE_CI_TIMEOUT_MS: '600000' };
+const envBase = { GITHUB_TOKEN: 't', GITHUB_REPO: 'Gahroot/mom317', GATE_CI_TIMEOUT_MS: '600000' };
+const env = envBase;
 const log = { log() {}, error() {} };
 const merged = (calls) => calls.some((c) => c.method === 'PUT' && c.route.endsWith('/pulls/7/merge'));
 const labelled = (calls) => calls.some((c) => c.method === 'POST' && c.route.endsWith('/issues/7/labels') && c.body.labels.includes('needs-review'));
@@ -113,6 +114,7 @@ for (const [name, opts] of Object.entries(failing)) {
   test(`gate fail (${name}) -> no merge, needs-review label + issue for owner`, async () => {
     const db = await memDb();
     const h = harness(opts);
+    const env = { ...envBase, GATE_MAX_REVISIONS: '0' }; // self-revision is covered by its own tests
     const out = await run({ db, env, log, deps: h.deps });
     assert.equal(out.results[0].outcome, 'held');
     assert.ok(!merged(h.calls));
@@ -166,4 +168,68 @@ test('AUTO_PUBLISH=false keeps the old flow: no gate, /approve approves but neve
   assert.ok(!merged(h.calls));
   assert.ok(!h.calls.some((c) => c.route.includes('check-runs')));
   assert.equal((await db.query('SELECT COUNT(*)::int AS n FROM gate_results')).rows[0].n, 0);
+});
+
+
+// ---------- self-revision ----------
+const overstatedOnce = () => {
+  let n = 0;
+  return async (sys, prompt) => {
+    const items = JSON.parse(prompt.match(/excerpts\):\n([\s\S]*?)\n\nListed/)[1]);
+    n++;
+    const verdict = (i) => (n === 1 && i.index === 1 ? 'overstated' : 'supported');
+    return JSON.stringify({ verdicts: items.map((i) => ({ index: i.index, verdict: verdict(i), reason: 'r' })), unlisted_medical_statements: [] });
+  };
+};
+
+test('self-revision: content failure -> writer revises from verdicts, gate re-runs and merges', async () => {
+  const db = await memDb();
+  const h = harness({ complete: overstatedOnce() });
+  const seen = [];
+  h.deps.revise = async ({ post, verdicts }) => { seen.push(verdicts.filter((v) => v.verdict !== 'supported').length); return { ...post, claims: [post.claims[0], { text: 'Night waking is reported in perimenopause.', source: 2 }] }; };
+  h.deps.finalize = async (post) => ({ post, dropped: [], issues: [] });
+  const pushes = [];
+  const orig = h.deps.commitAndPush;
+  h.deps.commitAndPush = async (dir, branch, msg) => { pushes.push({ branch, msg }); return orig(dir); };
+  const out = await run({ db, env, log, deps: h.deps });
+  assert.equal(out.results[0].outcome, 'merged');
+  assert.deepEqual(seen, [1], 'revised once, with the one overstated verdict');
+  assert.match(pushes[0].msg, /Auto-revise post from fact-check feedback \(round 1\/2\)/);
+  assert.equal(pushes[0].branch, 'blog/wake-3am');
+  const rows = (await db.query('SELECT outcome FROM gate_results ORDER BY id')).rows.map((r) => r.outcome);
+  assert.deepEqual(rows, ['revised', 'approved', 'merged']);
+  assert.ok(h.calls.some((c) => c.method === 'POST' && /Auto-revising \(round 1\/2\)/.test((c.body || {}).body || '')));
+});
+
+test('self-revision: still failing after 2 rounds -> held for the owner, says so', async () => {
+  const db = await memDb();
+  const always = async (s, p) => {
+    const items = JSON.parse(p.match(/excerpts\):\n([\s\S]*?)\n\nListed/)[1]);
+    return JSON.stringify({ verdicts: items.map((i) => ({ index: i.index, verdict: 'unsupported', reason: 'no' })), unlisted_medical_statements: [] });
+  };
+  const h = harness({ complete: always });
+  let revisions = 0;
+  let head = 0;
+  h.deps.revise = async ({ post }) => { revisions++; return post; };
+  h.deps.finalize = async (post) => ({ post, dropped: [], issues: [] });
+  h.deps.headSha = async () => `rev${++head}`;
+  const realGh = h.deps.gh;
+  h.deps.gh = async (method, route, body) => (method === 'GET' && /\/pulls\/7$/.test(route) ? { ...h.pr, head: { ...h.pr.head, sha: `rev${head}` } } : realGh(method, route, body));
+  const out = await run({ db, env, log, deps: h.deps });
+  assert.equal(out.results[0].outcome, 'held');
+  assert.equal(revisions, 2);
+  assert.match(out.results[0].why, /Still failing after 2 automatic revision round\(s\)/);
+  assert.ok(!merged(h.calls));
+});
+
+test('self-revision is not attempted for CI/build failures or fact-check infrastructure errors', async () => {
+  for (const opts of [{ checkOk: false }, { complete: async () => { throw new Error('anthropic 500'); } }]) {
+    const db = await memDb();
+    const h = harness(opts);
+    let revisions = 0;
+    h.deps.revise = async ({ post }) => { revisions++; return post; };
+    const out = await run({ db, env, log, deps: h.deps });
+    assert.equal(out.results[0].outcome, 'held');
+    assert.equal(revisions, 0);
+  }
 });
