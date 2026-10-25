@@ -233,3 +233,14 @@ test('self-revision is not attempted for CI/build failures or fact-check infrast
     assert.equal(revisions, 0);
   }
 });
+
+test('Codex unavailable during the fact-check -> gate waits (deferred), no hold, no label, no issue', async () => {
+  const { DeferError } = await import('../src/mode.js');
+  const db = await memDb();
+  const h = harness({ complete: async () => { throw new DeferError('codex unavailable: backing off'); } });
+  await assert.rejects(run({ db, env, log, deps: h.deps }), (e) => e.defer === true);
+  assert.ok(!labelled(h.calls));
+  assert.ok(!merged(h.calls));
+  assert.equal(h.issues.length, 0);
+  assert.equal((await db.query('SELECT COUNT(*)::int AS n FROM gate_results')).rows[0].n, 0, 'nothing recorded: re-gated next run');
+});

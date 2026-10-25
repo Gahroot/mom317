@@ -3,9 +3,10 @@
 // against the monthly budget (codex calls cost 0 and are not).
 import { checkBudget, recordUsage, BudgetError } from './cost.js';
 import { codexBlock, runCodex, handleFailure, recordSuccess, providerOrder } from './codex.js';
+import { codexOnly, DeferError } from './mode.js';
 
 export function llmConfigured(env = process.env) {
-  return Boolean(env.ANTHROPIC_API_KEY || env.OPENAI_API_KEY);
+  return Boolean(codexOnly(env) || env.ANTHROPIC_API_KEY || env.OPENAI_API_KEY);
 }
 
 export const mainModel = (env = process.env) => env.LLM_MODEL || 'claude-sonnet-5-5';
@@ -90,15 +91,25 @@ async function openai(env, system, prompt, o) {
  * Throws a non-retryable BudgetError when the job may not spend; errors carry `retryable` for the scheduler.
  */
 /** Tries Codex for this call if the job/limits allow it. Returns text, or null to use the next provider. */
-export async function tryCodex(system, prompt, { db, env = process.env, job, now = new Date(), log = console } = {}) {
-  if (!job || await codexBlock(db, job, { env, now })) return null;
+export async function tryCodex(system, prompt, { db, env = process.env, job, now = new Date(), log = console, search = false, full = false } = {}) {
+  const strict = codexOnly(env); // Codex-only: never return null (there is no fallback) -> defer or throw
+  const block = await codexBlock(db, job || 'adhoc', { env, now });
+  if (block) {
+    if (strict) throw new DeferError(`codex unavailable: ${block}`);
+    return null;
+  }
   try {
-    const r = await runCodex(`${system}\n\n---\n\n${prompt}`, { env });
-    await recordUsage(db, { job, provider: 'codex', model: env.CODEX_MODEL || 'codex-default', usd: 0, ...r.usage }, { env });
+    const r = await runCodex(system ? `${system}\n\n---\n\n${prompt}` : prompt, { env, search });
+    await recordUsage(db, { job: job || 'adhoc', provider: 'codex', model: env.CODEX_MODEL || 'codex-default', usd: 0, ...r.usage }, { env });
     await recordSuccess(db);
-    return r.text;
+    return full ? r : r.text;
   } catch (e) {
     const h = await handleFailure(db, e, { env, now });
+    if (strict) {
+      log.error(`[codex] ${job} failed (${h.kind})`);
+      if (h.kind === 'usage' || h.kind === 'auth') throw new DeferError(`codex ${h.kind === 'usage' ? 'usage limit' : 'login'} problem: ${String(e.message).slice(0, 200)}`);
+      throw Object.assign(new Error(String(e.message).slice(0, 400)), { retryable: true }); // transient: scheduler retries with backoff
+    }
     log.error(`[codex] ${job} failed (${h.kind}); falling back`);
     return null;
   }
@@ -108,6 +119,7 @@ export async function complete(system, prompt, opts = {}) {
   const env = opts.env || process.env;
   const tier = opts.job ? modelFor(opts.job, env) : { model: mainModel(env), maxTokens: 8000 };
   const o = { ...opts, env, model: opts.model || tier.model, maxTokens: opts.maxTokens || tier.maxTokens, fetchImpl: opts.fetchImpl || globalThis.fetch };
+  if (codexOnly(env)) return tryCodex(system, prompt, { db: o.db, env, job: o.job, now: opts.now }); // no budget, no paid APIs
   if (!opts.noCodex) {
     const text = await tryCodex(system, prompt, { db: o.db, env, job: o.job, now: opts.now });
     if (text != null) return text;
@@ -177,6 +189,7 @@ export async function batchComplete({ db, env = process.env, job, key = '', syst
   const f = fetchImpl || globalThis.fetch;
   const sys = json ? system + '\nReply with JSON only.' : system;
   const { model, maxTokens } = modelFor(job, env);
+  if (codexOnly(env)) return { text: await tryCodex(sys, prompt, { db, env, job, now: new Date(now()) }) }; // no Batch API
   const normal = () => complete(sys, prompt, { env, db, job, model, maxTokens, fetchImpl: f, noCodex: true });
   // Codex first (when allowed): no Batch API for that call.
   const pendingRow = db ? (await db.query("SELECT 1 FROM ai_batches WHERE job = $1 AND key = $2 AND status IN ('submitted','ended','failed') LIMIT 1", [job, key])).rows[0] : null;

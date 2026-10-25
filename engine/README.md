@@ -39,7 +39,20 @@ The weekly report has an "Approval gate" table (published / held, and why).
 
 `AUTO_PUBLISH=false` restores the old human-only flow: no gate, `/approve` sets the approval and pushes, and a person merges. The engine never merges in that mode.
 
-## AI cost controls
+## Current mode: Codex-only (owner's choice, 25 Oct 2026)
+
+Railway runs with `LLM_PROVIDER_ORDER=codex`, `CODEX_MODEL=gpt-6.1-sol`, `CODEX_REASONING_EFFORT=high`. In this mode:
+
+- **Every AI call goes through Codex** on the owner's ChatGPT subscription: research, drafting, the source-repair pass, self-revisions, the gate fact-check and the AI-visibility checks (ChatGPT with live web search, `-c web_search="live"`, provider `chatgpt-codex`). Paid APIs are never called, even when their keys are set.
+- **No budget.** Nothing is paid for, so `AI_MONTHLY_BUDGET_USD` is ignored and `/api/admin/status` shows `aiBudget.budget: "off"`. The cost controls below apply again only if you switch back to a mixed mode.
+- **No paid fallback: jobs wait instead.** If Codex is logged out, at its usage limit (24 h back-off), over the weekly runaway guard (`CODEX_MAX_CALLS_PER_WEEK`, default 80 in this mode) or not installed, the job is recorded as `deferred` and its slot is retried every hour (no alert; a login problem still opens one `engine-alert` issue). The gate never holds a PR just because the fact-checker was unavailable; it re-checks it later. Transient Codex errors are retried with backoff and then fail and alert like any other error.
+- **Any time of day.** The night-only rule applies only in mixed mode; scheduled jobs still start at night (research Sun 3:00, draft Mon/Thu 4:00, optimize Fri 5:00 NY).
+- **Same model writes and checks.** The fact-checker is a separate, fresh Codex session with its own skeptical prompt that judges each claim only against the source abstract, but it is the same model family as the writer.
+- Calls time out after 25 minutes (`CODEX_TIMEOUT_MS`).
+
+Switch back to paid fallback: `railway variables --service engine --set LLM_PROVIDER_ORDER=codex,anthropic` (budget and night-only rule return).
+
+## AI cost controls (mixed mode only)
 
 The owner set a **$10/month combined cap** for Anthropic + OpenAI + Perplexity. Every call is written to table `ai_usage` (job, provider, model, input/output/cache tokens, estimated USD). Prices are the `PRICES` table in `src/cost.js` (sources and the check date are in its comment); override with `AI_PRICES_JSON`. The month is the calendar month in America/New_York.
 
@@ -101,9 +114,11 @@ Set them from `engine/` with `railway variables --service engine --set "NAME=val
 | GATE_CI_TIMEOUT_MS / GATE_CI_POLL_MS | | optional | How long to wait for green checks before merging (default 20 min, poll 30 s) |
 | APPROVER_NAME | | optional | Name written to `approved_by` on a `/approve` override (default: the commenter's login) |
 | GIT_AUTHOR_NAME / GIT_AUTHOR_EMAIL | | optional | Commit identity for engine PRs |
-| LLM_PROVIDER_ORDER | | optional | Default `codex,anthropic` (research/draft/optimize). `anthropic` turns Codex off |
+| LLM_PROVIDER_ORDER | | yes | **`codex`** = Codex-only (current). Default `codex,anthropic` (Codex for research/draft/optimize, paid fallback). `anthropic` turns Codex off |
 | LLM_FACTCHECK_PROVIDER | | optional | Default `anthropic`; Codex is never used for fact-checks |
-| CODEX_MODEL | | optional | Codex model; unset = Codex's default |
+| CODEX_MODEL | | yes | `gpt-6.1-sol` (unset = Codex's default) |
+| CODEX_REASONING_EFFORT | | yes | `high` (passed as `-c model_reasoning_effort="high"`) |
+| CODEX_TIMEOUT_MS | | optional | Per-call timeout; default 25 min in Codex-only mode, 10 min otherwise |
 | CODEX_MAX_CALLS_PER_WEEK | | optional | Default 6 |
 | CODEX_ANYTIME | | optional | `true` allows Codex calls 8:00–23:00 NY |
 | SCHEDULER | | optional | `off` disables the scheduler (API only) |

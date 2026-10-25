@@ -189,7 +189,10 @@ export async function runChecks(dir, posts, { env, deps, db }) {
     add(`claims lint (${slug})`, lint.length === 0, lint.length ? lint.join('; ') : 'clean');
     let fc;
     try { fc = await factCheck(post, { env, fetchImpl: deps.fetch, completeImpl: deps.complete, db }); }
-    catch (e) { fc = { ok: false, verdicts: [], unlisted: [`fact-check error: ${e.message}`] }; }
+    catch (e) {
+      if (e && e.defer) throw e; // Codex unavailable: wait and re-gate later, don't hold the PR
+      fc = { ok: false, verdicts: [], unlisted: [`fact-check error: ${e.message}`] };
+    }
     verdicts.push(...fc.verdicts.map((v) => ({ ...v, slug })));
     unlisted.push(...fc.unlisted);
     const bad = fc.verdicts.filter((v) => v.verdict !== 'supported').length;
@@ -381,7 +384,7 @@ export async function processPr(db, pr, { env = process.env, deps: d = {}, log =
         const rv = await reviseInCheckout(dir, posts, g, { env, deps, db, round: rounds + 1, branch: pr.head.ref });
         return { ...g, posts, sha: rv.sha, revised: rv.changed };
       } catch (e) {
-        if (e && e.budget) throw e;
+        if (e && (e.budget || e.defer)) throw e;
         return { ...g, posts, sha, reviseError: e.message.slice(0, 300) };
       }
     }
@@ -423,9 +426,13 @@ export async function run({ db, env = process.env, log = console, deps: d = {} }
   const prs = (await deps.gh('GET', `/repos/${repo}/pulls?state=open&per_page=100`, null, env)).filter((p) => p.head.ref.startsWith('blog/') && p.head.repo && p.head.repo.full_name === repo);
   const results = [];
   const errors = [];
+  let deferred = null;
   for (const pr of prs) {
     try { const r = await processPr(db, pr, { env, deps, log }); if (r) results.push(r); }
-    catch (e) { errors.push(`PR #${pr.number}: ${e.message}`); }
+    catch (e) {
+      if (e && e.defer) { deferred = e; results.push({ pr: pr.number, outcome: 'deferred', reason: e.message.slice(0, 200) }); continue; }
+      errors.push(`PR #${pr.number}: ${e.message}`);
+    }
   }
   // Mark posts merged by hand as published.
   const tracked = (await db.query("SELECT slug, pr_number FROM posts WHERE status <> 'published' AND pr_number IS NOT NULL")).rows;
@@ -434,5 +441,6 @@ export async function run({ db, env = process.env, log = console, deps: d = {} }
     if (pr && pr.merged_at) await db.query("UPDATE posts SET status = 'published', updated_at = now() WHERE slug = $1", [t.slug]);
   }
   if (errors.length) throw new Error(errors.join(' | ')); // scheduler retries + alerts
+  if (deferred && !results.some((r) => r.outcome !== 'deferred')) throw deferred; // nothing else happened: whole run waits
   return { checked: prs.length, autoPublish: autoPublish(env), results };
 }

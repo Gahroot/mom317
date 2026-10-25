@@ -48,9 +48,12 @@ export function createScheduler({ db, jobs, ctx = {}, now = () => new Date(), re
   const running = new Set();
   let timer = null;
 
-  async function isDue(name, slot) {
-    const { rows } = await db.query('SELECT 1 FROM job_runs WHERE job = $1 AND slot = $2 AND status <> \'abandoned\' LIMIT 1', [name, slot]);
-    return rows.length === 0;
+  // A slot is due if it never ran, or its latest run was deferred (Codex unavailable) over an hour ago.
+  async function isDue(name, slot, n = now()) {
+    const { rows } = await db.query("SELECT status, finished_at FROM job_runs WHERE job = $1 AND slot = $2 AND status <> 'abandoned' ORDER BY id DESC LIMIT 1", [name, slot]);
+    if (!rows.length) return true;
+    const r = rows[0];
+    return r.status === 'deferred' && r.finished_at && n - new Date(r.finished_at) >= HOUR;
   }
 
   async function runJob(name, slot) {
@@ -69,6 +72,12 @@ export function createScheduler({ db, jobs, ctx = {}, now = () => new Date(), re
       log.log(`[job] ${name} ${status}`);
       return { status, result };
     } catch (e) {
+      if (e && e.defer) { // Codex temporarily unavailable: not a failure; the slot is retried in an hour (no alert)
+        const result = { deferred: String(e.message).slice(0, 500) };
+        if (id) await db.query("UPDATE job_runs SET status = 'deferred', finished_at = $3, result = $2 WHERE id = $1", [id, JSON.stringify(result), now()]);
+        log.log(`[job] ${name} deferred: ${result.deferred}`);
+        return { status: 'deferred', result };
+      }
       if (e && e.budget) { // over the AI budget mid-run: a skip, not a failure (no alert, no retry)
         const result = { skipped: 'budget', reason: 'budget', detail: e.message };
         if (id) await db.query("UPDATE job_runs SET status = 'skipped', finished_at = now(), result = $2 WHERE id = $1", [id, JSON.stringify(result)]);
@@ -92,7 +101,7 @@ export function createScheduler({ db, jobs, ctx = {}, now = () => new Date(), re
       if (!job.schedule) continue;
       const slot = lastSlot(job.schedule, n);
       if (!slot || n - slot > maxCatchUpHours * HOUR) continue;
-      if (running.has(name) || !(await isDue(name, slot))) continue;
+      if (running.has(name) || !(await isDue(name, slot, n))) continue;
       out.push(name);
       await runJob(name, slot); // sequential: one job at a time keeps resource use low
     }

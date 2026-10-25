@@ -177,7 +177,7 @@ export async function run({ db, env = process.env, log, deps = {} }) {
       fin = { ...fin2, dropped: [...fin.dropped, ...fin2.dropped] };
       await db.query('UPDATE posts SET draft_md = $2, updated_at = now() WHERE slug = $1', [post.slug, serializePost(fin.post)]);
     } catch (e) {
-      if (e && e.budget) throw e;
+      if (e && (e.budget || e.defer)) throw e;
       log.error(`[draft] repair failed: ${e.message}`); // keep the original; the gate will hold it
     }
   }

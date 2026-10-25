@@ -1,5 +1,6 @@
 // AI cost controls: price table, usage ledger (ai_usage), monthly budget with a hard ceiling, 80% alert.
 import { githubConfigured, upsertIssue } from './github.js';
+import { codexOnly } from './mode.js';
 
 // USD per million tokens (input / output / cacheWrite = 5-minute cache write / cacheRead = cache hit) and
 // per-request fees. Checked 2026-10-25 on the official pricing pages:
@@ -75,6 +76,7 @@ export async function spendByJob(db, now = new Date()) {
 
 export async function budgetStatus(db, { env = process.env, now = new Date() } = {}) {
   const spent = await monthSpend(db, now);
+  if (codexOnly(env)) return { month: monthKey(now), mode: 'codex-only', budget: 'off', spentUsd: Math.round(spent * 10000) / 10000, byJob: await spendByJob(db, now).catch(() => []) };
   const budget = budgetUsd(env);
   return { month: monthKey(now), spentUsd: Math.round(spent * 10000) / 10000, budgetUsd: budget, hardCeilingUsd: budget * HARD_CEILING,
     pct: budget ? Math.round((spent / budget) * 1000) / 10 : null, byJob: await spendByJob(db, now) };
@@ -85,7 +87,7 @@ export async function budgetStatus(db, { env = process.env, now = new Date() } =
  * keep going until the 1.5x hard ceiling.
  */
 export async function checkBudget(db, job, { env = process.env, now = new Date() } = {}) {
-  if (!db) return { ok: true };
+  if (!db || codexOnly(env)) return { ok: true, off: codexOnly(env) }; // Codex-only: nothing is paid for, so no budget
   const spent = await monthSpend(db, now);
   const budget = budgetUsd(env);
   const essential = ESSENTIAL_JOBS.has(job);

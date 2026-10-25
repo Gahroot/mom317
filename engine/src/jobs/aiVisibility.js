@@ -1,6 +1,7 @@
 // Every 2 weeks (Wednesdays of even ISO weeks): ask answer engines target questions; record whether back2sleepnow.com is cited or mentioned.
 import { checkBudget, budgetSkip, recordUsage } from '../cost.js';
-import { httpError } from '../llm.js';
+import { httpError, tryCodex } from '../llm.js';
+import { codexOnly } from '../mode.js';
 
 export const OPENAI_QUESTIONS = 5;
 export const maxQuestions = (env = process.env) => Math.max(1, Number(env.AI_VIS_MAX_QUESTIONS) || 15);
@@ -77,13 +78,22 @@ async function openai(env, q, db) {
   return { text, citations };
 }
 
+/** ChatGPT with live web search, through Codex on the owner's subscription ($0). */
+async function codexSearch(env, q, db) {
+  const r = await tryCodex('', `Answer this question the way ChatGPT search would for a member of the public. Search the web, give a concise answer, and end with a list of the URLs of the sources you relied on.\n\nQuestion: ${q}`,
+    { db, env, job: 'ai_visibility', search: true, full: true });
+  const inText = String(r.text).match(/https?:\/\/[^\s)\]>"']+/g) || [];
+  return { text: r.text, citations: [...new Set([...(r.urls || []), ...inText])] };
+}
+
 export async function run({ db, env = process.env, log, slot, deps = {} }) {
   const plan = visibilityPlan(slot || new Date(), env);
   if (!plan.run) return { skipped: `odd ISO week ${plan.isoWeek} (runs every 2 weeks)` };
-  const call = { perplexity, openai, ...deps };
+  const call = { perplexity, openai, codex: codexSearch, ...deps };
   const providers = [];
-  if (env.PERPLEXITY_API_KEY) providers.push(['perplexity', call.perplexity, plan.max]);
-  if (env.OPENAI_API_KEY && plan.openai) providers.push(['openai', call.openai, Math.min(OPENAI_QUESTIONS, plan.max)]);
+  if (codexOnly(env)) providers.push(['chatgpt-codex', call.codex, plan.max]);
+  else if (env.PERPLEXITY_API_KEY) providers.push(['perplexity', call.perplexity, plan.max]);
+  if (!codexOnly(env) && env.OPENAI_API_KEY && plan.openai) providers.push(['openai', call.openai, Math.min(OPENAI_QUESTIONS, plan.max)]);
   if (!providers.length) return { skipped: env.OPENAI_API_KEY ? 'no provider due this run (OpenAI checks are monthly)' : 'not configured: PERPLEXITY_API_KEY / OPENAI_API_KEY' };
   const budget = await checkBudget(db, 'ai_visibility', { env });
   if (!budget.ok) return budgetSkip(budget);
@@ -101,7 +111,10 @@ export async function run({ db, env = process.env, log, slot, deps = {} }) {
         const d = detect(r.text, r.citations);
         if (d.cited || d.mentioned) hits++;
         await db.query('INSERT INTO ai_visibility (day, provider, question, cited, mentioned, citations) VALUES (CURRENT_DATE,$1,$2,$3,$4,$5)', [name, q, d.cited, d.mentioned, JSON.stringify(r.citations.slice(0, 20))]);
-      } catch (e) { errors++; if (e.retryable !== false) transient = true; log.error(`[ai_visibility] ${name}`, e.message); }
+      } catch (e) {
+        if (e && e.defer) throw e; // Codex unavailable: retry the whole run in an hour
+        errors++; if (e.retryable !== false) transient = true; log.error(`[ai_visibility] ${name}`, e.message);
+      }
     }
     if (errors === questions.length) throw Object.assign(new Error(`${name}: all queries failed`), { retryable: transient });
     summary[name] = { questions: questions.length, hits, errors };

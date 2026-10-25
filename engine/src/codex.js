@@ -10,10 +10,13 @@ import path from 'node:path';
 import { zonedParts } from './scheduler.js';
 import { githubConfigured, upsertIssue } from './github.js';
 import { recordUsage } from './cost.js';
+import { codexOnly } from './mode.js';
 
 export const CODEX_JOBS = new Set(['research', 'draft', 'optimize']);
 const DAY = 86_400_000;
 export const TIMEOUT_MS = 10 * 60_000;
+// High reasoning on long articles can take a while; Codex-only mode allows 25 minutes by default.
+export const timeoutMs = (env = process.env) => Number(env.CODEX_TIMEOUT_MS) || (codexOnly(env) ? 25 * 60_000 : TIMEOUT_MS);
 
 // Test seam: replace spawn / availability / alert sink.
 export const codexDeps = { spawn: nodeSpawn, available: null, notify: null };
@@ -22,6 +25,7 @@ export const codexHome = (env = process.env) => env.CODEX_HOME || path.join(home
 
 /** Provider order for a job. Fact-check (gate) uses LLM_FACTCHECK_PROVIDER (default anthropic); codex only for CODEX_JOBS. */
 export function providerOrder(job, env = process.env) {
+  if (codexOnly(env)) return ['codex']; // every job, incl. the fact-check; no paid fallback
   if (job === 'gate') return String(env.LLM_FACTCHECK_PROVIDER || 'anthropic').split(',').map((s) => s.trim()).filter((p) => p && p !== 'codex').concat(['anthropic', 'openai']).filter((p, i, a) => a.indexOf(p) === i);
   const order = String(env.LLM_PROVIDER_ORDER || 'codex,anthropic').split(',').map((s) => s.trim()).filter(Boolean);
   const out = order.filter((p) => p !== 'codex' || CODEX_JOBS.has(job));
@@ -64,7 +68,13 @@ export async function setState(db, key, value) {
     ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()`, [key, value]);
 }
 
-export const weeklyCap = (env = process.env) => { const n = Number(env.CODEX_MAX_CALLS_PER_WEEK ?? 6); return Number.isFinite(n) && n >= 0 ? n : 6; };
+// Runaway guard. Codex-only mode makes ~20-45 calls a normal week (2 articles x draft + fact-check + revisions,
+// research, optimize, AI-visibility), so its default is 80; mixed mode keeps the light-use default of 6.
+export const weeklyCap = (env = process.env) => {
+  const def = codexOnly(env) ? 80 : 6;
+  const n = Number(env.CODEX_MAX_CALLS_PER_WEEK ?? def);
+  return Number.isFinite(n) && n >= 0 ? n : def;
+};
 
 export async function codexCallsLastWeek(db, now = new Date()) {
   if (!db) return 0;
@@ -78,7 +88,9 @@ export const isDaytime = (now = new Date()) => { const h = zonedParts(now).hour;
 export async function codexBlock(db, job, { env = process.env, now = new Date() } = {}) {
   if (!providerOrder(job, env).includes('codex')) return 'not in provider order';
   if (!(await codexAvailable(env))) return 'not available';
-  if (isDaytime(now) && env.CODEX_ANYTIME !== 'true') return 'daytime (8:00-23:00 NY)';
+  // Mixed mode keeps Codex to night hours (paid APIs cover the day). Codex-only has no fallback, so it may run any
+  // time; all scheduled jobs still start at night, so daytime use is limited to retries and hourly gate re-checks.
+  if (!codexOnly(env) && isDaytime(now) && env.CODEX_ANYTIME !== 'true') return 'daytime (8:00-23:00 NY)';
   const until = await getState(db, 'backoff_until');
   if (until && new Date(until).getTime() > now.getTime()) return `backing off until ${until}`;
   if ((await codexCallsLastWeek(db, now)) >= weeklyCap(env)) return 'weekly cap reached';
@@ -97,13 +109,16 @@ export function classifyError(text) {
 let chain = Promise.resolve();
 const serial = (fn) => { const p = chain.then(fn, fn); chain = p.catch(() => {}); return p; };
 
-export function codexArgs(env, outFile, cwd) {
+export function codexArgs(env, outFile, cwd, { search = false } = {}) {
+  const effort = String(env.CODEX_REASONING_EFFORT || '').trim();
   return ['exec', '--skip-git-repo-check', '--ephemeral', '--sandbox', 'read-only', '-c', 'approval_policy="never"',
+    ...(effort && /^[a-z]+$/.test(effort) ? ['-c', `model_reasoning_effort="${effort}"`] : []),
+    ...(search ? ['-c', 'web_search="live"'] : []),
     '--cd', cwd, '--json', '--output-last-message', outFile, ...(env.CODEX_MODEL ? ['-m', env.CODEX_MODEL] : []), '-'];
 }
 
 /** Runs codex exec; resolves { text, usage }, rejects with { kind } on failure. Prompt goes on stdin. */
-export function runCodex(prompt, { env = process.env, timeoutMs = TIMEOUT_MS } = {}) {
+export function runCodex(prompt, { env = process.env, timeoutMs: limitMs = timeoutMs(env), search = false } = {}) {
   return serial(async () => {
     const cwd = await mkdtemp(path.join(tmpdir(), 'codex-cwd-'));
     const outDir = await mkdtemp(path.join(tmpdir(), 'codex-out-'));
@@ -111,9 +126,9 @@ export function runCodex(prompt, { env = process.env, timeoutMs = TIMEOUT_MS } =
     try {
       const childEnv = { PATH: env.PATH || process.env.PATH, HOME: env.HOME || process.env.HOME, CODEX_HOME: codexHome(env) };
       const { code, stdout, stderr, timedOut } = await new Promise((resolve, reject) => {
-        const child = codexDeps.spawn('codex', codexArgs(env, outFile, cwd), { cwd, env: childEnv, stdio: ['pipe', 'pipe', 'pipe'] });
+        const child = codexDeps.spawn('codex', codexArgs(env, outFile, cwd, { search }), { cwd, env: childEnv, stdio: ['pipe', 'pipe', 'pipe'] });
         let out = '', err = '', timedOut = false;
-        const t = setTimeout(() => { timedOut = true; child.kill('SIGKILL'); }, timeoutMs);
+        const t = setTimeout(() => { timedOut = true; child.kill('SIGKILL'); }, limitMs);
         child.stdout.on('data', (d) => { if (out.length < 2e6) out += d; });
         child.stderr.on('data', (d) => { if (err.length < 2e5) err += d; });
         child.on('error', (e) => { clearTimeout(t); reject(e); });
@@ -122,6 +137,7 @@ export function runCodex(prompt, { env = process.env, timeoutMs = TIMEOUT_MS } =
         child.stdin.end(prompt);
       });
       const usage = { inputTokens: 0, outputTokens: 0, cacheReadTokens: 0 };
+      const urls = [];
       let eventError = '';
       for (const line of stdout.split('\n')) {
         let ev; try { ev = JSON.parse(line); } catch { continue; }
@@ -130,15 +146,21 @@ export function runCodex(prompt, { env = process.env, timeoutMs = TIMEOUT_MS } =
           usage.cacheReadTokens += ev.usage.cached_input_tokens || 0;
           usage.outputTokens += ev.usage.output_tokens || 0;
         }
+        const it = ev && ev.item;
+        if (ev && ev.type === 'item.completed' && it && it.type === 'web_search') {
+          for (const r of it.results || []) if (r && r.url) urls.push(r.url);
+          const a = it.action || {};
+          if (a.url) urls.push(a.url);
+        }
         if (ev && (ev.type === 'error' || ev.type === 'turn.failed')) eventError += ' ' + JSON.stringify(ev.error || ev.message || ev).slice(0, 300);
       }
       let text = '';
       try { text = (await readFile(outFile, 'utf8')).trim(); } catch {}
       if (timedOut || code !== 0 || eventError || !text) {
-        const msg = (timedOut ? 'timeout after 10 min' : `exit ${code}`) + `: ${eventError} ${stderr}`.replace(/\s+/g, ' ').slice(0, 400);
+        const msg = (timedOut ? `timeout after ${Math.round(limitMs / 60000)} min` : `exit ${code}`) + `: ${eventError} ${stderr}`.replace(/\s+/g, ' ').slice(0, 400);
         throw Object.assign(new Error(`codex ${msg}`), { kind: classifyError(eventError + ' ' + stderr), retryable: true });
       }
-      return { text, usage };
+      return { text, usage, urls: [...new Set(urls)] };
     } finally {
       await rm(cwd, { recursive: true, force: true });
       await rm(outDir, { recursive: true, force: true });
@@ -150,7 +172,7 @@ export const RESEED = `Reseed the Codex login (separate device login on the serv
 1. From engine/: \`railway ssh --service engine\`
 2. In the container: \`codex login --device-auth\` and finish the sign-in in a browser (ChatGPT settings > Security may need "device code login" enabled for Codex).
 3. Check \`/api/admin/status\` shows \`codex.loggedIn: true\`.
-Meanwhile the engine falls back to Anthropic, so the blog keeps running. To turn Codex off: \`railway variables --service engine --set LLM_PROVIDER_ORDER=anthropic\`.`;
+In Codex-only mode (LLM_PROVIDER_ORDER=codex) AI jobs wait and retry hourly until the login works again; otherwise calls fall back to Anthropic. To switch to paid APIs: \`railway variables --service engine --set LLM_PROVIDER_ORDER=codex,anthropic\`.`;
 
 const defaultNotify = async ({ title, body }, env) => { if (githubConfigured(env)) await upsertIssue({ title, body, label: 'engine-alert' }, env); };
 
@@ -168,7 +190,7 @@ export async function handleFailure(db, err, { env = process.env, now = new Date
   if (last && now.getTime() - new Date(last).getTime() < 7 * DAY) return { alerted: false, kind };
   await setState(db, 'alert_auth_at', now.toISOString());
   const notify = codexDeps.notify || defaultNotify;
-  try { await notify({ title: 'Codex login needs renewing', body: `The engine's Codex CLI call failed with an auth error (${now.toISOString()}). Calls fall back to Anthropic until it is fixed.\n\n${RESEED}` }, env); }
+  try { await notify({ title: 'Codex login needs renewing', body: `The engine's Codex CLI call failed with an auth error (${now.toISOString()}). ${codexOnly(env) ? 'AI jobs are paused (retrying hourly)' : 'Calls fall back to Anthropic'} until it is fixed.\n\n${RESEED}` }, env); }
   catch (e) { console.error('[codex] alert failed', e.message); }
   return { alerted: true, kind };
 }
