@@ -99,7 +99,7 @@ What I personally found is that preparing for a bad night took some of the dread
 
 ## Is it worth keeping a diary of my nights?
 
-I kept a simple diary for a while to see whether anything lined up, such as evening drinks, a late meal, a stressful day or how warm the room was. Sometimes I spotted something and sometimes I didn't, and either was fine.
+I kept a simple diary for a while, jotting down a few things I was curious about, like what I'd had to drink in the evening, whether I'd eaten late, how my day had gone and how warm the room was. Sometimes I spotted a pattern and sometimes I didn't, and either was fine.
 
 If you're curious, try it for two to four weeks. Jot down:
 
@@ -122,7 +122,7 @@ That's why I see it as a conversation with a clinician rather than a default. If
 
 ## What if I can't or don't want to take hormones?
 
-This is a very common situation, whether it's because of your medical history, a personal preference or simply wanting to explore other routes first. The Menopause Society has published a separate position statement on nonhormone options.
+Maybe that's you, whether because of your medical history, a personal preference or simply wanting to explore other routes first. The Menopause Society has published a separate position statement on nonhormone options.
 
 The Menopause Society's 2023 nonhormone position statement recommends cognitive behavioral therapy, clinical hypnosis, SSRIs/SNRIs, gabapentin and fezolinetant for vasomotor symptoms.[^2] If a prescription option interests you, I'd want to talk it through with a clinician, alongside my own health history and any other medicines I take.
 
@@ -134,7 +134,7 @@ CBT sounds like a strange suggestion when the problem feels so physical, so I un
 
 First, cognitive behavioral therapy appears on The Menopause Society's list of recommended nonhormone options for vasomotor symptoms, as above.[^2]
 
-Second, there's CBT designed specifically for insomnia, called CBT-I. The American Academy of Sleep Medicine recommends multicomponent CBT for insomnia (CBT-I) for adults with chronic insomnia disorder.[^4] That guideline is for adults generally, not only women in menopause.
+Second, the American Academy of Sleep Medicine recommends multicomponent CBT for insomnia (CBT-I) for adults with chronic insomnia disorder.[^4] That guideline is for adults generally, not only women in menopause.
 
 Third, there's research in women like us. In a randomized trial of perimenopausal and postmenopausal women with vasomotor symptoms and insomnia, women assigned to telephone-based CBT-I had greater improvement in insomnia severity than women assigned to menopause education.[^5]
 
@@ -144,7 +144,7 @@ For me, broken sleep became its own worry, with the dread of bedtime, the clock-
 
 If you search for night sweats, you'll see a lot of confident promises, many of them attached to something you can buy. I'm not going to point you to a supplement here. Personally, I'd ask a clinician or pharmacist before taking one, and I'd bring a list of any other medicines I take.
 
-That applies to us too. I'd rather you read the position statements above than take my word, or anyone's marketing, for how to approach your nights.
+That goes for me and for 3:17 too. I'd rather you read the position statements above than take my word, or anyone's marketing, for how to approach your nights.
 
 ## When should I talk to a clinician?
 
