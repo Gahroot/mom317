@@ -4,7 +4,7 @@ import { createHandler } from './api.js';
 import { createScheduler } from './scheduler.js';
 import * as research from './jobs/research.js';
 import * as draft from './jobs/draft.js';
-import * as approve from './jobs/approve.js';
+import * as gate from './jobs/gate.js';
 import * as monitor from './jobs/monitor.js';
 import * as aiVisibility from './jobs/aiVisibility.js';
 import * as optimize from './jobs/optimize.js';
@@ -18,7 +18,8 @@ export const JOBS = {
   draft: { schedule: { hour: 9, days: [1, 4] }, run: draft.run },
   ai_visibility: { schedule: { hour: 10, days: [3] }, run: aiVisibility.run },
   optimize: { schedule: { hour: 11, days: [5] }, run: optimize.run },
-  approve: { schedule: { hourly: true }, run: approve.run }
+  // Hourly: automated approval gate for open engine PRs not yet gated (was `approve`).
+  gate: { schedule: { hourly: true }, run: gate.run }
 };
 
 const db = createPool();

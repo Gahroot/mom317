@@ -115,7 +115,19 @@ export const MIGRATIONS = [
     detail TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
   )`,
-  `ALTER TABLE signups ADD COLUMN IF NOT EXISTS landing_page TEXT`
+  `ALTER TABLE signups ADD COLUMN IF NOT EXISTS landing_page TEXT`,
+  `CREATE TABLE IF NOT EXISTS gate_results (
+    id SERIAL PRIMARY KEY,
+    pr_number INTEGER NOT NULL,
+    slugs TEXT,
+    head_sha TEXT,
+    outcome TEXT NOT NULL,
+    mode TEXT NOT NULL DEFAULT 'auto',
+    checks JSONB,
+    verdicts JSONB,
+    detail TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`
 ];
 
 export async function migrate(db) {

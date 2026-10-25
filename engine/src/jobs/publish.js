@@ -3,7 +3,7 @@ import { writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { withCheckout, buildBlog, commitAndPush, gh, git, repoName } from '../github.js';
 
-export function prBody({ post, dropped = [], buildNote, kind = 'new', reason = '', notes = '' }) {
+export function prBody({ post, dropped = [], buildNote, kind = 'new', reason = '', notes = '', autoPublish = false }) {
   const claims = (post.claims || []).map((c) => {
     const src = (post.sources || []).find((s) => String(s.id) === String(c.source));
     return `- [ ] ${c.text} ${src ? `— [^${src.id}] [${src.title}](${src.url})` : '— **UNSOURCED: add a real source or delete this claim**'}`;
@@ -23,11 +23,18 @@ export function prBody({ post, dropped = [], buildNote, kind = 'new', reason = '
     '',
     `Build: ${buildNote}${notes}`,
     '',
+    ...(autoPublish ? [
+      '## Automated approval gate',
+      'The engine now runs the gate: every source resolves, `build-blog.mjs --check` passes, claims lint is clean, and an independent fact-check rates every claim `supported`.',
+      'All pass: it sets `status: approved`, waits for CI to be green and squash-merges (production deploy). Any fail: no merge, the PR is labelled `needs-review` and an issue is opened.',
+      'Manual override: comment `/approve` (repo owner only) and the engine approves and merges once CI is green.'
+    ] : [
     '## To approve',
     '- Either edit the file: set `status: approved` and `approved_by: <your name>`, run `node tools/build-blog.mjs`, push to this branch,',
     '- or comment `/approve` on this PR (repo owner only) and the engine does it within the hour.',
     '',
     'Then merge. Merging to `main` deploys to production. The engine never merges by itself.'
+    ])
   ].join('\n');
 }
 
@@ -46,7 +53,7 @@ export async function openPostPr({ db, env, post, fileText, dropped, kind = 'new
   const base = (await gh('GET', `/repos/${repo}`, null, env)).default_branch;
   const pr = await gh('POST', `/repos/${repo}/pulls`, {
     title: `${kind === 'refresh' ? 'Refresh' : 'Blog draft'}: ${post.title}`,
-    head: branch, base, body: prBody({ post, dropped, buildNote: result.buildNote, kind, reason, notes }), draft: false
+    head: branch, base, body: prBody({ post, dropped, buildNote: result.buildNote, kind, reason, notes, autoPublish: String(env.AUTO_PUBLISH ?? 'true').toLowerCase() !== 'false' }), draft: false
   }, env);
   try { await gh('POST', `/repos/${repo}/issues/${pr.number}/labels`, { labels: ['blog-post'] }, env); } catch {}
   await db.query(
@@ -55,6 +62,6 @@ export async function openPostPr({ db, env, post, fileText, dropped, kind = 'new
     [post.slug, post.title, post.primary_keyword, pr.number, pr.html_url, branch, kind]
   );
   log.log(`[publish] opened ${pr.html_url}`);
-  return { pr: pr.html_url, branch, build: result.buildNote, dropped: dropped.length };
+  return { pr: pr.html_url, number: pr.number, branch, build: result.buildNote, dropped: dropped.length };
 }
 

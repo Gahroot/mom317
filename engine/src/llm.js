@@ -3,11 +3,11 @@ export function llmConfigured(env = process.env) {
   return Boolean(env.ANTHROPIC_API_KEY || env.OPENAI_API_KEY);
 }
 
-async function anthropic(env, system, prompt, maxTokens) {
+async function anthropic(env, system, prompt, maxTokens, temperature) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'x-api-key': env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-    body: JSON.stringify({ model: env.LLM_MODEL || 'claude-sonnet-4-5', max_tokens: maxTokens, system, messages: [{ role: 'user', content: prompt }] }),
+    body: JSON.stringify({ model: env.LLM_MODEL || 'claude-sonnet-4-5', max_tokens: maxTokens, ...(temperature != null ? { temperature } : {}), system, messages: [{ role: 'user', content: prompt }] }),
     signal: AbortSignal.timeout(240_000)
   });
   if (!res.ok) throw new Error(`anthropic ${res.status}: ${(await res.text()).slice(0, 300)}`);
@@ -15,21 +15,21 @@ async function anthropic(env, system, prompt, maxTokens) {
   return j.content.filter((c) => c.type === 'text').map((c) => c.text).join('');
 }
 
-async function openai(env, system, prompt, maxTokens) {
+async function openai(env, system, prompt, maxTokens, temperature) {
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { authorization: `Bearer ${env.OPENAI_API_KEY}`, 'content-type': 'application/json' },
-    body: JSON.stringify({ model: env.OPENAI_MODEL || 'gpt-4.1', max_completion_tokens: maxTokens, messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }] }),
+    body: JSON.stringify({ model: env.OPENAI_MODEL || 'gpt-4.1', max_completion_tokens: maxTokens, ...(temperature != null ? { temperature } : {}), messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }] }),
     signal: AbortSignal.timeout(240_000)
   });
   if (!res.ok) throw new Error(`openai ${res.status}: ${(await res.text()).slice(0, 300)}`);
   return (await res.json()).choices[0].message.content;
 }
 
-export async function complete(system, prompt, { maxTokens = 8000, env = process.env } = {}) {
+export async function complete(system, prompt, { maxTokens = 8000, env = process.env, temperature } = {}) {
   const errors = [];
-  if (env.ANTHROPIC_API_KEY) { try { return await anthropic(env, system, prompt, maxTokens); } catch (e) { errors.push(e.message); } }
-  if (env.OPENAI_API_KEY) { try { return await openai(env, system, prompt, maxTokens); } catch (e) { errors.push(e.message); } }
+  if (env.ANTHROPIC_API_KEY) { try { return await anthropic(env, system, prompt, maxTokens, temperature); } catch (e) { errors.push(e.message); } }
+  if (env.OPENAI_API_KEY) { try { return await openai(env, system, prompt, maxTokens, temperature); } catch (e) { errors.push(e.message); } }
   throw new Error(errors.length ? errors.join(' | ') : 'no LLM key configured (ANTHROPIC_API_KEY / OPENAI_API_KEY)');
 }
 

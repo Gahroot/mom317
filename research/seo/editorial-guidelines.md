@@ -48,5 +48,9 @@ Format: every post follows `CONTRACT.md` §1 exactly. Drafts are always `status:
 ## Links
 - Link to the cluster's pillar in the first ~150 words, plus one sibling post (see `strategy.md` §5). Use descriptive anchors. Only link to posts that exist or are approved in the same PR.
 
+## Automated approval gate
+
+The owner chose to publish without human review. Every engine PR (new post or refresh) must pass four checks before it is approved and merged: all sources resolve; `tools/build-blog.mjs --check` passes; the claims lint finds no product efficacy, ingredient/dose, "liquid dietary supplement", signup-count or testimonial language; and an independent skeptical fact-check rates every listed claim `supported` against its source's text and finds no medical statement missing from `claims`. Anything else is held with a `needs-review` label and an issue for the owner, who can override with `/approve`. So list every medical statement in `claims` and cite sources whose title or abstract states it directly. `AUTO_PUBLISH=false` brings back human approval.
+
 ## Before handing over a draft
 Answer is 40-60 words · description is 150-160 characters · slug = filename · all markers resolve · every URL opened · every medical sentence is in `claims` · no forbidden claim · one soft mention at most · ends with the see-a-doctor section and disclaimer.

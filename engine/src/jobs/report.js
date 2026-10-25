@@ -18,6 +18,9 @@ export async function buildReport(db, { since = 7 } = {}) {
   const jobs = await q(`SELECT job, COUNT(*)::int AS runs, COUNT(*) FILTER (WHERE status='failed')::int AS failed, MAX(finished_at) AS last
     FROM job_runs WHERE started_at > now() - interval '${since} days' GROUP BY job ORDER BY job`);
   const awaiting = await q("SELECT slug, title, pr_url FROM posts WHERE status IN ('draft','approved') AND pr_url IS NOT NULL ORDER BY created_at");
+  const gateRows = await q(`SELECT pr_number, slugs, outcome, mode, detail, created_at FROM gate_results WHERE created_at > now() - interval '${since} days' ORDER BY id DESC`);
+  const gate = [];
+  for (const r of gateRows) if (!gate.some((g) => g.pr_number === r.pr_number)) gate.push(r);
   const next = await q("SELECT keyword, score FROM opportunities WHERE status='open' ORDER BY score DESC LIMIT 5");
   const sitemap = await q("SELECT ok, detail FROM checks WHERE name='sitemap' ORDER BY created_at DESC LIMIT 1");
 
@@ -40,6 +43,8 @@ export async function buildReport(db, { since = 7 } = {}) {
     table(['Engine', 'Asked', 'Cited', 'Mentioned'], ai.map((r) => [r.provider, r.asked, r.cited, r.mentioned])),
     '', '## Job health',
     table(['Job', 'Runs', 'Failed', 'Last finished'], jobs.map((r) => [r.job, r.runs, r.failed, r.last ? new Date(r.last).toISOString().slice(0, 16) : '–'])),
+    '', '## Approval gate',
+    gate.length ? table(['PR', 'Post', 'Result', 'Why'], gate.map((r) => [`#${r.pr_number}`, r.slugs || '–', r.outcome === 'merged' ? `published (${r.mode})` : r.outcome === 'held' ? 'held: needs-review' : 'approved, waiting for CI', String(r.detail || '').replace(/\|/g, '/').slice(0, 200)])) : '_No PRs gated this week._',
     '', '## PRs awaiting approval',
     awaiting.length ? awaiting.map((r) => `- [ ] [${r.title}](${r.pr_url})`).join('\n') : '_None._',
     '', '## Next priorities',

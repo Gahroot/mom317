@@ -2,10 +2,10 @@
 title: Awake at 3 a.m. and can't get back to sleep? What to do in menopause
 slug: cant-get-back-to-sleep-menopause
 description: Woken in the night and can't get back to sleep? Evidence-based steps for menopause night waking, from the 20-minute rule to CBT-I, and when to see a doctor.
-date: 2026-10-27
-updated: 2026-10-27
-status: draft
-approved_by:
+date: 2026-10-25
+updated: 2026-10-25
+status: approved
+approved_by: Gahroot (site owner), 25 Oct 2026
 primary_keyword: can't get back to sleep menopause
 secondary_keywords:
   - what to do when you wake up in the night
@@ -60,6 +60,11 @@ sources:
     publisher: NHS
     year: 2024
     url: https://www.nhs.uk/symptoms/night-sweats/
+  - id: 8
+    title: Things you can do to help with menopause and perimenopause symptoms
+    publisher: NHS
+    year: 2026
+    url: https://www.nhs.uk/conditions/menopause-and-perimenopause/things-you-can-do/
 claims:
   - text: If you're still awake after around 20 minutes, get up, sit somewhere comfortable, do something relaxing and go back to bed when sleepy.
     source: 1
@@ -77,8 +82,10 @@ claims:
     source: 3
   - text: The NHS advises keeping regular wake times, not sleeping in after a bad night, avoiding naps, and keeping the bedroom dark and quiet, along with other habit changes.
     source: 4
-  - text: A room that's too hot is a common cause of insomnia. (The cooling tips that follow it are practical suggestions, not cited claims; reviewer please confirm wording.)
+  - text: A room that's too hot is a common cause of insomnia.
     source: 4
+  - text: To ease hot flushes and night sweats, the NHS suggests lightweight clothing, a cool bedroom at night, and a fan or a cold drink.
+    source: 8
   - text: GPs may offer CBT for insomnia, face-to-face or online; sleeping pills are rarely prescribed and only short term.
     source: 4
   - text: About 69% of measured hot flushes in perimenopausal women were associated with an awakening.
@@ -125,7 +132,7 @@ On some nights you'll get up more than once. That's normal, and it's still bette
 
 ## What if night sweats are what keep waking me?
 
-A room that's too hot is one of the common causes of insomnia the NHS lists[^4], and when your own thermostat is unreliable, a warm room makes things worse. Practical things many women find useful include a cooler bedroom, layers of bedding you can shed instead of one heavy duvet, breathable nightwear, and a spare top and some water within reach so you don't have to fully wake up to change. If night sweats are waking you most nights, that's a good reason to talk to a doctor about treating them directly[^6].
+A room that's too hot is one of the common causes of insomnia the NHS lists[^4], and when your own thermostat is unreliable, a warm room makes things worse. For hot flushes and night sweats, the NHS suggests wearing lightweight clothing, keeping your bedroom cool at night, and using a fan or having a cold drink[^8]. If night sweats are waking you most nights, that's a good reason to talk to a doctor about treating them directly[^6].
 
 ## What can I do with a racing mind at 3 a.m.?
 

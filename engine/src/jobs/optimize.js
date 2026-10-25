@@ -4,6 +4,7 @@ import { gh, repoName, githubConfigured } from '../github.js';
 import { parsePost, serializePost } from '../frontmatter.js';
 import { openPostPr } from './publish.js';
 import { lintPost } from './draft.js';
+import { autoPublish, gateOne } from './gate.js';
 
 /** rows: [{ slug, impressions, clicks, position, views, signups }] -> [{ slug, reason, priority }] */
 export function findCandidates(rows) {
@@ -58,6 +59,11 @@ Return JSON {"title","description" (150-160 chars),"answer" (40-60 words),"faq":
     updated: today, status: 'draft', approved_by: ''
   };
   const issues = lintPost({ ...updated, sources: updated.sources || [], claims: updated.claims, secondary_keywords: updated.secondary_keywords || [] });
-  const notes = `\n\n**Note:** status is reset to \`draft\` — merging without approving would unpublish the post.${issues.length ? `\n\n## ⚠️ Automated checks\n${issues.map((i) => `- ${i}`).join('\n')}` : ''}`;
-  return openPostPr({ db, env, post: updated, fileText: serializePost(updated), dropped: [], kind: 'refresh', reason: cand.reason, notes, log });
+  const notes = `\n\n**Note:** status is reset to \`draft\` until approved${autoPublish(env) ? ' by the gate (or `/approve`)' : ''} — merging without approving would unpublish the post.${issues.length ? `\n\n## ⚠️ Automated checks\n${issues.map((i) => `- ${i}`).join('\n')}` : ''}`;
+  const r = await openPostPr({ db, env, post: updated, fileText: serializePost(updated), dropped: [], kind: 'refresh', reason: cand.reason, notes, log });
+  if (r.number && autoPublish(env)) {
+    try { r.gate = await gateOne({ db, env, log, number: r.number }); }
+    catch (e) { r.gate = { error: e.message.slice(0, 500), retry: 'next hourly gate run' }; log.error(`[gate] PR #${r.number}: ${e.message}`); }
+  }
+  return r;
 }

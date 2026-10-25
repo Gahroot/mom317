@@ -3,6 +3,7 @@ import { serializePost, dropSources, slugify, citedIds } from '../frontmatter.js
 import { verifySources } from '../sources.js';
 import { githubConfigured } from '../github.js';
 import { openPostPr } from './publish.js';
+import { autoPublish, gateOne } from './gate.js';
 
 const FORBIDDEN = /\b(cures?|treats?|clinically proven|guaranteed|works in minutes)\b/i;
 
@@ -85,5 +86,9 @@ export async function run({ db, env = process.env, log }) {
   const notes = fin.issues.length ? `\n\n## ⚠️ Automated checks\n${fin.issues.map((i) => `- ${i}`).join('\n')}` : '';
   const r = await openPostPr({ db, env, post: fin.post, fileText: serializePost(fin.post), dropped: fin.dropped, log, notes });
   await db.query("UPDATE opportunities SET status = 'drafted', post_slug = $2, updated_at = now() WHERE id = $1", [opp.id, fin.post.slug]);
+  if (r.number && autoPublish(env)) {
+    try { r.gate = await gateOne({ db, env, log, number: r.number }); }
+    catch (e) { r.gate = { error: e.message.slice(0, 500), retry: 'next hourly gate run' }; log.error(`[gate] PR #${r.number}: ${e.message}`); }
+  }
   return { ...r, issues: fin.issues };
 }

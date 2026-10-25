@@ -60,6 +60,19 @@ export async function buildBlog(dir) {
   return 'built with tools/build-blog.mjs';
 }
 
+/** Runs `node tools/build-blog.mjs --check` in the checkout. Missing script = fail. */
+export async function checkBlog(dir) {
+  try { await access(path.join(dir, 'tools/build-blog.mjs')); } catch { return { ok: false, detail: 'tools/build-blog.mjs not present' }; }
+  try {
+    await run(process.execPath, ['tools/build-blog.mjs', '--check'], { cwd: dir, maxBuffer: 20 * 1024 * 1024 });
+    return { ok: true, detail: 'build-blog.mjs --check passed' };
+  } catch (e) {
+    return { ok: false, detail: `build-blog.mjs --check failed: ${String(e.stderr || e.stdout || e.message).slice(0, 800)}` };
+  }
+}
+
+export const headSha = (dir) => git(dir, ['rev-parse', 'HEAD']);
+
 export async function commitAndPush(dir, branch, message) {
   await git(dir, ['add', '-A']);
   const status = await git(dir, ['status', '--porcelain']);
@@ -70,15 +83,15 @@ export async function commitAndPush(dir, branch, message) {
 }
 
 /** Opens or updates (comments on) a GitHub issue with the given label + exact title. */
-export async function upsertIssue({ title, body, label }, env = process.env) {
+export async function upsertIssue({ title, body, label, assignees }, env = process.env) {
   const repo = repoName(env);
-  try { await gh('POST', `/repos/${repo}/labels`, { name: label, color: label === 'engine-alert' ? 'd73a4a' : '0e8a16' }, env); } catch {}
+  try { await gh('POST', `/repos/${repo}/labels`, { name: label, color: label === 'engine-alert' || label === 'needs-review' ? 'd73a4a' : '0e8a16' }, env); } catch {}
   const open = await gh('GET', `/repos/${repo}/issues?state=open&labels=${encodeURIComponent(label)}&per_page=100`, null, env);
   const existing = open.find((i) => i.title === title && !i.pull_request);
   if (existing) {
     await gh('POST', `/repos/${repo}/issues/${existing.number}/comments`, { body }, env);
     return existing.html_url;
   }
-  const created = await gh('POST', `/repos/${repo}/issues`, { title, body, labels: [label] }, env);
+  const created = await gh('POST', `/repos/${repo}/issues`, { title, body, labels: [label], ...(assignees ? { assignees } : {}) }, env);
   return created.html_url;
 }

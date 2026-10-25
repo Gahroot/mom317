@@ -6,6 +6,20 @@
   <atom:link href="https://back2sleepnow.com/feed.xml" rel="self" type="application/rss+xml"/>
   <description>Plain answers about waking in the night during menopause, by Marian Grout, founder of 3:17.</description>
   <language>en-us</language>
-
+  <lastBuildDate>Sun, 25 Oct 2026 12:00:00 GMT</lastBuildDate>
+  <item>
+    <title>Awake at 3 a.m. and can't get back to sleep? What to do in menopause</title>
+    <link>https://back2sleepnow.com/blog/cant-get-back-to-sleep-menopause</link>
+    <guid isPermaLink="true">https://back2sleepnow.com/blog/cant-get-back-to-sleep-menopause</guid>
+    <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+    <description>Woken in the night and can't get back to sleep? Evidence-based steps for menopause night waking, from the 20-minute rule to CBT-I, and when to see a doctor.</description>
+  </item>
+  <item>
+    <title>Why do I wake at 3 a.m. in menopause?</title>
+    <link>https://back2sleepnow.com/blog/why-wake-3am-menopause</link>
+    <guid isPermaLink="true">https://back2sleepnow.com/blog/why-wake-3am-menopause</guid>
+    <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+    <description>Waking at 3 a.m. in perimenopause or menopause is common. What sleep research says about hot flushes, lighter sleep and other causes, and when to see a doctor.</description>
+  </item>
 </channel>
 </rss>

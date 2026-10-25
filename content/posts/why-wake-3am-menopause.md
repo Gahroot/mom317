@@ -2,10 +2,10 @@
 title: Why do I wake at 3 a.m. in menopause?
 slug: why-wake-3am-menopause
 description: Waking at 3 a.m. in perimenopause or menopause is common. What sleep research says about hot flushes, lighter sleep and other causes, and when to see a doctor.
-date: 2026-10-27
-updated: 2026-10-27
-status: draft
-approved_by:
+date: 2026-10-25
+updated: 2026-10-25
+status: approved
+approved_by: Gahroot (site owner), 25 Oct 2026
 primary_keyword: waking at 3am menopause
 secondary_keywords:
   - perimenopause waking up at 3am
@@ -19,7 +19,7 @@ faq:
   - q: Do night sweats always wake you up?
     a: Not always. In a sleep-lab study of perimenopausal women, about 69% of measured hot flushes came with an awakening. Some passed without waking the woman at all.
   - q: Is 3 a.m. waking caused by cortisol?
-    a: You will read this often online, but we haven't found good evidence that a cortisol spike is the main cause of menopausal night waking. The best-studied causes are hot flushes and night sweats, along with lighter sleep in the second half of the night and other conditions that become more common at this stage.
+    a: You will read this often online, but cortisol isn't among the main causes named in research reviews of menopause and sleep. Those reviews point to hot flushes and night sweats, mood changes and sleep disorders such as sleep apnoea.
   - q: Can sleep apnoea start around menopause?
     a: Yes. Sleep-disordered breathing becomes more common in women after the menopause transition. Loud snoring, gasping or heavy daytime sleepiness are worth mentioning to a doctor.
   - q: When should I see a doctor about waking at night?
@@ -61,6 +61,8 @@ sources:
     year: 2024
     url: https://www.nhs.uk/conditions/insomnia/
 claims:
+  - text: Research reviews of sleep in the menopause transition identify hot flushes and night sweats, mood disorders and primary sleep disorders as the main contributors to sleep problems.
+    source: 1
   - text: Self-reported sleep disturbance, particularly night-time awakenings, increases across the menopausal transition.
     source: 1
   - text: Hot flushes and sweating are critical symptoms associated with disrupted sleep in the menopausal transition.
@@ -128,7 +130,7 @@ Then there's what happens once you're awake. Glance at the clock, start calculat
 
 ## Is it cortisol, or blood sugar?
 
-You'll see a lot of confident claims online that a cortisol spike or a blood-sugar dip is "the real reason" women wake at 3 a.m. I went looking for strong evidence that either is the main cause of menopausal night waking, and I didn't find it. The menopause sleep research I've cited here points much more consistently to hot flushes, mood, other sleep disorders and lighter sleep later in the night[^1].
+You'll see a lot of confident claims online that a cortisol spike or a blood-sugar dip is "the real reason" women wake at 3 a.m. Neither is among the main causes named in the research review I've relied on here. It points to hot flushes and night sweats, mood changes and other sleep disorders as the main contributors to sleep problems in the menopause transition[^1].
 
 That doesn't mean stress hormones play no part in any one woman's night. It means I'd be careful with anyone selling a single, simple cause, especially when they're selling something to go with it.
 
