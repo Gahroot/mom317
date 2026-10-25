@@ -4,8 +4,8 @@ slug: cant-get-back-to-sleep-menopause
 description: Can't get back to sleep in menopause? Read what NHS guidance and CBT-I research say about night waking, practical next steps, and when to speak with your GP.
 date: 2026-10-25
 updated: 2026-10-25
-status: draft
-approved_by:
+status: approved
+approved_by: auto-review (3:17 engine)
 primary_keyword: can't get back to sleep menopause
 secondary_keywords:
   - what to do when you wake up in the night
