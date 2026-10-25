@@ -100,7 +100,7 @@ test('model tiering and max_tokens per job', async () => {
   assert.deepEqual(modelFor('research', {}), { model: 'claude-haiku-5-5', maxTokens: 3000 });
   assert.deepEqual(modelFor('optimize', { LLM_MODEL_FAST: 'fast-x' }), { model: 'fast-x', maxTokens: 2000 });
   assert.deepEqual(modelFor('gate', { LLM_MODEL: 'claude-sonnet-5-5' }), { model: 'claude-sonnet-5-5', maxTokens: 2500 });
-  assert.deepEqual(modelFor('draft', {}), { model: 'claude-sonnet-5-5', maxTokens: 9000 });
+  assert.deepEqual(modelFor('draft', {}), { model: 'claude-sonnet-5-5', maxTokens: 20000 });
   const bodies = [];
   const fetchImpl = async (u, o) => { bodies.push(JSON.parse(o.body)); return res(200, msg('ok')); };
   await complete('s', 'p', { env: A, job: 'research', fetchImpl });
@@ -108,7 +108,7 @@ test('model tiering and max_tokens per job', async () => {
   assert.equal(bodies[0].model, 'claude-haiku-5-5');
   assert.equal(bodies[0].max_tokens, 3000);
   assert.equal(bodies[1].model, 'claude-sonnet-5-5');
-  assert.equal(bodies[1].max_tokens, 9000);
+  assert.equal(bodies[1].max_tokens, 20000);
   assert.deepEqual(bodies[1].system[0].cache_control, { type: 'ephemeral' });
 });
 
@@ -274,4 +274,16 @@ test('optimize: no LLM call below 200 impressions in 28 days; stored suggestion 
   assert.equal(r.number, 3);
   assert.equal(llm, 1, 'suggestion reused, LLM called once');
   assert.equal((await db.query('SELECT used FROM optimize_suggestions')).rows[0].used, true);
+});
+
+test('a reply cut off at max_tokens is not retried (would be paid for twice); draft cap is generous', async () => {
+  const sleep = async () => {};
+  let n = 0;
+  const cut = async () => res(200, { ...msg('{"title":"x","body":"unterminated'), stop_reason: 'max_tokens' });
+  await assert.rejects(
+    withRetry(async () => { n++; await complete('s', 'p', { env: A, job: 'draft', fetchImpl: cut }); }, { sleep }),
+    (e) => /cut off at max_tokens/.test(e.message)
+  );
+  assert.equal(n, 1);
+  assert.ok(modelFor('draft', A).maxTokens >= 16000);
 });

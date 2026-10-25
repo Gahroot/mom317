@@ -16,7 +16,9 @@ export const JOB_LLM = {
   research: { tier: 'fast', maxTokens: 3000 },
   optimize: { tier: 'fast', maxTokens: 2000 },
   gate: { tier: 'main', maxTokens: 2500 },
-  draft: { tier: 'main', maxTokens: 9000 }
+  // Output is billed per token actually written, so a generous cap costs nothing extra;
+  // a ~2,000-word article wrapped in JSON (with sources, FAQ, claims) needs well over 9k tokens.
+  draft: { tier: 'main', maxTokens: 20000 }
 };
 export function modelFor(job, env = process.env) {
   const j = JOB_LLM[job];
@@ -52,6 +54,10 @@ async function anthropic(env, system, prompt, o) {
   if (!res.ok) throw httpError('anthropic', res.status, await res.text());
   const j = await res.json();
   await recordUsage(o.db, { job: o.job, provider: 'anthropic', model: params.model, ...anthropicUsage(j.usage) }, { env });
+  if (j.stop_reason === 'max_tokens') {
+    // Retrying the same request would be cut off again and paid for twice.
+    throw Object.assign(new Error(`anthropic reply cut off at max_tokens (${params.max_tokens}) for job ${o.job || '?'}`), { retryable: false });
+  }
   return textOf(j);
 }
 
