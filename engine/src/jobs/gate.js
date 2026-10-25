@@ -105,7 +105,8 @@ For each numbered claim, judge it ONLY against the source excerpt given for it (
 - "supported": the excerpt directly backs the claim, with no stronger certainty, causality, magnitude or broader population than the source.
 - "overstated": the source backs only a weaker, narrower or more hedged version.
 - "unsupported": the excerpt does not back it, or is too thin to tell.
-Then read the post body and list every medical or health statement that is NOT covered by one of the listed claims (ignore the "not medical advice" disclaimer and invitations to join the waitlist).
+Then read the post body, answer and FAQ and list every statement of medical or health FACT that is NOT covered by one of the listed claims. A statement of fact is one a reader could rely on as true about health: causes or mechanisms, symptoms, how common something is, risks or side effects, what a treatment, supplement or habit does or how well it works, or what a guideline, society or study says or recommends.
+Do NOT list (these need no source): advice to see, ask or talk to a doctor, clinician or pharmacist; when-to-seek-care safety advice; statements clearly framed as the author's or other women's personal experience; practical comfort or tracking suggestions that promise no health outcome (e.g. a fan, lighter bedding, a symptom diary); empathy; the "not medical advice" disclaimer; invitations to join the waitlist. When unsure whether something is a fact claim, list it.
 Reply with JSON only: {"verdicts":[{"index":0,"verdict":"supported|overstated|unsupported","reason":"short"}],"unlisted_medical_statements":["..."]}
 The blog's editorial rules, for context (a post must also respect these):
 ${BRAND_RULES}`;
