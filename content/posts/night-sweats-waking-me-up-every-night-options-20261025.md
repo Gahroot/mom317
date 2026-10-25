@@ -13,12 +13,12 @@ secondary_keywords:
   - non-hormonal options for hot flashes
   - CBT for menopause sleep
   - waking up drenched at night
-answer: Options clinicians discuss include bedroom and bedding changes, noticing triggers, hormone therapy, non-hormonal prescription medicines and cognitive behavioral therapy. The Menopause Society describes hormone therapy as the most effective treatment for vasomotor symptoms and also recommends several nonhormone options, so the right choice depends on your health and preferences, ideally with a clinician.
+answer: There isn't one answer. Options include bedroom and bedding changes, noticing triggers, and asking a clinician about hormone therapy, non-hormonal prescriptions or CBT. The Menopause Society describes hormone therapy as the most effective treatment for vasomotor symptoms and recommends several nonhormone options, so the choice is personal.
 faq:
   - q: Are night sweats the same as hot flashes?
-    a: Hot flashes and night sweats are both described as vasomotor symptoms, so they are closely related. If yours are disrupting your sleep, it's worth describing the pattern to a clinician.
+    a: Hot flashes and night sweats are both included under the term vasomotor symptoms. If yours are disrupting your sleep, it's worth describing the pattern to a clinician.
   - q: How long do night sweats last?
-    a: In the large SWAN study, the median total duration of vasomotor symptoms was 7.4 years. That is an average, and individual experiences vary.
+    a: In the large SWAN study, the median total duration of vasomotor symptoms was 7.4 years. I share that as context, not as a prediction for any one person.
   - q: Is hormone therapy my only option?
     a: No. The Menopause Society's 2023 nonhormone position statement recommends cognitive behavioral therapy, clinical hypnosis, SSRIs/SNRIs, gabapentin and fezolinetant for vasomotor symptoms. A clinician can talk through which, if any, fits your situation.
   - q: Is hormone therapy safe for me?
@@ -26,7 +26,7 @@ faq:
   - q: Is CBT only for insomnia?
     a: The American Academy of Sleep Medicine recommends multicomponent CBT for insomnia (CBT-I) for adults with chronic insomnia disorder. The Menopause Society's nonhormone statement also lists cognitive behavioral therapy among its recommended options for vasomotor symptoms.
   - q: Should I take a supplement for night sweats?
-    a: I'm not able to recommend one here, and I'd suggest checking with a clinician or pharmacist before starting any supplement, particularly if you take other medicines.
+    a: I'm not able to recommend one here. Personally, I'd check with a clinician or pharmacist before starting any supplement, especially if I took other medicines.
 sources:
   - id: 1
     title: The 2022 hormone therapy position statement of The North American Menopause Society
@@ -62,7 +62,7 @@ claims:
     source: 1
   - text: The position statement says that for women younger than 60 or within 10 years of menopause onset, and without contraindications, the benefit-risk ratio is favorable for treating bothersome vasomotor symptoms.
     source: 1
-  - text: The benefit-risk ratio is less favorable for women who start hormone therapy at age 60 or older or many years after menopause onset.
+  - text: The benefit-risk ratio appears less favorable for women who initiate hormone therapy more than 10 years from menopause onset or who are older than 60.
     source: 1
   - text: The risks of hormone therapy differ depending on type, dose, duration, route of administration, timing of initiation and whether a progestogen is used.
     source: 1
@@ -75,19 +75,19 @@ claims:
 ---
 You fall asleep fine. Then somewhere in the small hours you're awake, the sheet is damp, your heart is thumping, and you're peeling off a layer you swear you didn't need when you went to bed. Then comes the second problem: lying there, wide awake, doing sums about how many hours are left. If you're searching "night sweats waking me up every night, what helps?", I've been there, and I'm sorry. I'm Marian, and I started 3:17 because of nights exactly like these.
 
-This article is a calm, balanced walk-through of the options clinicians talk about. It's not a quick fix list, and there's no single right answer. The most useful thing I learned is that the decision is personal and best made with someone who knows your health history.
+This article is a calm, balanced walk-through of the options women often ask about. It's not a quick fix list, and there's no single right answer. The most useful thing I learned is that the decision is personal and best made with someone who knows your health history.
 
 ## What are night sweats, and why do they keep waking me up?
 
-Night sweats are part of what researchers call vasomotor symptoms, a term that covers both hot flashes and night sweats.[^3] You may have heard these described as "hot flushes" if you're reading from the UK or Australia.
+Vasomotor symptoms, the term researchers use, include hot flashes and night sweats.[^3]
 
-In the large SWAN study, the median total duration of vasomotor symptoms was 7.4 years.[^3] I'm sharing that as context, not a prediction. It's an average across many women, and your own experience may be shorter or longer. What I took from it is that if your nights are rough, you're not being dramatic, and it's reasonable to want a plan rather than just waiting it out.
+In the large SWAN study, the median total duration of vasomotor symptoms was 7.4 years.[^3] I'm sharing that as context, not a prediction about you. What I took from it is that if your nights are rough, you're not being dramatic, and it's reasonable to want a plan rather than just waiting it out.
 
 I can't tell you exactly why your nights are the way they are. A clinician can, and that's one of the best reasons to book that appointment.
 
 ## Can changing my bedroom and bedding make nights easier?
 
-These are the things most of us try first, because they're low-risk and in our own hands. I'm not citing a study for any of them. I think of them as comfort measures, not treatments, and they won't suit everyone. Here's what some women find more comfortable:
+These are the things most of us try first, because they're low-risk and in our own hands. I'm not citing a study for any of them. I think of them as practical comfort ideas, not treatments, and they won't suit everyone. Here's what you could try:
 
 - **A cooler, well-ventilated bedroom.** A fan, a cracked window or a lower thermostat setting.
 - **Layered bedding.** A light duvet plus a throw you can kick off, rather than one heavy cover.
@@ -97,11 +97,11 @@ These are the things most of us try first, because they're low-risk and in our o
 
 What I personally found is that preparing for a bad night took some of the dread out of it, even on the nights it didn't change what happened.
 
-## Is it worth tracking my triggers?
+## Is it worth keeping a diary of my nights?
 
-Some women notice patterns, such as nights after alcohol, spicy food, a late heavy meal, a stressful evening or a warm room. Others notice nothing at all, and that's fine too.
+Some women like to keep a simple diary to see whether anything lines up, such as evening drinks, a late meal, a stressful day or how warm the room was. You might find a pattern, or you might not, and either is fine.
 
-If you're curious, try a simple diary for two to four weeks. Jot down:
+If you're curious, try it for two to four weeks. Jot down:
 
 - what time you woke and how sweaty you felt, on a scale you make up (1 to 5 is fine)
 - what you ate and drank in the evening
@@ -112,11 +112,11 @@ This isn't about blaming yourself. Even if no pattern shows up, a diary gives yo
 
 ## What does The Menopause Society say about hormone therapy?
 
-Hormone therapy is the option most people have heard of, and it's also the one with the most nuance, so it's worth reading what the professional bodies actually say.
+Hormone therapy is an option many people have heard of, and it comes with a lot of nuance, so it's worth reading what the professional bodies actually say.
 
-The Menopause Society describes hormone therapy as the most effective treatment for vasomotor symptoms.[^1] The same position statement says that for women younger than 60 or within 10 years of menopause onset, and without contraindications, the benefit-risk ratio is favorable for treating bothersome vasomotor symptoms.[^1] The benefit-risk ratio is less favorable for women who start hormone therapy at age 60 or older or many years after menopause onset.[^1]
+The Menopause Society describes hormone therapy as the most effective treatment for vasomotor symptoms.[^1] The same position statement says that for women younger than 60 or within 10 years of menopause onset, and without contraindications, the benefit-risk ratio is favorable for treating bothersome vasomotor symptoms.[^1] The benefit-risk ratio appears less favorable for women who initiate hormone therapy more than 10 years from menopause onset or who are older than 60.[^1]
 
-There's an important caveat that I think often gets lost in headlines. The risks of hormone therapy differ depending on type, dose, duration, route of administration, timing of initiation and whether a progestogen is used.[^1] In other words, "hormone therapy" isn't one thing. It's a family of choices, and which one might suit you depends on your age, your history, your family history and your preferences.
+There's an important caveat that I think often gets lost in headlines. The risks of hormone therapy differ depending on type, dose, duration, route of administration, timing of initiation and whether a progestogen is used.[^1] In other words, "hormone therapy" isn't one thing. It's a family of choices, and which one might suit you is something to work out with a clinician who knows your age, your history, your family history and your preferences.
 
 That's why I see it as a conversation with a clinician, not a default and not something to rule out because of something you read years ago. If you have concerns, bring them. A good appointment includes your worries, not just your symptoms.
 
@@ -124,11 +124,11 @@ That's why I see it as a conversation with a clinician, not a default and not so
 
 This is a very common situation, whether it's because of your medical history, a personal preference or simply wanting to explore other routes first. There are non-hormonal options too.
 
-The Menopause Society's 2023 nonhormone position statement recommends cognitive behavioral therapy, clinical hypnosis, SSRIs/SNRIs, gabapentin and fezolinetant for vasomotor symptoms.[^2] Some of those are talking or mind-body approaches, and some are prescription medicines. Prescription options can come with their own side effects and aren't right for everyone, so I'd want a clinician to weigh them against my health history and any other medicines I take.
+The Menopause Society's 2023 nonhormone position statement recommends cognitive behavioral therapy, clinical hypnosis, SSRIs/SNRIs, gabapentin and fezolinetant for vasomotor symptoms.[^2] If a prescription option interests you, I'd want to talk it through with a clinician, alongside my own health history and any other medicines I take.
 
-I'll be honest that I'm not a clinician and I'm not going to rank these for you. What I can say is that the list above comes from a professional society's review of the evidence, and it's a good thing to print or screenshot and bring to your appointment.
+I'll be honest that I'm not a clinician and I'm not going to rank these for you. What I can say is that the list above comes from a professional society's position statement, and it's a good thing to print or screenshot and bring to your appointment.
 
-## Can CBT help with the sleep I'm losing, not just the sweats?
+## Is CBT worth asking about for the sleep I'm losing?
 
 CBT sounds like a strange suggestion when the problem feels so physical, so I understand the raised eyebrow. A few things are worth separating out.
 
@@ -136,19 +136,19 @@ First, cognitive behavioral therapy appears on The Menopause Society's list of r
 
 Second, there's CBT designed specifically for insomnia, called CBT-I. The American Academy of Sleep Medicine recommends multicomponent CBT for insomnia (CBT-I) for adults with chronic insomnia disorder.[^4] That guideline is for adults generally, not only women in menopause.
 
-Third, there's research in women like us. In a randomized trial of perimenopausal and postmenopausal women with vasomotor symptoms and insomnia, women assigned to telephone-based CBT-I had greater improvement in insomnia severity than women assigned to menopause education.[^5] The trial's main question was about insomnia severity, so I wouldn't read it as a promise about the sweats themselves.
+Third, there's research in women like us. In a randomized trial of perimenopausal and postmenopausal women with vasomotor symptoms and insomnia, women assigned to telephone-based CBT-I had greater improvement in insomnia severity than women assigned to menopause education.[^5]
 
-If broken sleep has become its own worry, with the dread of bedtime, the clock-watching and the 3 a.m. spiral, then asking a clinician about CBT-I may be worth it. Availability varies a lot by country and by region, so it's fine to ask what's offered near you or online.
+If broken sleep has become its own worry, with the dread of bedtime, the clock-watching and the 3 a.m. spiral, then asking a clinician about CBT-I may be worth it. It's fine to ask what's offered near you or online.
 
 ## What about supplements and the other things I keep seeing online?
 
-If you search for night sweats, you'll see a lot of confident promises, many of them attached to something you can buy. I'm not going to point you to a supplement here. If you're thinking about taking one, I'd ask a clinician or pharmacist first, particularly if you already take other medicines or have a health condition. "Natural" doesn't automatically mean "right for me."
+If you search for night sweats, you'll see a lot of confident promises, many of them attached to something you can buy. I'm not going to point you to a supplement here. Personally, I'd ask a clinician or pharmacist before taking one, especially if I already took other medicines or had a health condition. A "natural" label doesn't tell me whether something is right for me.
 
 That applies to us too. I'd rather you read the position statements above than take my word, or anyone's marketing, for how to approach your nights.
 
 ## When should I talk to a clinician?
 
-If night sweats are happening regularly and affecting your sleep, mood or daily life, it's worth booking an appointment rather than putting up with it. It's also sensible to get checked if they're new and you're unsure they're menopause-related, or if they come with fever, unexplained weight loss or anything else that worries you. Please don't wait on that.
+If night sweats are happening regularly and affecting your sleep, mood or daily life, it's worth booking an appointment rather than putting up with it. If anything is new, worrying or you're simply unsure what's going on, that's a good reason to talk to a clinician too.
 
 Here's what I'd bring:
 
@@ -158,11 +158,11 @@ Here's what I'd bring:
 - your questions, such as "What are my options if I'd rather not take hormones?" or "Could CBT-I be offered to me?"
 - what matters most to you, whether that's sleep, safety, avoiding certain medicines or simply being heard
 
-A good clinician will individualise the plan, and you're allowed to ask for a second opinion if you don't feel listened to.
+You're allowed to ask for a second opinion if you don't feel listened to.
 
 ## So where does that leave me?
 
-There isn't one answer, and I'd be wary of anyone who says there is. There are practical things you can try tonight, a few things worth tracking, and a set of options from hormone therapy through non-hormonal prescriptions to CBT that professional societies describe, and that deserve a proper conversation with someone who knows you. You don't have to put up with this on your own.
+There isn't one answer, and I'd be wary of anyone who says there is. There are practical things you can try tonight, a diary you can keep, and a set of options from hormone therapy through non-hormonal prescriptions to CBT that professional societies describe, and that deserve a proper conversation with someone who knows you. You don't have to put up with this on your own.
 
 ---
 
