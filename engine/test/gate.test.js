@@ -194,14 +194,14 @@ test('self-revision: content failure -> writer revises from verdicts, gate re-ru
   const out = await run({ db, env, log, deps: h.deps });
   assert.equal(out.results[0].outcome, 'merged');
   assert.deepEqual(seen, [1], 'revised once, with the one overstated verdict');
-  assert.match(pushes[0].msg, /Auto-revise post from fact-check feedback \(round 1\/2\)/);
+  assert.match(pushes[0].msg, /Auto-revise post from fact-check feedback \(round 1\/3\)/);
   assert.equal(pushes[0].branch, 'blog/wake-3am');
   const rows = (await db.query('SELECT outcome FROM gate_results ORDER BY id')).rows.map((r) => r.outcome);
   assert.deepEqual(rows, ['revised', 'approved', 'merged']);
-  assert.ok(h.calls.some((c) => c.method === 'POST' && /Auto-revising \(round 1\/2\)/.test((c.body || {}).body || '')));
+  assert.ok(h.calls.some((c) => c.method === 'POST' && /Auto-revising \(round 1\/3\)/.test((c.body || {}).body || '')));
 });
 
-test('self-revision: still failing after 2 rounds -> held for the owner, says so', async () => {
+test('self-revision: still failing after 3 rounds -> held for the owner, says so', async () => {
   const db = await memDb();
   const always = async (s, p) => {
     const items = JSON.parse(p.match(/excerpts\):\n([\s\S]*?)\n\nListed/)[1]);
@@ -217,8 +217,8 @@ test('self-revision: still failing after 2 rounds -> held for the owner, says so
   h.deps.gh = async (method, route, body) => (method === 'GET' && /\/pulls\/7$/.test(route) ? { ...h.pr, head: { ...h.pr.head, sha: `rev${head}` } } : realGh(method, route, body));
   const out = await run({ db, env, log, deps: h.deps });
   assert.equal(out.results[0].outcome, 'held');
-  assert.equal(revisions, 2);
-  assert.match(out.results[0].why, /Still failing after 2 automatic revision round\(s\)/);
+  assert.equal(revisions, 3);
+  assert.match(out.results[0].why, /Still failing after 3 automatic revision round\(s\)/);
   assert.ok(!merged(h.calls));
 });
 

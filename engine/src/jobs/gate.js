@@ -106,7 +106,7 @@ For each numbered claim, judge it ONLY against the source excerpt given for it (
 - "overstated": the source backs only a weaker, narrower or more hedged version.
 - "unsupported": the excerpt does not back it, or is too thin to tell.
 Then read the post body, answer and FAQ and list every statement of medical or health FACT that is NOT covered by one of the listed claims. A statement of fact is one a reader could rely on as true about health: causes or mechanisms, symptoms, how common something is, risks or side effects, what a treatment, supplement or habit does or how well it works, or what a guideline, society or study says or recommends.
-Do NOT list (these need no source): advice to see, ask or talk to a doctor, clinician or pharmacist; when-to-seek-care safety advice; statements clearly framed as the author's or other women's personal experience; practical comfort or tracking suggestions that promise no health outcome (e.g. a fan, lighter bedding, a symptom diary); empathy; the "not medical advice" disclaimer; invitations to join the waitlist. When unsure whether something is a fact claim, list it.
+Do NOT list (these need no source): advice to see, ask or talk to a doctor, clinician or pharmacist; when-to-seek-care safety advice; statements clearly framed as the author's or other women's personal experience; practical comfort or tracking suggestions that promise no health outcome (e.g. a fan, lighter bedding, a symptom diary); empathy; the "not medical advice" disclaimer; invitations to join the waitlist; restatements or summaries of something a listed claim already covers. When unsure whether something is a NEW fact claim, list it.
 Reply with JSON only: {"verdicts":[{"index":0,"verdict":"supported|overstated|unsupported","reason":"short"}],"unlisted_medical_statements":["..."]}
 The blog's editorial rules, for context (a post must also respect these):
 ${BRAND_RULES}`;
@@ -289,7 +289,7 @@ async function legacyApprove(db, pr, c, { env, deps }) {
 
 // ---------- self-revision: the writer fixes what the gate found, then the gate runs again ----------
 const CONTENT_CHECK = /^(claims lint|independent fact-check|sources resolve) \(/;
-export const maxRevisions = (env) => Math.max(0, Number(env.GATE_MAX_REVISIONS ?? 2));
+export const maxRevisions = (env) => Math.max(0, Number(env.GATE_MAX_REVISIONS ?? 3));
 
 /** Revise only when every failure is a content problem the writer can fix (not CI/build/infra). */
 export function revisable(g) {
