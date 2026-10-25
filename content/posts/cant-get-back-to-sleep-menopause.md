@@ -1,7 +1,7 @@
 ---
 title: Awake at 3 a.m. and can't get back to sleep? What to do in menopause
 slug: cant-get-back-to-sleep-menopause
-description: Woken in the night and can't get back to sleep? Evidence-based steps for menopause night waking, from the 20-minute rule to CBT-I, and when to see a doctor.
+description: Can't get back to sleep in menopause? Read what NHS guidance and CBT-I research say about night waking, practical next steps, and when to speak with your GP.
 date: 2026-10-25
 updated: 2026-10-25
 status: draft
@@ -12,192 +12,213 @@ secondary_keywords:
   - how to fall back asleep at 3am
   - menopause insomnia
   - CBT-I menopause
-answer: Don't fight it. If you're still awake after about 20 minutes, get up, sit somewhere comfortable and dim, do something calm, and go back to bed when you feel sleepy. If night waking keeps happening, CBT for insomnia (CBT-I) has the strongest evidence, including in menopausal women with hot flushes.
+answer: The NHS suggests getting up after around 20 minutes awake, doing something relaxing somewhere comfortable, and returning to bed when sleepy.[^1] Keep the next step small; you don't have to solve everything tonight. The AASM strongly recommends multicomponent CBT-I for adults with chronic insomnia disorder.[^2]
 faq:
   - q: Should I stay in bed if I can't get back to sleep?
-    a: The NHS suggests that if you're still awake after around 20 minutes, you get up, sit somewhere comfortable and do something relaxing, then go back to bed when you feel sleepy. This is a simple version of stimulus control, one of the techniques sleep specialists recommend.
-  - q: Does CBT-I work for menopause insomnia?
-    a: In a randomised trial of perimenopausal and postmenopausal women with insomnia and daily hot flushes, CBT-I delivered by phone reduced insomnia severity about twice as much as menopause education. The gains were still there six months later.
-  - q: Is sleep hygiene enough to fix night waking?
-    a: Good habits help, but the American Academy of Sleep Medicine suggests sleep hygiene shouldn't be used alone to treat chronic insomnia. Structured approaches such as CBT-I have stronger evidence.
+    a: The NHS suggests getting up after around 20 minutes awake, doing something relaxing somewhere comfortable, and returning to bed when sleepy.[^1]
+  - q: Does CBT-I work for women in menopause?
+    a: In the trial described here, women receiving telephone CBT-I had greater reductions in insomnia severity than those receiving menopause education.[^3]
+  - q: Should sleep hygiene be the only approach for chronic insomnia?
+    a: The AASM conditionally recommends against sleep hygiene as the sole therapy for chronic insomnia disorder in adults.[^2]
   - q: Should I sleep in after a bad night?
-    a: The NHS advises against it. Sticking to your usual wake-up time helps keep your sleep pattern steady, even after a broken night.
-  - q: When should I see a doctor about night waking?
-    a: See a GP or clinician if changing your habits hasn't helped, if it has gone on for months, or if it is making daily life hard. Also go if night sweats regularly wake you or come with fever or unexplained weight loss.
+    a: The NHS advises against sleeping in after a bad night's sleep.[^4]
+  - q: When should I see a doctor about night sweats?
+    a: For night sweats, the NHS advises seeing a GP if they regularly wake you or worry you.[^7] It also advises a GP visit for night sweats with a very high temperature, feeling hot, cold or shivery, a cough, diarrhoea, or unexplained weight loss.[^7]
 sources:
   - id: 1
-    title: How to fall asleep faster and sleep better (Every Mind Matters)
+    title: How to fall asleep faster and sleep better
     publisher: NHS
-    year: 2025
     url: https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/how-to-fall-asleep-faster-and-sleep-better/
   - id: 2
-    title: Behavioral and psychological treatments for chronic insomnia disorder in adults, an American Academy of Sleep Medicine clinical practice guideline (Edinger JD et al.)
+    title: Behavioral and psychological treatments for chronic insomnia disorder in adults: an American Academy of Sleep Medicine clinical practice guideline
     publisher: Journal of Clinical Sleep Medicine
     year: 2021
     url: https://doi.org/10.5664/jcsm.8986
   - id: 3
-    title: Telephone-based cognitive behavioral therapy for insomnia in perimenopausal and postmenopausal women with vasomotor symptoms, a MsFLASH randomized clinical trial (McCurry SM et al.)
+    title: Telephone-Based Cognitive Behavioral Therapy for Insomnia in Perimenopausal and Postmenopausal Women With Vasomotor Symptoms: A MsFLASH Randomized Clinical Trial
     publisher: JAMA Internal Medicine
     year: 2016
-    url: https://pmc.ncbi.nlm.nih.gov/articles/PMC4935624/
+    url: https://pubmed.ncbi.nlm.nih.gov/27213646/
   - id: 4
     title: Insomnia
     publisher: NHS
     year: 2024
     url: https://www.nhs.uk/conditions/insomnia/
   - id: 5
-    title: Magnitude of the impact of hot flashes on sleep in perimenopausal women (de Zambotti M et al.)
+    title: Magnitude of the impact of hot flashes on sleep in perimenopausal women
     publisher: Fertility and Sterility
     year: 2014
-    url: https://doi.org/10.1016/j.fertnstert.2014.08.016
+    url: https://pubmed.ncbi.nlm.nih.gov/25256933/
   - id: 6
     title: The 2023 nonhormone therapy position statement of The North American Menopause Society
-    publisher: Menopause (The Menopause Society)
+    publisher: Menopause
     year: 2023
     url: https://pubmed.ncbi.nlm.nih.gov/37252752/
   - id: 7
     title: Night sweats
     publisher: NHS
-    year: 2024
+    year: 2023
     url: https://www.nhs.uk/symptoms/night-sweats/
   - id: 8
-    title: Things you can do to help with menopause and perimenopause symptoms
+    title: Things you can do to help menopause and perimenopause symptoms
     publisher: NHS
     year: 2026
     url: https://www.nhs.uk/conditions/menopause-and-perimenopause/things-you-can-do/
 claims:
-  - text: If you're still awake after around 20 minutes, get up, sit somewhere comfortable, do something relaxing and go back to bed when sleepy.
+  - text: The NHS advises against forcing sleep and says you may fall asleep naturally when comfortable and resting.
     source: 1
-  - text: CBT-I is the most supported treatment for chronic insomnia in adults (strong recommendation); stimulus control, sleep restriction and relaxation therapy are conditionally recommended single-component therapies.
-    source: 2
-  - text: Sleep hygiene should not be used as a single-component therapy for chronic insomnia disorder.
-    source: 2
-  - text: CBT-I typically combines cognitive strategies, sleep education, stimulus control and sleep restriction, usually over 4 to 8 sessions.
-    source: 2
-  - text: In a randomised trial of 106 peri- and postmenopausal women with insomnia and 2 or more daily hot flashes, telephone CBT-I cut insomnia severity scores by 9.9 points versus 4.7 with menopause education over 8 weeks.
-    source: 3
-  - text: In that trial, 84% of the CBT-I group were in the no-insomnia range at 24 weeks, versus 43% of the education group, and hot flash frequency did not differ between groups.
-    source: 3
-  - text: In that trial, CBT-I was delivered by phone by coaches who were not sleep specialists.
-    source: 3
-  - text: The NHS advises keeping regular wake times, not sleeping in after a bad night, avoiding naps, and keeping the bedroom dark and quiet, along with other habit changes.
-    source: 4
-  - text: A room that's too hot is a common cause of insomnia.
-    source: 4
-  - text: To ease hot flushes and night sweats, the NHS suggests lightweight clothing, a cool bedroom at night, and a fan or a cold drink.
-    source: 8
-  - text: GPs may offer CBT for insomnia, face-to-face or online; sleeping pills are rarely prescribed and only short term.
-    source: 4
-  - text: About 69% of measured hot flushes in perimenopausal women were associated with an awakening.
+  - text: The NHS suggests getting up after around 20 minutes awake, doing something relaxing somewhere comfortable, and returning to bed when sleepy.
+    source: 1
+  - text: In a laboratory study of 34 perimenopausal women, 69.4% of objectively recorded hot flushes were associated with an awakening.
     source: 5
-  - text: CBT and clinical hypnosis are recommended nonhormone options for vasomotor symptoms; hormone therapy remains the most effective treatment.
+  - text: For hot flushes and night sweats, the NHS suggests lightweight clothing, a cool bedroom, a fan or a cold drink.
+    source: 8
+  - text: The AASM conditionally recommends relaxation therapy as a single-component option for adults with chronic insomnia disorder.
+    source: 2
+  - text: The NHS advises going to bed when sleepy, getting up at the same time daily, avoiding daytime naps and exercising during the day.
+    source: 4
+  - text: The AASM conditionally recommends against sleep hygiene as the sole therapy for chronic insomnia disorder in adults.
+    source: 2
+  - text: CBT-I means cognitive behavioural therapy for insomnia.
+    source: 2
+  - text: The AASM strongly recommends multicomponent CBT-I for adults with chronic insomnia disorder.
+    source: 2
+  - text: One randomised trial included 106 perimenopausal or postmenopausal women aged 40–65 with moderate insomnia symptoms and at least two daily hot flushes.
+    source: 3
+  - text: The CBT-I group had greater reductions in insomnia severity than the menopause education group, with significant group differences sustained at 24 weeks.
+    source: 3
+  - text: Daily hot-flush frequency did not differ between the groups.
+    source: 3
+  - text: In the trial described here, women receiving telephone CBT-I had greater reductions in insomnia severity than those receiving menopause education.
+    source: 3
+  - text: The NHS says CBT for insomnia may be offered face to face or through an online self-help programme.
+    source: 4
+  - text: The Menopause Society's 2023 position statement identifies hormone therapy as the most effective option for vasomotor symptoms.
     source: 6
-  - text: See a GP if night sweats regularly wake you or worry you, or come with high temperature or unexplained weight loss.
+  - text: It also recommends cognitive behavioural therapy and clinical hypnosis among nonhormone options for vasomotor symptoms.
+    source: 6
+  - text: The NHS advises seeing a GP if sleep-habit changes haven't helped, sleep problems have lasted months, or insomnia makes daily life hard to cope with.
+    source: 4
+  - text: For night sweats, the NHS advises seeing a GP if they regularly wake you or worry you.
     source: 7
-  - text: See a GP if changing sleep habits hasn't helped, you've had trouble sleeping for months, or it is making daily life hard to cope with.
+  - text: It also advises a GP visit for night sweats with a very high temperature, feeling hot, cold or shivery, a cough, diarrhoea, or unexplained weight loss.
+    source: 7
+  - text: The NHS advises against sleeping in after a bad night's sleep.
     source: 4
 ---
-You're awake. It's dark, and the house is silent. The harder you try to sleep, the further away it feels.
+You're awake. It's dark, the house is quiet, and morning feels much too close. I know that lonely stretch of the night. You don't need another reason to blame yourself; you need something clear enough to read without turning this into another project.
 
-I spent 15 years waking at 3 a.m., and for most of them I did everything wrong: lay there, checked the time, did the maths, got cross. This guide is what I wish I'd known then. It covers what to do in the moment, what to change in the daytime, and the treatment with the best evidence behind it. All of it comes from sleep research and health guidance, not from my hunches.
-
-If you want to understand *why* the waking happens in the first place, start with [why women wake at 3 a.m. in menopause](/blog/why-wake-3am-menopause). This page is about what to do once it has happened.
+I spent 15 years waking at 3 a.m., checking the time and doing the maths. This is the guide I wish I'd had beside me: what the guidance actually says, what the research found, and a few personal suggestions for making the moment less of an ordeal.
 
 ## What should I do in the first few minutes after waking?
 
-First, deal with whatever woke you. In perimenopause and menopause that's often a hot flush or night sweat. In one sleep-lab study, about 69% of measured hot flushes came with an awakening[^5]. If you're hot, cool down quickly: throw the covers back, turn the pillow over, sip some water. If you need the bathroom, go, and keep the lights as low as is safe.
+Start with one ordinary question: what would make me more comfortable right now? My suggestions are simple: a sip of water, a dry nightshirt within reach, or moving the covers aside if you feel hot. Choose whatever feels appropriate rather than running through a checklist.
 
-Then try **not** to do the three things that keep most of us up:
+The NHS advises against forcing sleep and says you may fall asleep naturally when comfortable and resting.[^1]
 
-- **Don't check the clock.** Knowing it's 3:17 (or 4:02) hands your brain a sum to do and a deadline to worry about. Turn the clock face away if you can.
-- **Don't pick up your phone to "just check something".** The NHS advises against screens right before bed because the light makes you more alert[^4]. The middle of the night is no different.
-- **Don't try to force it.** The NHS puts it simply: if you can't sleep, try not to force it. Resting comfortably often lets sleep come back on its own[^1].
+For my own bedside setup, I'd turn the clock away and leave the phone out of reach. I don't want to spend the night calculating how many hours remain or reading tomorrow's messages. That's a personal preference, not a promise about how quickly you'll fall asleep.
+
+You don't have to get every detail right. There isn't an exam waiting at breakfast.
 
 ## Should I stay in bed or get up?
 
-This is where most of us go wrong. It feels as though staying in bed must be better, because at least you're resting. But lying awake in bed night after night teaches your brain that bed is a place for being awake and worrying.
+The NHS suggests getting up after around 20 minutes awake, doing something relaxing somewhere comfortable, and returning to bed when sleepy.[^1]
 
-The NHS advice is clear: if you're still awake after around 20 minutes, get up and sit somewhere comfortable. Do something relaxing, such as gentle stretching, reading or quiet music, and go back to bed when you feel sleepy[^1].
+I wouldn't turn that into a stopwatch exercise. My suggestion is to read the guidance in daylight and decide where you could sit if you wanted to get up. Pick somewhere you can reach safely, with a book or quiet music already available.
 
-That's a simple version of a technique called **stimulus control**. The American Academy of Sleep Medicine (AASM) recommends it as a treatment for chronic insomnia in adults[^2]. A few practical tips:
+For me, the useful question is practical: what would I actually be willing to do at that hour? An elaborate routine wouldn't make my list. A chair, a blanket and a familiar paperback would.
 
-- Don't watch the clock to time the 20 minutes. Go by feel: if you're wide awake and getting frustrated, that's your cue.
-- Keep the light low and the activity dull. A paper book or soft music is better than a bright screen.
-- Have a spot ready in advance: a chair, a blanket, a book you don't mind putting down.
-- Go back to bed when your eyes get heavy, not when you've decided you "should".
-
-It can feel counter-intuitive, especially when you're exhausted. The point isn't to punish yourself for being awake. It's to stop the bed from becoming the place where you lie and worry.
-
-On some nights you'll get up more than once. That's normal, and it's still better than lying there fighting.
+You can also write questions about this advice down for your clinician. If getting out of bed is difficult, mention that rather than trying to squeeze yourself into instructions that don't fit your circumstances.
 
 ## What if night sweats are what keep waking me?
 
-A room that's too hot is one of the common causes of insomnia the NHS lists[^4], and when your own thermostat is unreliable, a warm room makes things worse. For hot flushes and night sweats, the NHS suggests wearing lightweight clothing, keeping your bedroom cool at night, and using a fan or having a cold drink[^8]. If night sweats are waking you most nights, that's a good reason to talk to a doctor about treating them directly[^6].
+In a laboratory study of 34 perimenopausal women, 69.4% of objectively recorded hot flushes were associated with an awakening.[^5]
+
+That finding gives us something specific to discuss, without assuming it explains your particular night. I wouldn't use a study percentage to guess what woke you yesterday.
+
+For hot flushes and night sweats, the NHS suggests lightweight clothing, a cool bedroom, a fan or a cold drink.[^8]
+
+My practical suggestion is to put spare nightwear and a towel somewhere easy to reach. If you share a bed, consider discussing the bedding and room temperature during the day. I'd rather have that conversation over breakfast than negotiate the duvet in the dark.
+
+If you're unsure what to call the episodes, describe them in ordinary words. You don't need the right medical vocabulary before making an appointment.
 
 ## What can I do with a racing mind at 3 a.m.?
 
-The worries that show up at night are rarely solved at night. Some things that people find useful:
+My suggestion is to keep paper and a pencil nearby. Write a few words if there's something you want to remember tomorrow. You don't have to finish the argument, plan the week or produce a sensible answer before morning.
 
-- **Park it.** Keep a notepad by the bed (not your phone) and write down the worry in a few words. It's still there in the morning, but your brain can stop holding it.
-- **Relax the body.** Slow breathing, or tensing and relaxing muscle groups from the feet up. Relaxation therapy is another approach the AASM guideline suggests for chronic insomnia[^2].
-- **Change the goal.** Aim to rest quietly, not to fall asleep right now. The pressure to sleep is often what keeps sleep away.
+I wouldn't set yourself a target such as “empty your mind.” My preference would be something more modest: no work email, no household budget, no composing the perfect reply to an awkward conversation.
 
-If the 3 a.m. thoughts are dark, or your mood has been low for weeks, please tell a doctor. That matters in its own right, separately from sleep.
+The AASM conditionally recommends relaxation therapy as a single-component option for adults with chronic insomnia disorder.[^2]
+
+If you're interested in that approach, ask a clinician what it would involve for you. I wouldn't turn a list of breathing exercises into another set of instructions you must complete perfectly. You're allowed to have questions before choosing an approach.
 
 ## What should I change in the daytime?
 
-What you do by day shapes what happens at night. The NHS recommends habits like these for insomnia[^4]:
+The NHS advises going to bed when sleepy, getting up at the same time daily, avoiding daytime naps and exercising during the day.[^4]
 
-- **Get up at the same time every day**, even after a bad night. Don't sleep in to "catch up".
-- **Go to bed only when you're sleepy**, not just because it's the usual time.
-- **Avoid daytime naps** if you can.
-- **Avoid caffeine, alcohol and nicotine** in the hours before bed (the NHS suggests at least 6 hours), and avoid big meals late at night.
-- **Keep the bedroom dark, quiet and comfortable**, and exercise regularly in the daytime.
+I'd start by looking at what your actual week allows. Write down your commitments, including caring responsibilities and early starts. Bring that reality into any conversation about sleep advice.
 
-One honest note: these habits help, but on their own they usually aren't enough for long-term insomnia. The AASM specifically suggests sleep hygiene shouldn't be used as the only treatment for chronic insomnia[^2]. So if you've done all of this and you're still waking, you haven't failed. You need the next step.
+Choose a manageable place to begin rather than making a dozen rules on a tired morning. My suggestion is to keep the plan on paper and leave room beside it for questions. “What do I do after an especially difficult night?” is a perfectly reasonable one.
+
+The AASM conditionally recommends against sleep hygiene as the sole therapy for chronic insomnia disorder in adults.[^2]
+
+I find that distinction reassuring. I don't want a woman reading this to come away with a longer list of things to feel guilty about. Taking the next question to a professional is a reasonable choice.
 
 ## What is CBT-I, and does it work in menopause?
 
-**Cognitive behavioural therapy for insomnia (CBT-I)** is the treatment sleep specialists rank highest. The AASM guideline calls it the most supported therapy for chronic insomnia and gives it a strong recommendation[^2]. It usually combines:
+CBT-I means cognitive behavioural therapy for insomnia. The AASM strongly recommends multicomponent CBT-I for adults with chronic insomnia disorder.[^2]
 
-- learning how sleep regulation works,
-- stimulus control (the 20-minute idea above),
-- sleep restriction, which means temporarily matching your time in bed to the sleep you're actually getting so your sleep becomes deeper and more solid,
-- and cognitive work on the thoughts that keep you awake.
+One randomised trial included 106 perimenopausal or postmenopausal women aged 40–65 with moderate insomnia symptoms and at least two daily hot flushes.[^3]
 
-It typically takes four to eight sessions[^2].
+The CBT-I group had greater reductions in insomnia severity than the menopause education group, with significant group differences sustained at 24 weeks.[^3]
 
-The best evidence for women like us comes from a randomised trial of 106 perimenopausal and postmenopausal women aged 40 to 65 who had insomnia and at least two hot flushes a day[^3]:
+Daily hot-flush frequency did not differ between the groups.[^3]
 
-- Half got six sessions of CBT-I **by phone**, from coaches who weren't sleep specialists. The other half got menopause education.
-- After 8 weeks, insomnia scores fell by 9.9 points with CBT-I compared with 4.7 points with education[^3].
-- At six months, 84% of the CBT-I group scored in the "no insomnia" range, compared with 43% of the education group[^3].
-- The number of hot flushes didn't differ between the groups[^3]. Women still had them, but they slept better anyway.
+I would take those findings to an appointment as a starting point for questions. I wouldn't read them as a guarantee, or as instructions for building a programme yourself. The useful conversation is about whether this approach fits your situation and how you could access it.
 
-That last finding is the hopeful one. Even while your hormones are still shifting, you can change how your brain responds to waking.
+### How do I ask about CBT-I?
 
-Separately, The Menopause Society's 2023 position statement lists CBT and clinical hypnosis among its recommended non-hormone options for hot flushes and night sweats themselves[^6].
+The NHS says CBT for insomnia may be offered face to face or through an online self-help programme.[^4]
 
-### How do I get CBT-I?
+You could say: “I'm waking during the night and struggling to get back to sleep. Can we discuss CBT-I?” Ask who would provide it, what appointments would involve and what support would be available between them.
 
-Ask your GP or doctor. The NHS says CBT for insomnia may be offered face to face or through an online self-help programme[^4]. Sleep clinics, some psychologists and some digital programmes offer it too. If your doctor isn't familiar with it, asking by name for "CBT-I" helps.
+I would also ask about cost, availability and what happens if the first option offered isn't practical. Those are ordinary questions about care, not signs that you're being difficult.
 
-## What about sleeping pills or treating the hot flushes?
+## What about sleeping pills or options for hot flushes?
 
-The NHS notes that GPs now rarely prescribe sleeping pills for insomnia, and when they do, it's only for a few days or weeks[^4].
+I'd bring separate questions about sleep and hot flushes, rather than assuming that one conversation covers everything. If you're considering a medicine or supplement, put its name on your appointment list and ask about it directly.
 
-If hot flushes and night sweats are what's waking you, treating *them* may help your nights. The Menopause Society says hormone therapy remains the most effective treatment for these symptoms, and there are evidence-based non-hormone options for women who can't or don't want to use it[^6]. That's a conversation to have with your doctor, who knows your history.
+The Menopause Society's 2023 position statement identifies hormone therapy as the most effective option for vasomotor symptoms.[^6]
 
-We're making a middle of the night sleep shot for women in menopause, made for the moment you're awake and want to be asleep. You can join the waitlist if you'd like to be among the first to try it. None of the advice here depends on it.
+It also recommends cognitive behavioural therapy and clinical hypnosis among nonhormone options for vasomotor symptoms.[^6]
+
+I'd ask about these recommendations separately from the sleep trial above. Ask your clinician to explain the choices in relation to your medical history and preferences. You deserve time for that discussion.
 
 ## When should I see a doctor?
 
-The NHS suggests seeing a GP if changing your sleeping habits hasn't helped, if you've had trouble sleeping for months, or if it's affecting your daily life in a way that makes it hard to cope[^4]. See a GP about night sweats if they regularly wake you or worry you, or come with a very high temperature, a cough, diarrhoea or unexplained weight loss[^7].
+The NHS advises seeing a GP if sleep-habit changes haven't helped, sleep problems have lasted months, or insomnia makes daily life hard to cope with.[^4]
 
-Bring a week or two of simple notes: when you went to bed, roughly when you woke, what woke you (hot, bathroom, thoughts, no idea), and how you felt the next day.
+For night sweats, the NHS advises seeing a GP if they regularly wake you or worry you.[^7]
 
-## The short version
+It also advises a GP visit for night sweats with a very high temperature, feeling hot, cold or shivery, a cough, diarrhoea, or unexplained weight loss.[^7]
 
-When you wake at 3 a.m.: cool down if you're hot, don't check the clock, and don't force it. If you're still awake after about 20 minutes, get up, do something calm in dim light, and go back to bed when you're sleepy. Keep a steady wake-up time. If it keeps happening, ask for CBT-I. It has worked even for women still having daily hot flushes.
+My suggestion is to bring a few brief notes: roughly when you woke, what you noticed and what you want to ask. “I don't know what woke me” belongs on that page too. An estimate is enough for your own notes; there's no need to reconstruct every minute.
 
-*This article is for general information and isn't medical advice. Talk to your doctor or another qualified clinician about your own symptoms.*
+## What should I take from this tonight?
+
+Keep the next step small. My suggestion is to choose a comfortable place to sit, set out a book and leave tomorrow's questions on paper. Save this page if you'd like to revisit the evidence in daylight.
+
+You don't have to solve the whole pattern tonight.
+
+3:17 is building a middle-of-the-night sleep shot for women in menopause. Readers can join the founding list.
+
+This is general information, not medical advice.
+
+[^1]: [NHS: How to fall asleep faster and sleep better](https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/how-to-fall-asleep-faster-and-sleep-better/)
+[^2]: [AASM clinical practice guideline, 2021](https://doi.org/10.5664/jcsm.8986)
+[^3]: [McCurry and colleagues: MsFLASH randomised clinical trial, 2016](https://pubmed.ncbi.nlm.nih.gov/27213646/)
+[^4]: [NHS: Insomnia](https://www.nhs.uk/conditions/insomnia/)
+[^5]: [de Zambotti and colleagues: Hot flashes and sleep, 2014](https://pubmed.ncbi.nlm.nih.gov/25256933/)
+[^6]: [The Menopause Society: 2023 nonhormone therapy position statement](https://pubmed.ncbi.nlm.nih.gov/37252752/)
+[^7]: [NHS: Night sweats](https://www.nhs.uk/symptoms/night-sweats/)
+[^8]: [NHS: Things you can do for menopause and perimenopause symptoms](https://www.nhs.uk/conditions/menopause-and-perimenopause/things-you-can-do/)
