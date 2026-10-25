@@ -180,7 +180,8 @@ export const MIGRATIONS = [
     text TEXT NOT NULL,
     fetched_at TIMESTAMPTZ NOT NULL DEFAULT now()
   )`,
-  `CREATE TABLE IF NOT EXISTS codex_state (key TEXT PRIMARY KEY, value TEXT, updated_at TIMESTAMPTZ NOT NULL DEFAULT now())`
+  `CREATE TABLE IF NOT EXISTS codex_state (key TEXT PRIMARY KEY, value TEXT, updated_at TIMESTAMPTZ NOT NULL DEFAULT now())`,
+  `CREATE TABLE IF NOT EXISTS post_audits (id SERIAL PRIMARY KEY, slug TEXT NOT NULL, ok BOOLEAN NOT NULL, detail TEXT, pr_number INT, checked_at TIMESTAMPTZ NOT NULL DEFAULT now())`
 ];
 
 export async function migrate(db) {

@@ -9,6 +9,7 @@ import * as monitor from './jobs/monitor.js';
 import * as aiVisibility from './jobs/aiVisibility.js';
 import * as optimize from './jobs/optimize.js';
 import * as report from './jobs/report.js';
+import * as audit from './jobs/audit.js';
 import { pollBatches } from './llm.js';
 import { keepalive, KEEPALIVE_SCHEDULE } from './codex.js';
 
@@ -23,6 +24,8 @@ export const JOBS = {
   optimize: { schedule: { hour: 5, days: [5] }, run: optimize.run },
   // Weekly tiny Codex call so it refreshes auth.json in quiet weeks.
   codex_keepalive: { schedule: KEEPALIVE_SCHEDULE, run: keepalive },
+  // Sat 4:00 NY: re-check up to 2 published posts not audited in 30 days; failing ones get a self-revising refresh PR.
+  audit: { schedule: { hour: 4, days: [6] }, run: audit.run },
   // Hourly: automated approval gate for open engine PRs not yet gated (was `approve`).
   gate: { schedule: { hourly: true }, run: gate.run },
   // Hourly: poll Anthropic Message Batches (research/optimize); re-run the job whose result is ready.

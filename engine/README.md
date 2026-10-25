@@ -16,6 +16,7 @@ It does two jobs:
 | draft | Mon + Thu 4:00 | Writes `content/posts/<slug>.md` (status: draft), verifies source URLs, runs `tools/build-blog.mjs`, opens PR `blog/<slug>` with a claims checklist, then runs the approval gate on it |
 | ai_visibility | Wed 10:00, even ISO weeks | Asks Perplexity `sonar` up to 15 target questions (OpenAI web search: 5 questions, first run of the month only), records whether back2sleepnow.com is cited |
 | optimize | Fri 5:00 | Refresh PRs for posts with low CTR, position 5–20 or low signup rate, then runs the approval gate on it |
+| audit | Sat 4:00 | Re-fact-checks up to 2 published posts not audited in 30 days (`AUDIT_EVERY_DAYS`, `AUDIT_MAX_PER_RUN`). A post that no longer passes gets a refresh PR that the gate self-revises and merges only on pass; the live version stays up meanwhile. Table `post_audits`. |
 | codex_keepalive | Sat 6:00 | One tiny `codex exec` ("Reply with OK") so Codex refreshes its login in quiet weeks; skipped if Codex isn't logged in |
 | ai_batches | hourly | Polls Anthropic Message Batches (research/optimize) and re-runs the job once its result is ready |
 | gate (was `approve`) | hourly | Runs the automated approval gate on open engine `blog/*` PRs not yet gated (or with new commits), finishes merges still waiting for CI, and handles owner `/approve` overrides. Results in table `gate_results`. |
