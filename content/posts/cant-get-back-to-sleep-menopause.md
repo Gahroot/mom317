@@ -4,8 +4,8 @@ slug: cant-get-back-to-sleep-menopause
 description: Woken in the night and can't get back to sleep? Evidence-based steps for menopause night waking, from the 20-minute rule to CBT-I, and when to see a doctor.
 date: 2026-10-25
 updated: 2026-10-25
-status: approved
-approved_by: Gahroot (site owner), 25 Oct 2026
+status: draft
+approved_by:
 primary_keyword: can't get back to sleep menopause
 secondary_keywords:
   - what to do when you wake up in the night
