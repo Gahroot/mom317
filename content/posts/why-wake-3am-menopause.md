@@ -4,8 +4,8 @@ slug: why-wake-3am-menopause
 description: Waking at 3 a.m. in menopause? Read what research says about night waking and hot flushes, where the evidence stops, and when to speak with your clinician.
 date: 2026-10-25
 updated: 2026-10-25
-status: draft
-approved_by:
+status: approved
+approved_by: auto-review (3:17 engine)
 primary_keyword: waking at 3am menopause
 secondary_keywords:
   - perimenopause waking up at 3am
