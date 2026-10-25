@@ -29,15 +29,21 @@ export async function run({ db, env = process.env, log }) {
   } else notes.gsc = 'not configured (GSC_SERVICE_ACCOUNT_JSON)';
 
   if (env.BING_API_KEY) {
-    const rows = await bingQueryStats(env);
-    for (const r of rows) {
-      await db.query(
-        `INSERT INTO metrics_daily (day, provider, page, query, clicks, impressions, position) VALUES ($1,'bing','',$2,$3,$4,$5)
-         ON CONFLICT (day, provider, page, query) DO UPDATE SET clicks = EXCLUDED.clicks, impressions = EXCLUDED.impressions, position = EXCLUDED.position`,
-        [r.day, r.query, r.clicks, r.impressions, r.position]
-      );
+    // A Bing failure (e.g. site not verified yet) must not take down the whole monitor run.
+    try {
+      const rows = await bingQueryStats(env);
+      for (const r of rows) {
+        await db.query(
+          `INSERT INTO metrics_daily (day, provider, page, query, clicks, impressions, position) VALUES ($1,'bing','',$2,$3,$4,$5)
+           ON CONFLICT (day, provider, page, query) DO UPDATE SET clicks = EXCLUDED.clicks, impressions = EXCLUDED.impressions, position = EXCLUDED.position`,
+          [r.day, r.query, r.clicks, r.impressions, r.position]
+        );
+      }
+      notes.bing = `${rows.length} rows`;
+    } catch (e) {
+      log.error('[monitor] bing', e.message);
+      notes.bing = `error: ${e.message}`;
     }
-    notes.bing = `${rows.length} rows`;
   } else notes.bing = 'not configured (BING_API_KEY)';
 
   try {

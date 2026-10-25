@@ -44,7 +44,11 @@ export async function inspectUrl(inspectionUrl, env = process.env) {
 export async function bingQueryStats(env = process.env) {
   const site = env.SITE_URL || 'https://back2sleepnow.com';
   const res = await fetch(`https://ssl.bing.com/webmaster/api.svc/json/GetQueryStats?siteUrl=${encodeURIComponent(site)}&apikey=${encodeURIComponent(env.BING_API_KEY)}`);
-  if (!res.ok) throw new Error(`Bing ${res.status}`);
+  if (!res.ok) {
+    const body = (await res.text().catch(() => '')).slice(0, 200);
+    const hint = /NotAuthorized/.test(body) ? ' (site not verified in Bing Webmaster Tools?)' : '';
+    throw new Error(`Bing ${res.status}${hint}`);
+  }
   const j = await res.json();
   return (j.d || []).map((r) => ({
     day: new Date(Number(String(r.Date).match(/\d+/)?.[0] || Date.now())).toISOString().slice(0, 10),
