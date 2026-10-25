@@ -9,17 +9,29 @@ import * as monitor from './jobs/monitor.js';
 import * as aiVisibility from './jobs/aiVisibility.js';
 import * as optimize from './jobs/optimize.js';
 import * as report from './jobs/report.js';
+import { pollBatches } from './llm.js';
+import { keepalive, KEEPALIVE_SCHEDULE } from './codex.js';
 
 // Schedules are in America/New_York. days: 0=Sun..6=Sat.
 export const JOBS = {
   monitor: { schedule: { hour: 6 }, run: monitor.run },
-  research: { schedule: { hour: 7, days: [0] }, run: research.run },
+  // research/draft/optimize run early morning so their Codex calls land in the off-hours window (before 8:00 NY).
+  research: { schedule: { hour: 3, days: [0] }, run: research.run },
   report: { schedule: { hour: 8, days: [1] }, run: report.run },
-  draft: { schedule: { hour: 9, days: [1, 4] }, run: draft.run },
+  draft: { schedule: { hour: 4, days: [1, 4] }, run: draft.run },
   ai_visibility: { schedule: { hour: 10, days: [3] }, run: aiVisibility.run },
-  optimize: { schedule: { hour: 11, days: [5] }, run: optimize.run },
+  optimize: { schedule: { hour: 5, days: [5] }, run: optimize.run },
+  // Weekly tiny Codex call so it refreshes auth.json in quiet weeks.
+  codex_keepalive: { schedule: KEEPALIVE_SCHEDULE, run: keepalive },
   // Hourly: automated approval gate for open engine PRs not yet gated (was `approve`).
-  gate: { schedule: { hourly: true }, run: gate.run }
+  gate: { schedule: { hourly: true }, run: gate.run },
+  // Hourly: poll Anthropic Message Batches (research/optimize); re-run the job whose result is ready.
+  ai_batches: { schedule: { hourly: true }, run: async (ctx) => {
+    const ready = await pollBatches(ctx);
+    const out = {};
+    for (const job of ready) out[job] = JOBS[job] ? await JOBS[job].run(ctx) : 'unknown job';
+    return ready.length ? out : { skipped: 'no batch results ready' };
+  } }
 };
 
 const db = createPool();

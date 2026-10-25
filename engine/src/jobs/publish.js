@@ -58,7 +58,7 @@ export async function openPostPr({ db, env, post, fileText, dropped, kind = 'new
   try { await gh('POST', `/repos/${repo}/issues/${pr.number}/labels`, { labels: ['blog-post'] }, env); } catch {}
   await db.query(
     `INSERT INTO posts (slug, title, primary_keyword, status, pr_number, pr_url, branch, kind) VALUES ($1,$2,$3,'draft',$4,$5,$6,$7)
-     ON CONFLICT (slug) DO UPDATE SET pr_number = EXCLUDED.pr_number, pr_url = EXCLUDED.pr_url, branch = EXCLUDED.branch, kind = EXCLUDED.kind, updated_at = now()`,
+     ON CONFLICT (slug) DO UPDATE SET status = CASE WHEN posts.status = 'pending' THEN 'draft' ELSE posts.status END, pr_number = EXCLUDED.pr_number, pr_url = EXCLUDED.pr_url, branch = EXCLUDED.branch, kind = EXCLUDED.kind, updated_at = now()`,
     [post.slug, post.title, post.primary_keyword, pr.number, pr.html_url, branch, kind]
   );
   log.log(`[publish] opened ${pr.html_url}`);

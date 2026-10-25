@@ -9,7 +9,9 @@ import path from 'node:path';
 import * as GH from '../github.js';
 import { parsePost, setApproval } from '../frontmatter.js';
 import { verifySources, isTrustedUrl } from '../sources.js';
-import { complete, extractJson, llmConfigured } from '../llm.js';
+import { createHash } from 'node:crypto';
+import { complete, extractJson, llmConfigured, BRAND_RULES } from '../llm.js';
+import { checkBudget } from '../cost.js';
 
 export const AUTO_APPROVER = 'auto-review (3:17 engine)';
 export const autoPublish = (env = process.env) => String(env.AUTO_PUBLISH ?? 'true').toLowerCase() !== 'false';
@@ -58,6 +60,32 @@ export function pageText(html) {
   return [strip(title), ...metas.map(strip), body].filter(Boolean).join('\n').slice(0, 6000);
 }
 
+/** Source text, cached for 7 days in source_cache when a db is given. */
+export async function cachedSourceText(db, url, fetchImpl = globalThis.fetch) {
+  if (!db) return fetchSourceText(url, fetchImpl);
+  const hit = (await db.query("SELECT text FROM source_cache WHERE url = $1 AND fetched_at > now() - interval '7 days'", [url])).rows[0];
+  if (hit) return hit.text;
+  const text = await fetchSourceText(url, fetchImpl);
+  if (text) {
+    await db.query('DELETE FROM source_cache WHERE url = $1', [url]);
+    await db.query('INSERT INTO source_cache (url, text) VALUES ($1,$2)', [url, text]);
+  }
+  return text;
+}
+
+export const claimKey = (claim, url) => createHash('sha256').update(`${claim}\n${url}`).digest('hex');
+const bodyKey = (post) => createHash('sha256').update(`body\n${post.answer || ''}\n${post.body || ''}`).digest('hex');
+
+async function cachedSupported(db, key) {
+  if (!db) return false;
+  return (await db.query("SELECT 1 FROM claim_checks WHERE key = $1 AND verdict = 'supported' AND checked_at > now() - interval '90 days'", [key])).rows.length > 0;
+}
+async function saveCheck(db, key, verdict, reason) {
+  if (!db) return;
+  await db.query('DELETE FROM claim_checks WHERE key = $1', [key]);
+  await db.query('INSERT INTO claim_checks (key, verdict, reason) VALUES ($1,$2,$3)', [key, verdict, String(reason || '').slice(0, 500)]);
+}
+
 export async function fetchSourceText(url, fetchImpl = globalThis.fetch) {
   if (!isTrustedUrl(url)) return null;
   try {
@@ -74,9 +102,11 @@ For each numbered claim, judge it ONLY against the source excerpt given for it (
 - "overstated": the source backs only a weaker, narrower or more hedged version.
 - "unsupported": the excerpt does not back it, or is too thin to tell.
 Then read the post body and list every medical or health statement that is NOT covered by one of the listed claims (ignore the "not medical advice" disclaimer and invitations to join the waitlist).
-Reply with JSON only: {"verdicts":[{"index":0,"verdict":"supported|overstated|unsupported","reason":"short"}],"unlisted_medical_statements":["..."]}`;
+Reply with JSON only: {"verdicts":[{"index":0,"verdict":"supported|overstated|unsupported","reason":"short"}],"unlisted_medical_statements":["..."]}
+The blog's editorial rules, for context (a post must also respect these):
+${BRAND_RULES}`;
 
-export async function factCheck(post, { env = process.env, fetchImpl = globalThis.fetch, completeImpl } = {}) {
+export async function factCheck(post, { env = process.env, fetchImpl = globalThis.fetch, completeImpl, db } = {}) {
   const verdicts = [];
   const items = [];
   const claims = post.claims || [];
@@ -86,18 +116,24 @@ export async function factCheck(post, { env = process.env, fetchImpl = globalThi
     const row = { claim: c.text, source: c.source ?? '', url: src ? src.url : '', verdict: 'unsupported', reason: '' };
     verdicts.push(row);
     if (!src) { row.reason = 'cited source does not exist'; continue; }
-    const text = await fetchSourceText(src.url, fetchImpl);
+    // Claim cache: a 'supported' verdict for the same claim + source URL from the last 90 days is reused.
+    row.key = claimKey(c.text, src.url);
+    if (await cachedSupported(db, row.key)) { row.verdict = 'supported'; row.reason = 'cached verdict (< 90 days)'; row.cached = true; continue; }
+    const text = await cachedSourceText(db, src.url, fetchImpl);
     if (!text) { row.reason = 'source unfetchable'; continue; }
     items.push({ index: i, claim: c.text, source: `${src.title || ''} (${src.publisher || ''} ${src.year || ''})`, excerpt: text });
   }
   const llm = completeImpl || (llmConfigured(env) ? complete : null);
   let unlisted = [];
-  if (!llm) {
+  const bKey = bodyKey(post);
+  if (llm && items.length === 0 && verdicts.length && verdicts.every((v) => v.cached) && await cachedSupported(db, bKey)) {
+    // Every claim and the unchanged body were checked clean recently: no LLM call.
+  } else if (!llm) {
     for (const it of items) verdicts[it.index].reason = 'fact-checker LLM not configured';
     unlisted = ['fact-check could not run: no LLM configured'];
   } else {
     const prompt = `Claims to check (with source excerpts):\n${JSON.stringify(items.map(({ index, claim, source, excerpt }) => ({ index, claim, source, excerpt })), null, 1)}\n\nListed claims (all):\n${JSON.stringify(claims.map((c) => c.text))}\n\nPost body:\n"""\n${String(post.answer || '')}\n\n${String(post.body || '').slice(0, 20000)}\n"""`;
-    const out = extractJson(await llm(FACT_SYSTEM, prompt, { env, temperature: 0, maxTokens: 4000 }));
+    const out = extractJson(await llm(FACT_SYSTEM, prompt, { env, temperature: 0, db, job: 'gate', cacheSystem: true }));
     const by = new Map((out.verdicts || []).map((v) => [Number(v.index), v]));
     for (const it of items) {
       const v = by.get(it.index);
@@ -106,7 +142,10 @@ export async function factCheck(post, { env = process.env, fetchImpl = globalThi
       verdicts[it.index].reason = v ? String(v.reason || '') : 'no verdict returned';
     }
     unlisted = (out.unlisted_medical_statements || []).map(String).filter((s) => s.trim());
+    for (const it of items) if (verdicts[it.index].verdict === 'supported') await saveCheck(db, verdicts[it.index].key, 'supported', verdicts[it.index].reason);
+    if (!unlisted.length) await saveCheck(db, bKey, 'supported', 'no unlisted medical statements');
   }
+  for (const v of verdicts) { delete v.key; delete v.cached; }
   const ok = claims.length > 0 && verdicts.every((v) => v.verdict === 'supported') && unlisted.length === 0;
   return { ok, verdicts, unlisted };
 }
@@ -127,7 +166,7 @@ export function gateReport(g) {
 }
 
 /** Runs all four checks on the checkout. Leaves the post files set to approved + rebuilt (caller pushes only on pass). */
-export async function runChecks(dir, posts, { env, deps }) {
+export async function runChecks(dir, posts, { env, deps, db }) {
   const checks = [];
   const verdicts = [];
   const unlisted = [];
@@ -144,7 +183,7 @@ export async function runChecks(dir, posts, { env, deps }) {
     const lint = claimsLint(post);
     add(`claims lint (${slug})`, lint.length === 0, lint.length ? lint.join('; ') : 'clean');
     let fc;
-    try { fc = await factCheck(post, { env, fetchImpl: deps.fetch, completeImpl: deps.complete }); }
+    try { fc = await factCheck(post, { env, fetchImpl: deps.fetch, completeImpl: deps.complete, db }); }
     catch (e) { fc = { ok: false, verdicts: [], unlisted: [`fact-check error: ${e.message}`] }; }
     verdicts.push(...fc.verdicts.map((v) => ({ ...v, slug })));
     unlisted.push(...fc.unlisted);
@@ -275,10 +314,13 @@ export async function processPr(db, pr, { env = process.env, deps: d = {}, log =
     return finish(db, pr, { env, deps, sha: res.sha, slugs, mode: 'override' });
   }
   if (last && last.outcome === 'held' && last.head_sha === pr.head.sha) return null; // already gated; waits for a new commit or /approve
+  // The fact-check is essential spend: it runs past the monthly budget, but not past the 1.5x hard ceiling.
+  const budget = await checkBudget(db, 'gate', { env });
+  if (!budget.ok) { log.log(`[gate] PR #${pr.number} deferred: AI budget ceiling`); return { pr: pr.number, outcome: 'deferred', reason: 'budget' }; }
 
   const res = await deps.withCheckout(async (dir) => {
     const posts = await postFiles(pr, env, deps);
-    const g = await runChecks(dir, posts, { env, deps });
+    const g = await runChecks(dir, posts, { env, deps, db });
     let sha = pr.head.sha;
     if (g.pass) { await deps.commitAndPush(dir, pr.head.ref, 'Auto-approve post (approval gate passed)'); sha = await deps.headSha(dir); }
     return { ...g, posts, sha };

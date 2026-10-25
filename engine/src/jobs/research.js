@@ -1,4 +1,5 @@
-import { completeJson, llmConfigured, BRAND_RULES } from '../llm.js';
+import { batchComplete, extractJson, llmConfigured, BRAND_RULES } from '../llm.js';
+import { checkBudget, budgetSkip } from '../cost.js';
 
 export const SEED_TOPICS = [
   'waking at 3am menopause', 'perimenopause insomnia', 'night sweats waking up', 'cant get back to sleep after waking menopause',
@@ -15,8 +16,10 @@ export function scoreOpportunity({ audienceFit = 0, nightWakingFit = 0, intent =
   return Math.round((fit * 80 + volume * 10 + gap * 100) * 10) / 10;
 }
 
-export async function run({ db, env = process.env, log }) {
+export async function run({ db, env = process.env, log, fetchImpl }) {
   if (!llmConfigured(env)) return { skipped: 'not configured: ANTHROPIC_API_KEY / OPENAI_API_KEY' };
+  const budget = await checkBudget(db, 'research', { env });
+  if (!budget.ok) return budgetSkip(budget);
   const gsc = (await db.query(
     `SELECT query, SUM(impressions)::int AS impressions, SUM(clicks)::int AS clicks, AVG(position) AS position
      FROM metrics_daily WHERE provider = 'gsc' AND query <> '' AND day > CURRENT_DATE - 28 GROUP BY query ORDER BY impressions DESC LIMIT 150`
@@ -24,15 +27,15 @@ export async function run({ db, env = process.env, log }) {
   const existing = (await db.query('SELECT keyword, status FROM opportunities')).rows;
   const posts = (await db.query('SELECT slug, primary_keyword FROM posts')).rows;
 
-  const ideas = await completeJson(
+  const out = await batchComplete({ db, env, job: 'research', fetchImpl, system:
     `You are an SEO/AEO/GEO strategist. ${BRAND_RULES}`,
-    `Find keyword, search-intent and content gaps for the blog. The goal is QUALIFIED waitlist signups: women in peri/menopause who wake at night. Intent fit with that audience matters far more than search volume.
+    prompt: `Find keyword, search-intent and content gaps for the blog. The goal is QUALIFIED waitlist signups: women in peri/menopause who wake at night. Intent fit with that audience matters far more than search volume.
 Search Console queries (last 28 days, may be empty): ${JSON.stringify(gsc)}
 Seed topics: ${JSON.stringify(SEED_TOPICS)}
 Already covered/planned keywords: ${JSON.stringify([...existing.map((e) => e.keyword), ...posts.map((p) => p.primary_keyword)])}
-Return a JSON array of up to 15 NEW opportunities: [{"keyword": "...", "title": "question-style H1", "intent": "problem_aware|solution_seeking|informational|navigational|unrelated", "angle": "what the post should answer and why it's a gap", "audienceFit": 0-1 (how surely the searcher is a woman in peri/menopause), "nightWakingFit": 0-1 (how much it is about waking at night / getting back to sleep), "rationale": "one sentence"}]`,
-    { env, maxTokens: 6000 }
-  );
+Return a JSON array of up to 15 NEW opportunities: [{"keyword": "...", "title": "question-style H1", "intent": "problem_aware|solution_seeking|informational|navigational|unrelated", "angle": "what the post should answer and why it's a gap", "audienceFit": 0-1 (how surely the searcher is a woman in peri/menopause), "nightWakingFit": 0-1 (how much it is about waking at night / getting back to sleep), "rationale": "one sentence"}]` });
+  if (out.pending) { log.log(`[research] batch ${out.batchId} pending`); return { pending: 'batch', batchId: out.batchId }; }
+  const ideas = extractJson(out.text);
   const gscByQuery = new Map(gsc.map((g) => [g.query.toLowerCase(), g]));
   let stored = 0;
   for (const o of Array.isArray(ideas) ? ideas : []) {

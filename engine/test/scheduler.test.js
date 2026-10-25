@@ -50,7 +50,7 @@ test('catch-up runs missed slot once; failure records + alerts; lock prevents ov
   const p = slow.runJob('c', new Date());
   assert.deepEqual(await slow.runJob('c', new Date()), { skipped: 'locked' });
   assert.equal(slow.trigger('c'), false);
-  await new Promise((r) => setTimeout(r, 10));
+  for (let i = 0; i < 500 && !release; i++) await new Promise((r) => setTimeout(r, 10)); // wait for the job to start (slow under parallel test load)
   release({});
   await p;
 });

@@ -1,7 +1,16 @@
 import { gh, repoName, githubConfigured, upsertIssue } from '../github.js';
 import { QUALIFIED_STAGES } from '../api.js';
+import { budgetStatus } from '../cost.js';
+import { getState, weeklyCap } from '../codex.js';
 
-export async function buildReport(db, { since = 7 } = {}) {
+export function aiSpendSection(spend) {
+  const rows = spend.byJob.map((r) => `| ${r.job} | ${r.calls} | ${r.usd.toFixed(4)} |`);
+  return [`## AI spend (${spend.month}, month to date)`,
+    `**$${spend.spentUsd.toFixed(2)} of $${spend.budgetUsd.toFixed(2)} budget** (${spend.pct ?? 0}%). Optional jobs stop at 100%, draft + gate fact-check at $${spend.hardCeilingUsd.toFixed(2)}.`,
+    rows.length ? ['| Job | Calls | USD |', '|---|---|---|', ...rows].join('\n') : '_No AI calls this month._'].join('\n');
+}
+
+export async function buildReport(db, { since = 7, env = process.env } = {}) {
   const q = (sql, p = []) => db.query(sql, p).then((r) => r.rows);
   const traffic = await q(`SELECT provider, COALESCE(SUM(clicks),0)::int AS clicks, COALESCE(SUM(impressions),0)::int AS impressions,
     COALESCE(SUM(position*impressions)/NULLIF(SUM(impressions),0),0) AS position FROM metrics_daily WHERE day > CURRENT_DATE - ${since} GROUP BY provider`);
@@ -22,6 +31,11 @@ export async function buildReport(db, { since = 7 } = {}) {
   const gate = [];
   for (const r of gateRows) if (!gate.some((g) => g.pr_number === r.pr_number)) gate.push(r);
   const next = await q("SELECT keyword, score FROM opportunities WHERE status='open' ORDER BY score DESC LIMIT 5");
+  const spend = await budgetStatus(db, { env });
+  const codexCalls = await q("SELECT COUNT(*)::int AS n FROM ai_usage WHERE provider = 'codex' AND created_at > now() - interval '7 days'");
+  const usageAt = await getState(db, 'usage_limit_at').catch(() => null);
+  const codexLine = `Codex (ChatGPT subscription, $0): ${codexCalls[0].n} calls in 7 days (cap ${weeklyCap(env)}).` +
+    (usageAt && Date.now() - new Date(usageAt).getTime() < 7 * 86_400_000 ? ` Usage limit hit ${usageAt.slice(0, 16)}: Codex paused 24h, Anthropic used instead.` : '');
   const sitemap = await q("SELECT ok, detail FROM checks WHERE name='sitemap' ORDER BY created_at DESC LIMIT 1");
 
   const tot = bySource.reduce((a, r) => ({ s: a.s + r.signups, q: a.q + r.qualified }), { s: 0, q: 0 });
@@ -41,6 +55,7 @@ export async function buildReport(db, { since = 7 } = {}) {
     `Sitemap: ${sitemap[0] ? `${sitemap[0].ok ? 'ok' : 'PROBLEM'} (${sitemap[0].detail})` : 'not checked yet'}`,
     '', '## AI visibility',
     table(['Engine', 'Asked', 'Cited', 'Mentioned'], ai.map((r) => [r.provider, r.asked, r.cited, r.mentioned])),
+    '', aiSpendSection(spend), codexLine,
     '', '## Job health',
     table(['Job', 'Runs', 'Failed', 'Last finished'], jobs.map((r) => [r.job, r.runs, r.failed, r.last ? new Date(r.last).toISOString().slice(0, 16) : '–'])),
     '', '## Approval gate',
@@ -54,7 +69,7 @@ export async function buildReport(db, { since = 7 } = {}) {
 
 export async function run({ db, env = process.env }) {
   const weekOf = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
-  const body = await buildReport(db);
+  const body = await buildReport(db, { env });
   let url = null;
   if (githubConfigured(env)) {
     const repo = repoName(env);

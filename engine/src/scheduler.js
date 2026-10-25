@@ -1,5 +1,7 @@
 // Minimal scheduler: hour-granular slots in America/New_York, job_runs bookkeeping,
 // retry with backoff, catch-up of missed slots on boot, and an overlap lock.
+import { budgetStatus } from './cost.js';
+
 export const TZ = 'America/New_York';
 const HOUR = 3_600_000;
 
@@ -31,7 +33,12 @@ export async function withRetry(fn, { tries = 3, baseMs = 30_000, sleep = (ms) =
       return { result: await fn(attempt), attempts: attempt };
     } catch (e) {
       lastErr = e;
-      if (attempt < tries) await sleep(baseMs * 2 ** (attempt - 1));
+      // Never retry HTTP 400/401/403/404 or budget skips; a bad JSON reply gets at most one retry (maxAttempts 2).
+      const limit = e && e.maxAttempts ? Math.min(tries, e.maxAttempts) : tries;
+      if ((e && (e.retryable === false || e.budget)) || attempt >= limit) {
+        throw Object.assign(e instanceof Error ? e : new Error(String(e)), { attempts: attempt });
+      }
+      await sleep(baseMs * 2 ** (attempt - 1));
     }
   }
   throw Object.assign(lastErr instanceof Error ? lastErr : new Error(String(lastErr)), { attempts: tries });
@@ -62,6 +69,12 @@ export function createScheduler({ db, jobs, ctx = {}, now = () => new Date(), re
       log.log(`[job] ${name} ${status}`);
       return { status, result };
     } catch (e) {
+      if (e && e.budget) { // over the AI budget mid-run: a skip, not a failure (no alert, no retry)
+        const result = { skipped: 'budget', reason: 'budget', detail: e.message };
+        if (id) await db.query("UPDATE job_runs SET status = 'skipped', finished_at = now(), result = $2 WHERE id = $1", [id, JSON.stringify(result)]);
+        log.log(`[job] ${name} skipped (budget)`);
+        return { status: 'skipped', result };
+      }
       const msg = String((e && e.message) || e).slice(0, 4000);
       if (id) await db.query("UPDATE job_runs SET status = 'failed', finished_at = now(), error = $2 WHERE id = $1", [id, msg]);
       log.error(`[job] ${name} failed: ${msg}`);
@@ -110,6 +123,7 @@ export function createScheduler({ db, jobs, ctx = {}, now = () => new Date(), re
       );
       return {
         running: [...running],
+        aiBudget: await budgetStatus(db).catch((e) => ({ error: e.message })),
         jobs: Object.fromEntries(Object.entries(jobs).map(([k, j]) => [k, { schedule: j.schedule, last: rows.find((r) => r.job === k) || null }]))
       };
     }

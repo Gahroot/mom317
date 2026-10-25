@@ -11,11 +11,13 @@ It does two jobs:
 | Job | When (America/New_York) | What it does |
 |---|---|---|
 | monitor | daily 6:00 | GSC clicks/impressions/position per page+query, URL inspection of posts, Bing query stats, sitemap check, signups by source |
-| research | Sun 7:00 | LLM + GSC data → keyword/intent/gap opportunities, scored for qualified-signup fit |
+| research | Sun 3:00 | LLM + GSC data → keyword/intent/gap opportunities, scored for qualified-signup fit |
 | report | Mon 8:00 | Weekly markdown report → GitHub issue `weekly-report` (+ DB) |
-| draft | Mon + Thu 9:00 | Writes `content/posts/<slug>.md` (status: draft), verifies source URLs, runs `tools/build-blog.mjs`, opens PR `blog/<slug>` with a claims checklist, then runs the approval gate on it |
-| ai_visibility | Wed 10:00 | Asks Perplexity/OpenAI the target questions, records whether back2sleepnow.com is cited |
-| optimize | Fri 11:00 | Refresh PRs for posts with low CTR, position 5–20 or low signup rate, then runs the approval gate on it |
+| draft | Mon + Thu 4:00 | Writes `content/posts/<slug>.md` (status: draft), verifies source URLs, runs `tools/build-blog.mjs`, opens PR `blog/<slug>` with a claims checklist, then runs the approval gate on it |
+| ai_visibility | Wed 10:00, even ISO weeks | Asks Perplexity `sonar` up to 15 target questions (OpenAI web search: 5 questions, first run of the month only), records whether back2sleepnow.com is cited |
+| optimize | Fri 5:00 | Refresh PRs for posts with low CTR, position 5–20 or low signup rate, then runs the approval gate on it |
+| codex_keepalive | Sat 6:00 | One tiny `codex exec` ("Reply with OK") so Codex refreshes its login in quiet weeks; skipped if Codex isn't logged in |
+| ai_batches | hourly | Polls Anthropic Message Batches (research/optimize) and re-runs the job once its result is ready |
 | gate (was `approve`) | hourly | Runs the automated approval gate on open engine `blog/*` PRs not yet gated (or with new commits), finishes merges still waiting for CI, and handles owner `/approve` overrides. Results in table `gate_results`. |
 
 Any job whose keys are missing is recorded as `skipped`, not failed.
@@ -37,6 +39,43 @@ The weekly report has an "Approval gate" table (published / held, and why).
 
 `AUTO_PUBLISH=false` restores the old human-only flow: no gate, `/approve` sets the approval and pushes, and a person merges. The engine never merges in that mode.
 
+## AI cost controls
+
+The owner set a **$10/month combined cap** for Anthropic + OpenAI + Perplexity. Every call is written to table `ai_usage` (job, provider, model, input/output/cache tokens, estimated USD). Prices are the `PRICES` table in `src/cost.js` (sources and the check date are in its comment); override with `AI_PRICES_JSON`. The month is the calendar month in America/New_York.
+
+- **Cap**: when month-to-date spend reaches `AI_MONTHLY_BUDGET_USD`, research, optimize and ai_visibility are recorded as `skipped` (reason `budget`). draft and the gate fact-check keep running up to 1.5x the budget (hard ceiling), then they are skipped too (the gate defers the PR to a later hour). At 80% one `engine-alert` issue is opened per month. Budget skips are never retried.
+- **Where to see it**: `aiBudget` in `/api/admin/status` and the "AI spend" table (by job) in the weekly report.
+- **No double-paying**: draft stores the generated post in `posts.draft_md` (status `pending`) before any GitHub work and reuses it on retry; optimize stores its suggestion in `optimize_suggestions`. HTTP 400/401/403/404 are not retried, a bad JSON reply is retried once, 429/5xx/network errors are retried with backoff.
+- **Model tiers**: research + optimize use `LLM_MODEL_FAST` (Haiku), max 3000/2000 output tokens, through the Message Batches API (50% off; batch id in table `ai_batches`, polled hourly; a normal call after 24h). draft + fact-check use `LLM_MODEL` (Sonnet), max 9000/2500, with the static system prompt in a prompt-cached block.
+- **Fact-check cache**: `claim_checks` keeps `supported` verdicts for 90 days (key sha256 of claim + source URL), so a refresh PR only checks changed claims; fetched source text is cached 7 days in `source_cache`.
+- **Optimize** only calls the LLM for a published post with at least `OPTIMIZE_MIN_IMPRESSIONS` (200) GSC impressions in 28 days; otherwise `skipped: not enough data`.
+
+**Expected cost**: about $2–3 a month at the current cadence (rough estimate: ~9 drafts × ~$0.10, ~12 fact-checks × ~$0.05, two sonar runs × 15 questions × ~$0.013, 5 OpenAI web searches × ~$0.04, research/optimize batches on Haiku under $0.05). Real figures are in `ai_usage`.
+
+**Raise the cap**: `railway variables --service engine --set AI_MONTHLY_BUDGET_USD=20` (the service redeploys; the new cap applies at once, spend so far still counts).
+
+## Using your ChatGPT/Codex subscription
+
+**How it works.** The image ships the Codex CLI (`@openai/codex@0.164.0`). research, draft and optimize first try `codex exec` on your ChatGPT plan ($0 per call), following OpenAI's [CI/CD auth guidance](https://developers.openai.com/codex/auth/ci-cd-auth.md): the login lives in `$CODEX_HOME/auth.json` (`/data/codex`, a persistent Railway volume `engine-volume` at `/data`), and Codex refreshes it itself during normal runs and writes it back. The engine only reads `auth_mode`/`last_refresh` from it; it is never logged, printed, copied or overwritten. `config.toml` (`cli_auth_credentials_store = "file"`) is written at start only if missing. Each call runs `codex exec --skip-git-repo-check --ephemeral --sandbox read-only -c approval_policy="never" --cd <empty tmp dir> --json --output-last-message <tmp file> -` (prompt on stdin, `-m $CODEX_MODEL` only if set), times out after 10 minutes, and only one Codex process runs at a time. Codex calls are logged in `ai_usage` as provider `codex`, cost 0, and don't count toward the budget. **The gate fact-check never uses Codex** (`LLM_FACTCHECK_PROVIDER`, default `anthropic`), so a different model family checks the writer.
+
+**Shared limits, light use.** It shares your subscription's usage limits with your own Codex use, so the engine stays polite:
+- only research (1/week), draft (2/week) and optimize (≤1/week) use it, with a hard cap `CODEX_MAX_CALLS_PER_WEEK` (default 6, the keep-alive not counted); over the cap the call goes to Anthropic;
+- only off-hours: a call between 8:00 and 23:00 New York time goes to Anthropic unless `CODEX_ANYTIME=true` (the jobs are scheduled 3:00–6:00);
+- after a usage/rate-limit reply Codex is paused for 24 hours (`codex_state.backoff_until`), with no alert; the weekly report notes it.
+
+**One-time login** (a separate device login for the server, so your Mac stays signed in; never copy `~/.codex` from your Mac):
+```bash
+cd engine && railway ssh --service engine
+codex login --device-auth      # open the URL, enter the code
+```
+Device code login may need enabling for Codex in ChatGPT settings → Security. Then `/api/admin/status` shows `codex.loggedIn: true` (plus `installed`, `lastRefresh`, `lastSuccess`, `lastError`, no tokens).
+
+**Reseeding.** If Codex reports an auth error (login is stale after ~8 days without a refresh, or was revoked), the engine opens one `engine-alert` issue "Codex login needs renewing" (at most once per 7 days). Run the login again as above; don't overwrite `auth.json` from a copy. Keep one `auth.json` per machine.
+
+**Fallback.** Any Codex failure (non-zero exit, auth, limit, timeout) sends that call to Anthropic, so the blog keeps running. To turn Codex off: `railway variables --service engine --set LLM_PROVIDER_ORDER=anthropic`.
+
+**Public repo note.** The container clones the public repo and runs `tools/build-blog.mjs` from it; Codex runs read-only in an empty temp dir, not in the checkout. Only repo collaborators can change `main`, so only they control the code the engine runs.
+
 ## Variables
 
 Set them from `engine/` with `railway variables --service engine --set "NAME=value"`.
@@ -46,7 +85,12 @@ Set them from `engine/` with `railway variables --service engine --set "NAME=val
 | DATABASE_URL | | yes | `${{Postgres.DATABASE_URL}}` |
 | ADMIN_TOKEN | yes | yes | random; read with `railway variables --service engine --kv` |
 | ANTHROPIC_API_KEY | yes | yes | drafting/research |
-| LLM_MODEL | | yes | `claude-sonnet-5-5` |
+| LLM_MODEL | | yes | `claude-sonnet-5-5` (draft, fact-check) |
+| LLM_MODEL_FAST | | yes | `claude-haiku-5-5` (research, optimize) |
+| AI_MONTHLY_BUDGET_USD | | yes | `10`. Optional jobs stop at 100%, essential at 150% |
+| AI_PRICES_JSON | | optional | Price overrides, e.g. `{"sonar":{"input":1,"output":1,"request":0.005}}` (USD per M tokens; `request`/`webSearch` per call) |
+| AI_VIS_MAX_QUESTIONS | | optional | Default 15 |
+| OPTIMIZE_MIN_IMPRESSIONS | | optional | Default 200 (28 days) |
 | SITE_URL, GSC_SITE_URL, GITHUB_REPO, TZ | | yes | |
 | GITHUB_TOKEN | yes | **you** | Fine-grained token, repo Gahroot/mom317 only, Contents + Pull requests + Issues read/write. Needed for draft/gate/optimize/report/alerts. Auto-merge also needs Contents write and branch deletion on `blog/*`. |
 | GSC_SERVICE_ACCOUNT_JSON | yes | **you** | Google Cloud → service account → JSON key; enable "Google Search Console API"; add the service-account email as a user on the Search Console property. Paste the whole JSON. |
@@ -57,6 +101,11 @@ Set them from `engine/` with `railway variables --service engine --set "NAME=val
 | GATE_CI_TIMEOUT_MS / GATE_CI_POLL_MS | | optional | How long to wait for green checks before merging (default 20 min, poll 30 s) |
 | APPROVER_NAME | | optional | Name written to `approved_by` on a `/approve` override (default: the commenter's login) |
 | GIT_AUTHOR_NAME / GIT_AUTHOR_EMAIL | | optional | Commit identity for engine PRs |
+| LLM_PROVIDER_ORDER | | optional | Default `codex,anthropic` (research/draft/optimize). `anthropic` turns Codex off |
+| LLM_FACTCHECK_PROVIDER | | optional | Default `anthropic`; Codex is never used for fact-checks |
+| CODEX_MODEL | | optional | Codex model; unset = Codex's default |
+| CODEX_MAX_CALLS_PER_WEEK | | optional | Default 6 |
+| CODEX_ANYTIME | | optional | `true` allows Codex calls 8:00–23:00 NY |
 | SCHEDULER | | optional | `off` disables the scheduler (API only) |
 
 ## Run by hand

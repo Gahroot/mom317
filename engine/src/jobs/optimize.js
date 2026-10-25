@@ -1,5 +1,6 @@
 // Weekly: pick the post with the best refresh opportunity and open a refresh PR (same approval flow).
-import { completeJson, llmConfigured, BRAND_RULES } from '../llm.js';
+import { batchComplete, extractJson, llmConfigured, BRAND_RULES } from '../llm.js';
+import { checkBudget, budgetSkip } from '../cost.js';
 import { gh, repoName, githubConfigured } from '../github.js';
 import { parsePost, serializePost } from '../frontmatter.js';
 import { openPostPr } from './publish.js';
@@ -21,7 +22,10 @@ export function findCandidates(rows) {
   return out.sort((a, b) => b.priority - a.priority);
 }
 
-export async function run({ db, env = process.env, log }) {
+export const minImpressions = (env = process.env) => Number(env.OPTIMIZE_MIN_IMPRESSIONS ?? 200);
+
+export async function run({ db, env = process.env, log, deps = {} }) {
+  const d = { gh, openPr: openPostPr, gate: gateOne, fetchImpl: undefined, ...deps };
   if (!llmConfigured(env)) return { skipped: 'not configured: ANTHROPIC_API_KEY / OPENAI_API_KEY' };
   if (!githubConfigured(env)) return { skipped: 'not configured: GITHUB_TOKEN' };
   const posts = (await db.query("SELECT slug FROM posts WHERE status = 'published' AND (updated_at < now() - interval '21 days')")).rows;
@@ -36,20 +40,32 @@ export async function run({ db, env = process.env, log }) {
     const s = (await db.query("SELECT COUNT(*)::int AS n FROM signups WHERE created_at > now() - interval '28 days' AND source LIKE $1", [`blog:${slug}:%`])).rows[0];
     rows.push({ slug, impressions: g.impressions, clicks: g.clicks, position: Number(g.position), views: v.n, signups: s.n });
   }
-  const [cand] = findCandidates(rows);
+  // Only spend on the LLM once a post has enough Search Console data (>= 200 impressions in 28 days by default).
+  const min = minImpressions(env);
+  const enough = rows.filter((r) => r.impressions >= min);
+  if (!enough.length) return { skipped: 'not enough data', minImpressions: min, checked: rows.length };
+  const [cand] = findCandidates(enough);
   if (!cand) return { skipped: 'no post meets refresh criteria', checked: rows.length };
+  const budget = await checkBudget(db, 'optimize', { env });
+  const saved = (await db.query("SELECT id, suggestion FROM optimize_suggestions WHERE slug = $1 AND NOT used AND created_at > now() - interval '14 days' ORDER BY id DESC LIMIT 1", [cand.slug])).rows[0];
+  if (!saved && !budget.ok) return budgetSkip(budget);
   const repo = repoName(env);
-  const file = await gh('GET', `/repos/${repo}/contents/content/posts/${cand.slug}.md`, null, env);
+  const file = await d.gh('GET', `/repos/${repo}/contents/content/posts/${cand.slug}.md`, null, env);
   const post = parsePost(Buffer.from(file.content, 'base64').toString('utf8'));
   const queries = (await db.query(
     "SELECT query, SUM(impressions)::int AS impressions FROM metrics_daily WHERE provider='gsc' AND page LIKE $1 AND day > CURRENT_DATE - 28 GROUP BY query ORDER BY 2 DESC LIMIT 20", [`%/blog/${cand.slug}%`])).rows;
-  const imp = await completeJson(
-    `You are an SEO/AEO editor for Back2SleepNow.com. ${BRAND_RULES}`,
-    `Improve this post's search snippet and answer-engine readiness. Problem: ${cand.reason}. Queries it ranks for: ${JSON.stringify(queries)}.
+  let imp, suggestionId;
+  if (saved) { imp = saved.suggestion; suggestionId = saved.id; log.log(`[optimize] reusing stored suggestion for ${cand.slug}`); }
+  else {
+  const out = await batchComplete({ db, env, job: 'optimize', key: cand.slug, fetchImpl: d.fetchImpl,
+    system: `You are an SEO/AEO editor for Back2SleepNow.com. ${BRAND_RULES}`,
+    prompt: `Improve this post's search snippet and answer-engine readiness. Problem: ${cand.reason}. Queries it ranks for: ${JSON.stringify(queries)}.
 Current title: ${post.title}\nCurrent description: ${post.description}\nCurrent answer: ${post.answer}\nCurrent FAQ: ${JSON.stringify(post.faq)}\nSources (only these may back claims): ${JSON.stringify(post.sources)}
-Return JSON {"title","description" (150-160 chars),"answer" (40-60 words),"faq":[{"q","a"}],"new_claims":[{"text","source"}]} — keep claims inside the existing sources, no efficacy claims.`,
-    { env, maxTokens: 3000 }
-  );
+Return JSON {"title","description" (150-160 chars),"answer" (40-60 words),"faq":[{"q","a"}],"new_claims":[{"text","source"}]} — keep claims inside the existing sources, no efficacy claims.` });
+  if (out.pending) { log.log(`[optimize] batch ${out.batchId} pending`); return { pending: 'batch', batchId: out.batchId, slug: cand.slug }; }
+  imp = extractJson(out.text);
+  suggestionId = (await db.query('INSERT INTO optimize_suggestions (slug, suggestion) VALUES ($1,$2) RETURNING id', [cand.slug, JSON.stringify(imp)])).rows[0].id;
+  }
   const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
   const updated = {
     ...post,
@@ -60,9 +76,10 @@ Return JSON {"title","description" (150-160 chars),"answer" (40-60 words),"faq":
   };
   const issues = lintPost({ ...updated, sources: updated.sources || [], claims: updated.claims, secondary_keywords: updated.secondary_keywords || [] });
   const notes = `\n\n**Note:** status is reset to \`draft\` until approved${autoPublish(env) ? ' by the gate (or `/approve`)' : ''} — merging without approving would unpublish the post.${issues.length ? `\n\n## ⚠️ Automated checks\n${issues.map((i) => `- ${i}`).join('\n')}` : ''}`;
-  const r = await openPostPr({ db, env, post: updated, fileText: serializePost(updated), dropped: [], kind: 'refresh', reason: cand.reason, notes, log });
+  const r = await d.openPr({ db, env, post: updated, fileText: serializePost(updated), dropped: [], kind: 'refresh', reason: cand.reason, notes, log });
+  await db.query('UPDATE optimize_suggestions SET used = true WHERE id = $1', [suggestionId]);
   if (r.number && autoPublish(env)) {
-    try { r.gate = await gateOne({ db, env, log, number: r.number }); }
+    try { r.gate = await d.gate({ db, env, log, number: r.number }); }
     catch (e) { r.gate = { error: e.message.slice(0, 500), retry: 'next hourly gate run' }; log.error(`[gate] PR #${r.number}: ${e.message}`); }
   }
   return r;

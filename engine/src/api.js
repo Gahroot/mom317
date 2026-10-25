@@ -1,5 +1,6 @@
 // HTTP API per CONTRACT section 3, plus admin endpoints.
 import crypto from 'node:crypto';
+import { codexStatus as defaultCodexStatus } from './codex.js';
 
 const ALLOWED_ORIGINS = [
   /^https:\/\/back2sleepnow\.com$/,
@@ -121,7 +122,7 @@ function safeEqual(a, b) {
   return x.length === y.length && crypto.timingSafeEqual(x, y);
 }
 
-export function createHandler({ db, scheduler = null, adminToken = process.env.ADMIN_TOKEN, limiter = createRateLimiter(), log = console }) {
+export function createHandler({ db, scheduler = null, adminToken = process.env.ADMIN_TOKEN, limiter = createRateLimiter(), log = console, codexStatus = defaultCodexStatus }) {
   return async function handle(req, res) {
     const url = new URL(req.url, 'http://x');
     const origin = req.headers.origin;
@@ -147,7 +148,11 @@ export function createHandler({ db, scheduler = null, adminToken = process.env.A
         const auth = String(req.headers.authorization || '');
         if (!adminToken || !auth.startsWith('Bearer ') || !safeEqual(auth.slice(7), adminToken)) return send(401, { error: 'unauthorized' });
         if (req.method !== 'GET') return send(405, { error: 'method_not_allowed' });
-        if (path === '/api/admin/status') return send(200, scheduler ? await scheduler.status() : { scheduler: 'off' });
+        if (path === '/api/admin/status') {
+          const base = scheduler ? await scheduler.status() : { scheduler: 'off' };
+          let codex; try { codex = await codexStatus(db); } catch (e) { codex = { error: e.message }; }
+          return send(200, { ...base, codex });
+        }
         const m = path.match(/^\/api\/admin\/run\/([a-z_]+)$/);
         if (m) {
           if (!scheduler || !scheduler.has(m[1])) return send(404, { error: 'unknown_job' });
