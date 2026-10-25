@@ -161,6 +161,8 @@ export async function run({ db, env = process.env, log, deps = {} }) {
     const budget = await checkBudget(db, 'draft', { env });
     if (!budget.ok) return budgetSkip(budget);
     post = await writeDraft({ env, opportunity: opp, today, db, completeImpl: d.complete });
+    // A rejected draft never went live: free its slug instead of suffixing the new one with a date.
+    await db.query("DELETE FROM posts WHERE slug = $1 AND status = 'rejected'", [post.slug]);
     const taken = await db.query('SELECT 1 FROM posts WHERE slug = $1', [post.slug]);
     if (taken.rows.length) post = { ...post, slug: `${post.slug}-${today.replace(/-/g, '')}` };
     await db.query("INSERT INTO posts (slug, title, primary_keyword, status, kind, draft_md, opportunity_id) VALUES ($1,$2,$3,'pending','new',$4,$5)",

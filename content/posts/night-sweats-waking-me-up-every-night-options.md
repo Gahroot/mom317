@@ -1,6 +1,6 @@
 ---
 title: Night Sweats Waking Me Up Every Night: What Are My Options?
-slug: night-sweats-waking-me-up-every-night-options-20261025
+slug: night-sweats-waking-me-up-every-night-options
 description: Night sweats waking you up? A balanced look at bedroom changes, diaries, hormone therapy, non-hormonal options and CBT, and how to decide with your clinician.
 date: 2026-10-25
 updated: 2026-10-25
