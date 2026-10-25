@@ -24,22 +24,12 @@
 }
 .reserve[hidden] { display: none; }
 .reserve-body { grid-area: body; }
-.reserve-art { /* stand-in until the product photo exists */
+.reserve-art {
   grid-area: art;
   position: relative; min-height: 340px; align-self: stretch;
-  border-radius: var(--radius); overflow: hidden;
-  display: flex; justify-content: center; align-items: flex-end;
-  background:
-    radial-gradient(ellipse 60% 50% at 72% 22%, rgba(255, 250, 238, 0.95), transparent 70%),
-    linear-gradient(180deg, var(--c-parchment), #EFE4D0);
+  border-radius: var(--radius); overflow: hidden; background: var(--c-parchment);
 }
-.reserve-art::after { /* the linen the bottle stands on */
-  content: ""; position: absolute; inset-inline: 0; bottom: 0; height: 22%;
-  background: linear-gradient(180deg, #DCC9A9, #CDB894);
-  border-top: 1px solid rgba(110, 58, 16, 0.25);
-}
-.reserve-art .bottle { width: clamp(110px, 11vw, 150px); margin-bottom: 14%; }
-.reserve-art .b-body { box-shadow: 0 24px 40px rgba(60, 30, 8, 0.28); }
+.reserve-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 55%; }
 .reserve-body .h3 { margin-bottom: 12px; }
 .reserve-body > p:first-of-type { margin-bottom: 20px; }
 .reserve-facts { margin: 0 0 28px; border-top: 1px solid rgba(30, 24, 19, 0.25); }

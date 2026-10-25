@@ -179,31 +179,13 @@ h3 { font-family: var(--f-display); font-weight: 600; font-size: 1.6rem; line-he
 .join-note a { color: inherit; }
 .hp { position: absolute; inset-inline-start: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
-/* ---------- Hero art (stand-in for the real photograph) ---------- */
-.hero-art { position: relative; height: clamp(360px, 42vw, 520px); display: flex; justify-content: center; align-items: flex-end; }
-.stand {
-  position: absolute; inset-inline: -10% -30%; bottom: 0; height: 26%;
-  background: linear-gradient(180deg, #3A2718, #1D140E);
-  border-top: 1px solid rgba(212, 176, 106, 0.28);
+/* ---------- Hero art (product photo, edges fade into the night surface) ---------- */
+.hero-art { position: relative; height: clamp(360px, 42vw, 520px); }
+.hero-art img {
+  width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%;
+  -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
 }
-.bottle { position: relative; z-index: 1; width: clamp(130px, 14vw, 180px); aspect-ratio: 120 / 250; margin-bottom: 14%; }
-.b-cap { position: absolute; left: 30.8%; top: 0; width: 38.4%; height: 17.6%; border-radius: 4px 4px 2px 2px; background: linear-gradient(90deg, #0C0A09, #2A2622 45%, #0C0A09); }
-.b-neck { position: absolute; left: 34.2%; top: 16.8%; width: 31.6%; height: 7.2%; background: linear-gradient(90deg, #3D1D06, #8A4A12 50%, #3D1D06); }
-.b-body {
-  position: absolute; left: 0; top: 22.4%; width: 100%; height: 77.6%;
-  border-radius: 22% 22% 10% 10% / 14% 14% 6% 6%;
-  background: linear-gradient(90deg, #2A1204 0%, #6E3A10 22%, #A5611F 48%, #7A4012 70%, #2A1204 100%);
-  box-shadow: 0 40px 70px rgba(0, 0, 0, 0.5);
-}
-.b-label {
-  position: absolute; left: 10%; right: 10%; top: 35%; height: 54%;
-  background: linear-gradient(90deg, #D8C8AB, #ECE0CA 45%, #D8C8AB);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6%;
-  container-type: inline-size;
-}
-.b-wm { font-family: var(--f-display); font-weight: 600; font-size: 34cqi; line-height: 1; color: #A88238; }
-.b-desc { font-size: 6.4cqi; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-ink); text-align: center; line-height: 1.35; }
-.b-tag { font-family: var(--f-display); font-style: italic; font-size: 7.2cqi; color: var(--c-ink); text-align: center; line-height: 1.2; }
 
 /* ---------- Footer ---------- */
 /* Landing page: one screen. Header, hero, a slim footer; the hero takes the remaining height. */
@@ -236,7 +218,6 @@ h3 { font-family: var(--f-display); font-weight: 600; font-size: 1.6rem; line-he
   .hero-grid { grid-template-columns: minmax(0, 1fr); }
   .hero-art { height: 300px; order: 2; }
   .one-screen .hero-art { height: 260px; }
-  .bottle { width: 120px; }
 }
 @media (max-width: 560px) {
   .join-row { flex-direction: column; gap: 10px; }
@@ -244,7 +225,6 @@ h3 { font-family: var(--f-display); font-weight: 600; font-size: 1.6rem; line-he
   .join .btn { border-radius: var(--radius); width: 100%; }
   .hero-art { height: 240px; }
   .one-screen .hero-art { height: 220px; }
-  .bottle { width: 96px; }
   .footer-grid { grid-template-columns: minmax(0, 1fr); }
 }
 

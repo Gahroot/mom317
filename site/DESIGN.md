@@ -56,6 +56,7 @@ The landing page is now a single screen: the night hero only (header, headline, 
 - **FAQ:** native `details`/`summary`.
 
 ## Photography (to replace the drawn stand-ins)
+**October 2026:** the drawn CSS bottles are replaced by AI-generated mock photos (night hero, morning reservation card) plus a 1200×630 share card `img/og.jpg` and a gold-on-night "3:17" favicon set. They are mockups of the planned packaging, not photos of a real product; replace them with real photography before launch claims rely on them. Hero is WebP at 700/1200w, not lazy-loaded, with a radial mask so its edges fall into the night surface. Colours and contrast pairs are unchanged.
 1. Hero: the amber bottle on a nightstand, one warm lamp, linen, deep brown shadow (lit like Aesop's fragrance photos). Serve as AVIF/WebP with explicit sizes and don't lazy-load it (it's the largest image on first load).
 2. Founder: natural light, unretouched, 4:5 crop.
 3. Macro: ingredient or liquid in amber glass, for the formula section.
