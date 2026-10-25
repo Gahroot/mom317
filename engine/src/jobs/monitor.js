@@ -7,6 +7,8 @@ export async function run({ db, env = process.env, log }) {
   const site = (env.SITE_URL || 'https://back2sleepnow.com').replace(/\/$/, '');
 
   if (gscConfigured(env)) {
+    // A GSC failure (e.g. service account not yet added to the property) must not take down the whole run.
+    try {
     const end = new Date(Date.now() - 2 * 86400e3), start = new Date(Date.now() - 9 * 86400e3);
     const rows = await searchAnalytics({ startDate: isoDay(start), endDate: isoDay(end) }, env);
     for (const r of rows) {
@@ -26,6 +28,10 @@ export async function run({ db, env = process.env, log }) {
       } catch (e) { log.error('[monitor] inspect', p.slug, e.message); }
     }
     notes.inspected = posts.length;
+    } catch (e) {
+      log.error('[monitor] gsc', e.message.slice(0, 200));
+      notes.gsc = `error: ${e.message.slice(0, 200)}`;
+    }
   } else notes.gsc = 'not configured (GSC_SERVICE_ACCOUNT_JSON)';
 
   if (env.BING_API_KEY) {
