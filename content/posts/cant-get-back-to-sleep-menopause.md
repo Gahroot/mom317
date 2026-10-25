@@ -12,7 +12,7 @@ secondary_keywords:
   - how to fall back asleep at 3am
   - menopause insomnia
   - CBT-I menopause
-answer: The NHS suggests getting up after around 20 minutes awake, doing something relaxing somewhere comfortable, and returning to bed when sleepy.[^1] Keep the next step small; you don't have to solve everything tonight. The AASM strongly recommends multicomponent CBT-I for adults with chronic insomnia disorder.[^2]
+answer: The NHS suggests getting up after around 20 minutes awake, doing something relaxing somewhere comfortable, and returning to bed when sleepy.[^1] Keep the next step small; you don't have to solve everything tonight. The AASM strongly recommends multicomponent cognitive behavioural therapy for insomnia for adults with chronic insomnia disorder.[^2]
 faq:
   - q: Should I stay in bed if I can't get back to sleep?
     a: The NHS suggests getting up after around 20 minutes awake, doing something relaxing somewhere comfortable, and returning to bed when sleepy.[^1]
@@ -79,9 +79,7 @@ claims:
     source: 4
   - text: The AASM conditionally recommends against sleep hygiene as the sole therapy for chronic insomnia disorder in adults.
     source: 2
-  - text: CBT-I means cognitive behavioural therapy for insomnia.
-    source: 2
-  - text: The AASM strongly recommends multicomponent CBT-I for adults with chronic insomnia disorder.
+  - text: The AASM strongly recommends multicomponent cognitive behavioural therapy for insomnia for adults with chronic insomnia disorder.
     source: 2
   - text: One randomised trial included 106 perimenopausal or postmenopausal women aged 40–65 with moderate insomnia symptoms and at least two daily hot flushes.
     source: 3
@@ -166,7 +164,7 @@ I find that distinction reassuring. I don't want a woman reading this to come aw
 
 ## What is CBT-I, and does it work in menopause?
 
-CBT-I means cognitive behavioural therapy for insomnia. The AASM strongly recommends multicomponent CBT-I for adults with chronic insomnia disorder.[^2]
+The AASM strongly recommends multicomponent cognitive behavioural therapy for insomnia for adults with chronic insomnia disorder.[^2]
 
 One randomised trial included 106 perimenopausal or postmenopausal women aged 40–65 with moderate insomnia symptoms and at least two daily hot flushes.[^3]
 
