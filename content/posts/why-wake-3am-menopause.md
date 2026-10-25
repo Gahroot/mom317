@@ -4,8 +4,8 @@ slug: why-wake-3am-menopause
 description: Waking at 3 a.m. in perimenopause or menopause is common. What sleep research says about hot flushes, lighter sleep and other causes, and when to see a doctor.
 date: 2026-10-25
 updated: 2026-10-25
-status: approved
-approved_by: Gahroot (site owner), 25 Oct 2026
+status: draft
+approved_by:
 primary_keyword: waking at 3am menopause
 secondary_keywords:
   - perimenopause waking up at 3am
