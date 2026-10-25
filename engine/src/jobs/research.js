@@ -1,5 +1,6 @@
 import { batchComplete, extractJson, llmConfigured, BRAND_RULES } from '../llm.js';
 import { checkBudget, budgetSkip } from '../cost.js';
+import { existingArticles, duplicateOf } from '../existing.js';
 
 export const SEED_TOPICS = [
   'waking at 3am menopause', 'perimenopause insomnia', 'night sweats waking up', 'cant get back to sleep after waking menopause',
@@ -26,13 +27,15 @@ export async function run({ db, env = process.env, log, fetchImpl }) {
   )).rows;
   const existing = (await db.query('SELECT keyword, status FROM opportunities')).rows;
   const posts = (await db.query('SELECT slug, primary_keyword FROM posts')).rows;
+  const articles = await existingArticles({ db, env });
 
   const out = await batchComplete({ db, env, job: 'research', fetchImpl, system:
     `You are an SEO/AEO/GEO strategist. ${BRAND_RULES}`,
     prompt: `Find keyword, search-intent and content gaps for the blog. The goal is QUALIFIED waitlist signups: women in peri/menopause who wake at night. Intent fit with that audience matters far more than search volume.
 Search Console queries (last 28 days, may be empty): ${JSON.stringify(gsc)}
 Seed topics: ${JSON.stringify(SEED_TOPICS)}
-Already covered/planned keywords: ${JSON.stringify([...existing.map((e) => e.keyword), ...posts.map((p) => p.primary_keyword)])}
+Already covered/planned keywords (do NOT propose these or close variants): ${JSON.stringify([...existing.map((e) => e.keyword), ...posts.map((p) => p.primary_keyword)])}
+Published/planned articles (do NOT propose near-duplicates; propose complementary topics that could link to them): ${JSON.stringify(articles.map((a) => ({ title: a.title, keywords: [a.primary_keyword, ...(a.secondary_keywords || [])] })))}
 Return a JSON array of up to 15 NEW opportunities: [{"keyword": "...", "title": "question-style H1", "intent": "problem_aware|solution_seeking|informational|navigational|unrelated", "angle": "what the post should answer and why it's a gap", "audienceFit": 0-1 (how surely the searcher is a woman in peri/menopause), "nightWakingFit": 0-1 (how much it is about waking at night / getting back to sleep), "rationale": "one sentence"}]` });
   if (out.pending) { log.log(`[research] batch ${out.batchId} pending`); return { pending: 'batch', batchId: out.batchId }; }
   const ideas = extractJson(out.text);
@@ -41,6 +44,7 @@ Return a JSON array of up to 15 NEW opportunities: [{"keyword": "...", "title": 
   for (const o of Array.isArray(ideas) ? ideas : []) {
     if (!o || typeof o.keyword !== 'string' || !o.keyword.trim()) continue;
     const kw = o.keyword.trim().toLowerCase().slice(0, 200);
+    if (duplicateOf({ keyword: kw, title: o.title }, articles)) continue; // near-duplicate of a live/planned article
     const g = gscByQuery.get(kw) || {};
     const score = scoreOpportunity({ ...o, impressions: g.impressions || 0, position: g.position ? Number(g.position) : null });
     await db.query(

@@ -50,8 +50,16 @@ const textOf = (msg) => (msg.content || []).filter((c) => c.type === 'text').map
 
 async function anthropic(env, system, prompt, o) {
   const params = anthropicParams(system, prompt, o);
-  const res = await o.fetchImpl(`${ANTHROPIC}/messages`, { method: 'POST', headers: aHeaders(env), body: JSON.stringify(params), signal: AbortSignal.timeout(240_000) });
-  if (!res.ok) throw httpError('anthropic', res.status, await res.text());
+  let res = await o.fetchImpl(`${ANTHROPIC}/messages`, { method: 'POST', headers: aHeaders(env), body: JSON.stringify(params), signal: AbortSignal.timeout(240_000) });
+  if (!res.ok) {
+    const text = await res.text();
+    // Newer models reject sampling params like `temperature`: retry once without it.
+    if (res.status === 400 && params.temperature != null && /temperature/i.test(text)) {
+      delete params.temperature;
+      res = await o.fetchImpl(`${ANTHROPIC}/messages`, { method: 'POST', headers: aHeaders(env), body: JSON.stringify(params), signal: AbortSignal.timeout(240_000) });
+      if (!res.ok) throw httpError('anthropic', res.status, await res.text());
+    } else throw httpError('anthropic', res.status, text);
+  }
   const j = await res.json();
   await recordUsage(o.db, { job: o.job, provider: 'anthropic', model: params.model, ...anthropicUsage(j.usage) }, { env });
   if (j.stop_reason === 'max_tokens') {

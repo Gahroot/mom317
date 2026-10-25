@@ -130,7 +130,8 @@ test('draft: retry reuses the stored draft (LLM called once); draft system promp
       await d.query("UPDATE posts SET status = 'draft', pr_number = 9 WHERE slug = $1", [post.slug]);
       return { number: 9 };
     },
-    gate: async () => ({ outcome: 'merged' })
+    gate: async () => ({ outcome: 'merged' }),
+    existing: async () => []
   };
   const env = { ...A, GITHUB_TOKEN: 't' };
   await assert.rejects(draft.run({ db, env, log, deps }), /502/);
