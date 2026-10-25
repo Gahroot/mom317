@@ -18,7 +18,7 @@ faq:
   - q: Are night sweats the same as hot flashes?
     a: Hot flashes and night sweats are both included under the term vasomotor symptoms. If mine were disrupting my sleep, I'd describe the pattern to a clinician.
   - q: How long do night sweats last?
-    a: In the large SWAN study, the median total duration of vasomotor symptoms was 7.4 years. I share that as context, not as a prediction for any one person.
+    a: In the large SWAN study, among women with frequent hot flashes or night sweats (on 6 or more days in a two-week period), the median total duration was 7.4 years. I share that as context, not as a prediction for any one person.
   - q: Is hormone therapy my only option?
     a: No. The Menopause Society's 2023 nonhormone position statement recommends cognitive behavioral therapy, clinical hypnosis, SSRIs/SNRIs, gabapentin and fezolinetant for vasomotor symptoms. I'd talk through with a clinician which, if any, fits my situation.
   - q: Is hormone therapy safe for me?
@@ -56,7 +56,7 @@ sources:
 claims:
   - text: Vasomotor symptoms include hot flashes and night sweats.
     source: 3
-  - text: In the large SWAN study, the median total duration of vasomotor symptoms was 7.4 years.
+  - text: In the large SWAN study, among women with frequent hot flashes or night sweats (on 6 or more days in a two-week period), the median total duration was 7.4 years.
     source: 3
   - text: The Menopause Society describes hormone therapy as the most effective treatment for vasomotor symptoms.
     source: 1
@@ -81,7 +81,7 @@ This article is a calm, balanced walk-through of the options women often ask abo
 
 Vasomotor symptoms, the term researchers use, include hot flashes and night sweats.[^3]
 
-In the large SWAN study, the median total duration of vasomotor symptoms was 7.4 years.[^3] I'm sharing that as context, not a prediction about you. What I took from it is that if your nights are rough, you're not being dramatic, and it's reasonable to want a plan rather than just waiting it out.
+In the large SWAN study, among women with frequent hot flashes or night sweats (on 6 or more days in a two-week period), the median total duration was 7.4 years.[^3] I'm sharing that as context, not a prediction about you. What I took from it is that if your nights are rough, you're not being dramatic, and it's reasonable to want a plan rather than just waiting it out.
 
 I'm not a clinician, so I can't tell you exactly what is behind your nights. If you want answers about your own situation, a clinician is the person I'd go to.
 
