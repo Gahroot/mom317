@@ -2,6 +2,7 @@
 interface WaitlistConfig {
   signupEndpoint?: string;
   quizEndpoint?: string;
+  eventsEndpoint?: string;
   siteUrl?: string;
   realSignupCount?: number | null;
   foundingBatchSize?: number | null;

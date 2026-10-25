@@ -17,14 +17,15 @@ Pre-launch founding-list (waitlist) page for "3:17", a sleep-support shot for me
 - `site/index.html` + `app.js`: one-screen landing page with a single join form (`#join-hero`, button "Be the first") and `?ref=` capture. Audience is women in menopause only. Product name is "Middle of the night sleep shot", tagline "Quickly return to sleep". Never call it a "liquid dietary supplement" on the front.
 - `site/thanks.html` + `thanks.js`: after signup. Share links (SMS, WhatsApp, share sheet, copy) and an optional quiz.
 - `site/privacy.html`: a draft placeholder, `noindex` like `thanks.html`.
+- Blog: `tools/build-blog.mjs` (Node 24, no deps) renders approved `content/posts/*.md` to `site/blog/`, `site/about/`, `sitemap.xml`, `feed.xml`, `llms.txt` (generated: never hand-edit). CI runs `node --test tools/` and `node tools/build-blog.mjs --check`, so rerun the build after changing posts or templates. Frontmatter fields (title, slug, description, date, updated, status, approved_by, answer, faq, sources, claims).
 - `research/317/`: the chosen direction (research md, `deck.html`, previews).
 - `research/build_deck.py`: the older five-direction deck.
 
 ## Data flow
 
 - `config.js` sets `window.WAITLIST_CONFIG` and must stay the first `defer` script on both pages. `app.js` and `thanks.js` read it at startup.
-- Signup: POST `{ email, ref, source }` to `signupEndpoint`. The reply `{ referralCode, position }` is optional. Result is saved to sessionStorage `317_signup`, then redirects to `thanks.html`, which reads that key.
-- Empty `signupEndpoint` means preview mode: nothing is sent and `thanks.html` shows a preview notice. That is the committed default.
+- Signup: POST `{ email, ref, source, page, landing_page, utm_* }` to `signupEndpoint` (`source` from the form's `data-source`, default `hero`; first-touch UTM in sessionStorage `317_attr`). `eventsEndpoint` (empty = off) gets cookieless `sendBeacon` events. The reply `{ referralCode, position }` is optional. Result is saved to sessionStorage `317_signup`, then redirects to `thanks.html`, which reads that key.
+- Empty `signupEndpoint` means preview mode: nothing is sent and `thanks.html` shows a preview notice. Live config points `signupEndpoint`/`quizEndpoint`/`eventsEndpoint` at `/api/*`, which `site/vercel.json` rewrites to the Railway engine (`engine/`, see `engine/README.md`). Signups are stored in its Postgres.
 - Quiz answers POST to `quizEndpoint`, otherwise sessionStorage `317_quiz`. The referrer is kept in `317_ref`, only if it matches `^[a-zA-Z0-9_-]{3,40}$`.
 
 ## Gotchas

@@ -29,3 +29,9 @@ jobs:
       - name: Type-check site scripts
         working-directory: site
         run: npx --yes -p typescript@5.9.3 tsc --noEmit --allowJs --checkJs --target es2019 --lib es2019,dom,dom.iterable globals.d.ts config.js app.js thanks.js
+
+      - name: Blog build tests
+        run: node --test tools/
+
+      - name: Blog output is up to date
+        run: node tools/build-blog.mjs --check

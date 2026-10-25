@@ -33,7 +33,22 @@ Until an email service is connected it runs in **preview mode**. Signups aren't 
 | `app.js`, `thanks.js` | Form validation, submit, referral capture, share, quiz |
 | `config.js` | The only file you need to edit to go live |
 | `DESIGN.md` | Design decisions, tokens, contrast measurements, checks |
+| `blog.css` | Blog, article and about page styles (light reading surface) |
+| `blog/`, `about/`, `sitemap.xml`, `feed.xml`, `llms.txt` | **Generated** by `node tools/build-blog.mjs` from `content/posts/*.md`; don't edit by hand |
+| `robots.txt`, `vercel.json` | Crawler rules (AI crawlers allowed); clean URLs, `/img` caching and the `/api/*` rewrite to the Railway API |
 | `globals.d.ts` | Type declarations for the type check only; the browser never loads it |
+
+## Blog
+
+Posts live in `content/posts/<slug>.md` (repo root, not deployed). Only `status: approved` posts with `approved_by` are published. From the repo root:
+
+```bash
+node tools/build-blog.mjs          # render site/blog, about, sitemap.xml, feed.xml, llms.txt
+node tools/build-blog.mjs --check  # CI: fails on invalid posts or stale output
+node --test tools/
+```
+
+Join forms on blog pages send `source` = `blog:<slug>:inline|end` (hero form: `hero`), plus the page path and first-touch UTM tags. `eventsEndpoint` in `config.js` turns on cookieless pageview/cta_click beacons.
 
 ## Deploy
 

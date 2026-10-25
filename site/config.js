@@ -1,13 +1,18 @@
 // 3:17 founding-list settings. Edit this file only; no code changes needed.
 window.WAITLIST_CONFIG = {
-  // Where signups are sent (POST, JSON body: { email, ref, source }).
+  // Where signups are sent (POST, JSON body: { email, ref, source, page, landing_page, utm_source, utm_medium, utm_campaign }).
+  // With the Vercel rewrite in vercel.json this will be "/api/signup".
   // Leave empty to run in preview mode: nothing is sent, signups stay in this browser only.
   // Your endpoint may reply with JSON { "referralCode": "abc123", "position": 182 }.
   // Both are optional. The page shows a position only when your endpoint returns one.
-  signupEndpoint: "",
+  signupEndpoint: "/api/signup",
 
   // Where quiz answers are sent (POST, JSON body: { email, wakeTime, stage, next }).
-  quizEndpoint: "",
+  quizEndpoint: "/api/quiz",
+
+  // Cookieless page events (pageview, cta_click) sent with navigator.sendBeacon, e.g. "/api/event".
+  // Empty = nothing is sent.
+  eventsEndpoint: "/api/event",
 
   // Public address of the site, used in share links. Empty = current address.
   siteUrl: "",

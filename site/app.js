@@ -4,6 +4,7 @@
   var cfg = window.WAITLIST_CONFIG || {};
   var STORE_KEY = "317_signup";
   var REF_KEY = "317_ref";
+  var ATTR_KEY = "317_attr";
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // Remember who referred this visitor (?ref=code) for this session.
@@ -11,6 +12,30 @@
     var ref = new URLSearchParams(location.search).get("ref");
     if (ref && /^[a-zA-Z0-9_-]{3,40}$/.test(ref)) sessionStorage.setItem(REF_KEY, ref);
   } catch (e) { /* storage unavailable: referral simply isn't credited */ }
+
+  // First-touch attribution (UTM tags + first landing page), kept for this session across pages.
+  /** @type {{ page: string, utm_source?: string, utm_medium?: string, utm_campaign?: string }} */
+  var attr = { page: location.pathname };
+  try {
+    var savedAttr = sessionStorage.getItem(ATTR_KEY);
+    if (savedAttr) attr = JSON.parse(savedAttr);
+    else {
+      var qs = new URLSearchParams(location.search);
+      ["utm_source", "utm_medium", "utm_campaign"].forEach(function (k) {
+        var v = qs.get(k);
+        if (v) /** @type {any} */ (attr)[k] = v.slice(0, 100);
+      });
+      sessionStorage.setItem(ATTR_KEY, JSON.stringify(attr));
+    }
+  } catch (e) { /* storage unavailable: attribution is per page */ }
+
+  // Cookieless events: no-op unless eventsEndpoint is set. No email or other PII is sent.
+  function track(type, source) {
+    if (!cfg.eventsEndpoint || !navigator.sendBeacon) return;
+    var body = { type: type, path: location.pathname, referrer: document.referrer || undefined, source: source || undefined };
+    try { navigator.sendBeacon(cfg.eventsEndpoint, new Blob([JSON.stringify(body)], { type: "application/json" })); } catch (e) {}
+  }
+  track("pageview");
 
   document.querySelectorAll("[data-year]").forEach(function (el) {
     el.textContent = String(new Date().getFullYear());
@@ -63,6 +88,7 @@
     var input = /** @type {HTMLInputElement} */ (form.querySelector('input[type="email"]'));
     var button = /** @type {HTMLButtonElement} */ (form.querySelector('button[type="submit"]'));
     var label = button.textContent;
+    var source = form.getAttribute("data-source") || "hero";
     var busy = false;
 
     input.addEventListener("input", function () {
@@ -80,6 +106,7 @@
       if (!email) { setError(form, input, "Please enter your email address."); input.focus(); return; }
       if (!EMAIL_RE.test(email)) { setError(form, input, "That email doesn't look quite right. Please check it, for example name@example.com."); input.focus(); return; }
       setError(form, input, "");
+      track("cta_click", source);
 
       var refCode = null;
       try { refCode = sessionStorage.getItem(REF_KEY); } catch (e) {}
@@ -95,7 +122,7 @@
           position: result && Number(result.position) > 0 ? Number(result.position) : null,
           preview: !cfg.signupEndpoint
         });
-        location.href = "thanks.html";
+        location.href = "/thanks.html";
       };
 
       var fail = function () {
@@ -110,7 +137,11 @@
       fetch(cfg.signupEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({ email: email, ref: refCode, source: form.id })
+        body: JSON.stringify({
+          email: email, ref: refCode, source: source,
+          page: location.pathname, landing_page: attr.page,
+          utm_source: attr.utm_source, utm_medium: attr.utm_medium, utm_campaign: attr.utm_campaign
+        })
       }).then(function (res) {
         if (!res.ok) throw new Error("HTTP " + res.status);
         return res.json().catch(function () { return {}; });
