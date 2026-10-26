@@ -4,8 +4,8 @@ slug: racing-thoughts-at-night-menopause-cant-switch-off
 description: Racing thoughts at night in menopause? Explore the evidence on worry, mood and sleep, plus CBT-I, scheduled worry time and when to speak with a clinician.
 date: 2026-10-26
 updated: 2026-10-26
-status: draft
-approved_by:
+status: approved
+approved_by: auto-review (3:17 engine)
 primary_keyword: racing thoughts at night menopause can't turn brain off
 secondary_keywords:
   - menopause racing thoughts at night
