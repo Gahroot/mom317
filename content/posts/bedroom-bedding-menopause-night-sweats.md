@@ -4,8 +4,8 @@ slug: bedroom-bedding-menopause-night-sweats
 description: A practical guide to a cool bedroom, layered bedding, bedside cooling and spare nightwear for menopause night sweats, with comfort tips and evidence limits.
 date: 2026-10-27
 updated: 2026-10-27
-status: draft
-approved_by:
+status: approved
+approved_by: auto-review (3:17 engine)
 primary_keyword: cool bedroom bedding night sweats menopause sleep tips
 secondary_keywords:
   - bedroom temperature for menopause night sweats
