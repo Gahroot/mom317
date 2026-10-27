@@ -43,7 +43,7 @@ test('codex-only mode: every job incl. fact-check routes to codex only; args car
   assert.ok(!a.includes('web_search="live"'));
   assert.ok(codexArgs(ENV, '/tmp/o', '/tmp/c', { search: true }).includes('web_search="live"'));
   assert.ok(!codexArgs({ CODEX_REASONING_EFFORT: 'high"; rm -rf' }, '/o', '/c').some((x) => /rm -rf/.test(x)), 'effort is validated');
-  assert.equal(weeklyCap(ENV), 80);
+  assert.equal(weeklyCap(ENV), 200);
   assert.equal(llmConfigured({ LLM_PROVIDER_ORDER: 'codex' }), true, 'no paid key needed');
 });
 

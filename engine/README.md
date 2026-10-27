@@ -13,7 +13,7 @@ It does two jobs:
 | monitor | daily 6:00 | GSC clicks/impressions/position per page+query, URL inspection of posts, Bing query stats, sitemap check, signups by source |
 | research | Sun 3:00 | LLM + GSC data → keyword/intent/gap opportunities, scored for qualified-signup fit |
 | report | Mon 8:00 | Weekly markdown report → GitHub issue `weekly-report` (+ DB) |
-| draft | Mon + Thu 4:00 | Writes `content/posts/<slug>.md` (status: draft), verifies source URLs, runs `tools/build-blog.mjs`, opens PR `blog/<slug>` with a claims checklist, then runs the approval gate on it |
+| draft | daily 4:00 | Writes `content/posts/<slug>.md` (status: draft), verifies source URLs, runs `tools/build-blog.mjs`, opens PR `blog/<slug>` with a claims checklist, then runs the approval gate on it |
 | ai_visibility | Wed 10:00, even ISO weeks | Asks Perplexity `sonar` up to 15 target questions (OpenAI web search: 5 questions, first run of the month only), records whether back2sleepnow.com is cited |
 | optimize | Fri 5:00 | Refresh PRs for posts with low CTR, position 5–20 or low signup rate, then runs the approval gate on it |
 | audit | Sat 4:00 | Re-fact-checks up to 2 published posts not audited in 30 days (`AUDIT_EVERY_DAYS`, `AUDIT_MAX_PER_RUN`). A post that no longer passes gets a refresh PR that the gate self-revises and merges only on pass; the live version stays up meanwhile. Table `post_audits`. |
@@ -46,8 +46,8 @@ Railway runs with `LLM_PROVIDER_ORDER=codex`, `CODEX_MODEL=gpt-6.1-sol`, `CODEX_
 
 - **Every AI call goes through Codex** on the owner's ChatGPT subscription: research, drafting, the source-repair pass, self-revisions, the gate fact-check and the AI-visibility checks (ChatGPT with live web search, `-c web_search="live"`, provider `chatgpt-codex`). Paid APIs are never called, even when their keys are set.
 - **No budget.** Nothing is paid for, so `AI_MONTHLY_BUDGET_USD` is ignored and `/api/admin/status` shows `aiBudget.budget: "off"`. The cost controls below apply again only if you switch back to a mixed mode.
-- **No paid fallback: jobs wait instead.** If Codex is logged out, at its usage limit (24 h back-off), over the weekly runaway guard (`CODEX_MAX_CALLS_PER_WEEK`, default 80 in this mode) or not installed, the job is recorded as `deferred` and its slot is retried every hour (no alert; a login problem still opens one `engine-alert` issue). The gate never holds a PR just because the fact-checker was unavailable; it re-checks it later. Transient Codex errors are retried with backoff and then fail and alert like any other error.
-- **Any time of day.** The night-only rule applies only in mixed mode; scheduled jobs still start at night (research Sun 3:00, draft Mon/Thu 4:00, optimize Fri 5:00 NY).
+- **No paid fallback: jobs wait instead.** If Codex is logged out, at its usage limit (24 h back-off), over the weekly runaway guard (`CODEX_MAX_CALLS_PER_WEEK`, default 200 in this mode) or not installed, the job is recorded as `deferred` and its slot is retried every hour (no alert; a login problem still opens one `engine-alert` issue). The gate never holds a PR just because the fact-checker was unavailable; it re-checks it later. Transient Codex errors are retried with backoff and then fail and alert like any other error.
+- **Any time of day.** The night-only rule applies only in mixed mode; scheduled jobs still start at night (research Sun 3:00, draft daily 4:00, optimize Fri 5:00 NY).
 - **Same model writes and checks.** The fact-checker is a separate, fresh Codex session with its own skeptical prompt that judges each claim only against the source abstract, but it is the same model family as the writer.
 - Calls time out after 25 minutes (`CODEX_TIMEOUT_MS`).
 
@@ -73,7 +73,7 @@ The owner set a **$10/month combined cap** for Anthropic + OpenAI + Perplexity. 
 **How it works.** The image ships the Codex CLI (`@openai/codex@0.164.0`). research, draft and optimize first try `codex exec` on your ChatGPT plan ($0 per call), following OpenAI's [CI/CD auth guidance](https://developers.openai.com/codex/auth/ci-cd-auth.md): the login lives in `$CODEX_HOME/auth.json` (`/data/codex`, a persistent Railway volume `engine-volume` at `/data`), and Codex refreshes it itself during normal runs and writes it back. The engine only reads `auth_mode`/`last_refresh` from it; it is never logged, printed, copied or overwritten. `config.toml` (`cli_auth_credentials_store = "file"`) is written at start only if missing. Each call runs `codex exec --skip-git-repo-check --ephemeral --sandbox read-only -c approval_policy="never" --cd <empty tmp dir> --json --output-last-message <tmp file> -` (prompt on stdin, `-m $CODEX_MODEL` only if set), times out after 10 minutes, and only one Codex process runs at a time. Codex calls are logged in `ai_usage` as provider `codex`, cost 0, and don't count toward the budget. **The gate fact-check never uses Codex** (`LLM_FACTCHECK_PROVIDER`, default `anthropic`), so a different model family checks the writer.
 
 **Shared limits, light use.** It shares your subscription's usage limits with your own Codex use, so the engine stays polite:
-- only research (1/week), draft (2/week) and optimize (≤1/week) use it, with a hard cap `CODEX_MAX_CALLS_PER_WEEK` (default 6, the keep-alive not counted); over the cap the call goes to Anthropic;
+- only research (1/week), draft (daily) and optimize (≤1/week) use it, with a hard cap `CODEX_MAX_CALLS_PER_WEEK` (default 6, the keep-alive not counted); over the cap the call goes to Anthropic;
 - only off-hours: a call between 8:00 and 23:00 New York time goes to Anthropic unless `CODEX_ANYTIME=true` (the jobs are scheduled 3:00–6:00);
 - after a usage/rate-limit reply Codex is paused for 24 hours (`codex_state.backoff_until`), with no alert; the weekly report notes it.
 
@@ -120,7 +120,7 @@ Set them from `engine/` with `railway variables --service engine --set "NAME=val
 | CODEX_MODEL | | yes | `gpt-6.1-sol` (unset = Codex's default) |
 | CODEX_REASONING_EFFORT | | yes | `high` (passed as `-c model_reasoning_effort="high"`) |
 | CODEX_TIMEOUT_MS | | optional | Per-call timeout; default 25 min in Codex-only mode, 10 min otherwise |
-| CODEX_MAX_CALLS_PER_WEEK | | optional | Default 6 |
+| CODEX_MAX_CALLS_PER_WEEK | | optional | Default 200 in Codex-only mode, 6 otherwise |
 | CODEX_ANYTIME | | optional | `true` allows Codex calls 8:00–23:00 NY |
 | SCHEDULER | | optional | `off` disables the scheduler (API only) |
 

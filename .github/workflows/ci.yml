@@ -33,5 +33,9 @@ jobs:
       - name: Blog build tests
         run: node --test tools/
 
+      - name: Engine tests (including carousel guards)
+        working-directory: engine
+        run: npm ci && npm test
+
       - name: Blog output is up to date
         run: node tools/build-blog.mjs --check

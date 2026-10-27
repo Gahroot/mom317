@@ -68,10 +68,10 @@ export async function setState(db, key, value) {
     ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()`, [key, value]);
 }
 
-// Runaway guard. Codex-only mode makes ~20-45 calls a normal week (2 articles x draft + fact-check + revisions,
-// research, optimize, AI-visibility), so its default is 80; mixed mode keeps the light-use default of 6.
+// Runaway guard. Codex-only mode makes ~80-150 calls a normal week (7 articles x draft + fact-check + revisions,
+// research, optimize, AI-visibility), so its default is 200; mixed mode keeps the light-use default of 6.
 export const weeklyCap = (env = process.env) => {
-  const def = codexOnly(env) ? 80 : 6;
+  const def = codexOnly(env) ? 200 : 6;
   const n = Number(env.CODEX_MAX_CALLS_PER_WEEK ?? def);
   return Number.isFinite(n) && n >= 0 ? n : def;
 };
