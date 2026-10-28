@@ -4,8 +4,8 @@ slug: should-i-get-out-of-bed-if-i-cant-sleep-at-night
 description: Should you get out of bed when you can't sleep at 3am? Read the guidance on stimulus control, night sweats and when to ask a clinician for individual advice.
 date: 2026-10-28
 updated: 2026-10-28
-status: draft
-approved_by:
+status: approved
+approved_by: auto-review (3:17 engine)
 primary_keyword: should i get out of bed if i can't sleep at night
 secondary_keywords:
   - stimulus control for insomnia
