@@ -18,9 +18,9 @@ faq:
   - q: Can night waking continue after menopause?
     a: Repeated night waking could persist into postmenopause in the SWAN trajectory analysis.[^1] If sleep problems have lasted months, talk to a clinician.[^3]
   - q: Does menopause mean my sleep should settle after 12 months?
-    a: The NHS describes menopause as having gone without a period for 12 months, followed by postmenopause.[^6] I would not treat that anniversary as a promised date for better nights.
+    a: The NHS describes menopause as having gone without a period for 12 months, followed by postmenopause.[^6] I would not use that anniversary as a promised date for better nights.
   - q: When is insomnia considered chronic?
-    a: NHLBI describes insomnia as chronic when it occurs at least three nights a week for three months or longer.[^4]
+    a: NHLBI defines chronic insomnia as occurring at least three nights weekly for three months or longer.[^4]
   - q: Should I wait until menopause is over to seek care?
     a: The NHS advises seeing a GP if sleep trouble has lasted months or makes daily life hard to cope with.[^3] You can use that guidance when deciding about an appointment.
   - q: Is there CBT-I research in women going through menopause?
@@ -77,8 +77,6 @@ claims:
     source: 2
   - text: A later SWAN analysis of women reaching menopause naturally identified four night-waking patterns: low, moderate, increasing and high.
     source: 1
-  - text: Overall, waking patterns were generally stable before and after the final menstrual period.
-    source: 1
   - text: Another analysis, using ten years of SWAN data, found insomnia symptoms more prevalent in late than early perimenopause.
     source: 8
   - text: The symptoms measured in that analysis were self-reported.
@@ -99,13 +97,13 @@ claims:
     source: 3
   - text: The NHS advises seeing a GP if sleep trouble has lasted months or makes daily life hard to cope with.
     source: 3
-  - text: NHLBI describes insomnia as chronic when it occurs at least three nights a week for three months or longer.
+  - text: NHLBI defines chronic insomnia as occurring at least three nights weekly for three months or longer.
     source: 4
   - text: The American Academy of Sleep Medicine strongly recommends multicomponent cognitive behavioral therapy for insomnia, or CBT-I, for adults with chronic insomnia disorder.
     source: 5
-  - text: Its guideline also suggests against using sleep hygiene alone as treatment for chronic insomnia disorder.
+  - text: Its guideline also suggests against using sleep hygiene alone for chronic insomnia disorder.
     source: 5
-  - text: There is menopause-specific trial evidence, too: a randomized trial in perimenopausal and postmenopausal women with moderate insomnia symptoms and hot flashes found greater reductions in insomnia severity with telephone CBT-I than with menopause education.
+  - text: A randomized trial in perimenopausal and postmenopausal women with moderate insomnia symptoms and hot flashes found greater reductions in insomnia severity with telephone CBT-I than with menopause education.
     source: 7
   - text: The between-group differences were sustained at 24 weeks.
     source: 7
@@ -121,8 +119,6 @@ claims:
     source: 1
   - text: For next steps, the NHS advises a medical review when sleep problems last months or make daily life hard to cope with.
     source: 3
-  - text: A randomized trial in perimenopausal and postmenopausal women with moderate insomnia symptoms and hot flashes found greater reductions in insomnia severity with telephone CBT-I than with menopause education.
-    source: 7
 ---
 If you are awake again, wondering how many more nights like this lie ahead, I understand why you want a finish line. “How long does menopause insomnia last?” is a question about more than dates. You want to know what to expect, and what you can do next.
 
@@ -138,17 +134,17 @@ For me, the useful question alongside “When will this end?” is “What shoul
 
 An earlier Study of Women's Health Across the Nation (SWAN) analysis collected women's sleep reports at baseline and seven annual assessments.[^2] It found that the odds of difficulty falling asleep and staying asleep increased across the menopausal transition.[^2]
 
-A later SWAN analysis of women reaching menopause naturally identified four night-waking patterns: low, moderate, increasing and high.[^1] Overall, waking patterns were generally stable before and after the final menstrual period.[^1]
+A later SWAN analysis of women reaching menopause naturally identified four night-waking patterns: low, moderate, increasing and high.[^1]
 
 I would not use those groups to label you, or to decide in advance what your next year will look like. I read them as a reason to be wary of sweeping promises about what “all women” go through.
 
-Another analysis, using ten years of SWAN data, found insomnia symptoms more prevalent in late than early perimenopause.[^8] The symptoms measured in that analysis were self-reported.[^8] Those ten years describe the study's data, rather than an average length of insomnia.[^8] When a headline mentions a long follow-up, I always want to know exactly what the researchers measured before treating it as a personal forecast.
+Another analysis, using ten years of SWAN data, found insomnia symptoms more prevalent in late than early perimenopause.[^8] The symptoms measured in that analysis were self-reported.[^8] Those ten years describe the study's data, rather than an average length of insomnia.[^8] When a headline mentions a long follow-up, I always want to know exactly what the researchers measured before reading it as a personal forecast.
 
 ## Will my sleep settle once my periods have stopped?
 
 Repeated night waking could persist into postmenopause in the SWAN trajectory analysis.[^1] That finding deserves a clear explanation, especially if you have been counting down to your last period.
 
-The NHS describes menopause as having gone without a period for 12 months, followed by postmenopause.[^6] I would use that definition to understand the terminology, without treating the anniversary as a promised date for better nights.
+The NHS describes menopause as having gone without a period for 12 months, followed by postmenopause.[^6] I would use that definition to understand the terminology, without reading the anniversary as a promised date for better nights.
 
 There is also a distinction between different sleep complaints: in the earlier SWAN analysis, the odds of early morning awakening decreased from late perimenopause to postmenopause.[^2] I would want to tell a clinician exactly which experience I mean: struggling at bedtime, waking repeatedly, or waking too early and being unable to return to sleep.
 
@@ -166,7 +162,7 @@ The NHS also lists stress, anxiety, depression and some medicines among causes o
 
 The NHS advises seeing a GP if sleep trouble has lasted months or makes daily life hard to cope with.[^3] That is the guidance I would keep in mind if you are debating whether your experience is worth an appointment.
 
-NHLBI describes insomnia as chronic when it occurs at least three nights a week for three months or longer.[^4] I would leave diagnosis to your clinician and use the dates and frequency as information to bring along.
+NHLBI defines chronic insomnia as occurring at least three nights weekly for three months or longer.[^4] I would leave diagnosis to your clinician and use the dates and frequency as information to bring along.
 
 I would also be specific about what “hard to cope with” means for you. Perhaps you are declining invitations, worrying about a workday, or finding ordinary responsibilities overwhelming. You do not have to make your account sound dramatic. Tell it plainly.
 
@@ -174,11 +170,11 @@ A sentence you could borrow is: “I keep waking during the night, and I want an
 
 ## What care is worth asking about?
 
-The American Academy of Sleep Medicine strongly recommends multicomponent cognitive behavioral therapy for insomnia, or CBT-I, for adults with chronic insomnia disorder.[^5] Its guideline also suggests against using sleep hygiene alone as treatment for chronic insomnia disorder.[^5]
+The American Academy of Sleep Medicine strongly recommends multicomponent cognitive behavioral therapy for insomnia, or CBT-I, for adults with chronic insomnia disorder.[^5] Its guideline also suggests against using sleep hygiene alone for chronic insomnia disorder.[^5]
 
 That gives you a specific question for an appointment: “Would CBT-I be appropriate for me, and where could I access it?” I would ask about local availability, remote options, cost and what participation involves.
 
-There is menopause-specific trial evidence, too: a randomized trial in perimenopausal and postmenopausal women with moderate insomnia symptoms and hot flashes found greater reductions in insomnia severity with telephone CBT-I than with menopause education.[^7] The between-group differences were sustained at 24 weeks.[^7]
+A randomized trial in perimenopausal and postmenopausal women with moderate insomnia symptoms and hot flashes found greater reductions in insomnia severity with telephone CBT-I than with menopause education.[^7] The between-group differences were sustained at 24 weeks.[^7]
 
 I take that as a reason to ask about the option, without making a promise about any individual's result. Ask your clinician to explain which choices fit your circumstances and how you will review progress together. You are allowed to ask for a plain-language explanation.
 
@@ -210,11 +206,11 @@ I cannot offer you a finish date. I can encourage you to take your experience se
 [^2]: [Sleep disturbance during the menopausal transition in a multi-ethnic community sample of women](https://pubmed.ncbi.nlm.nih.gov/18652093/)
 [^3]: [NHS: Insomnia](https://www.nhs.uk/conditions/insomnia/)
 [^4]: [NHLBI: Insomnia diagnosis](https://www.nhlbi.nih.gov/health/insomnia/diagnosis)
-[^5]: [AASM clinical practice guideline: Behavioral and psychological treatments for chronic insomnia disorder in adults](https://pubmed.ncbi.nlm.nih.gov/33164742/)
+[^5]: [AASM clinical practice guideline for chronic insomnia disorder in adults](https://pubmed.ncbi.nlm.nih.gov/33164742/)
 [^6]: [NHS: Symptoms of menopause and perimenopause](https://www.nhs.uk/conditions/menopause-and-perimenopause/symptoms/)
 [^7]: [Telephone-Based Cognitive Behavioral Therapy for Insomnia in Perimenopausal and Postmenopausal Women With Vasomotor Symptoms](https://pubmed.ncbi.nlm.nih.gov/27213646/)
 [^8]: [Longitudinal Study of Insomnia Symptoms Among Women During Perimenopause](https://pubmed.ncbi.nlm.nih.gov/28886339/)
 
-I’m Marian Grout, founder of 3:17. We are building a middle-of-the-night sleep shot for women in menopause; readers who would like to follow along can join the founding list.
+I’m Marian Grout, founder of 3:17. We are building a middle-of-the-night sleep shot for women in menopause; you can join the founding waitlist.
 
 This is general information, not medical advice.
