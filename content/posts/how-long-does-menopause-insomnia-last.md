@@ -4,8 +4,8 @@ slug: how-long-does-menopause-insomnia-last
 description: How long does menopause insomnia last? Explore what SWAN research says about night waking, individual differences, and when to talk to a clinician about sleep.
 date: 2026-10-29
 updated: 2026-10-29
-status: draft
-approved_by:
+status: approved
+approved_by: auto-review (3:17 engine)
 primary_keyword: how long does menopause insomnia last
 secondary_keywords:
   - menopause night waking
