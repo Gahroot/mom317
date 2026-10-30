@@ -13,12 +13,12 @@ secondary_keywords:
   - waking gasping after menopause
   - menopause insomnia and sleep apnea
   - morning headaches and sleep apnea
-answer: Yes, it could be: sleep apnea risk increases during and after menopause.[^2] In women, symptoms can include insomnia, morning headaches and tiredness.[^2] Gasping for air during sleep is another symptom.[^4] Talk with a clinician about your symptoms and whether you need a sleep study.[^4]
+answer: Women may be at increased risk of sleep apnea during and after menopause.[^2] In women, symptoms can include insomnia, morning headaches and tiredness.[^2] Gasping for air during sleep is another symptom.[^4] Talk with a clinician about your symptoms and whether you need a sleep study.[^4]
 faq:
   - q: Does sleep apnea risk increase after menopause?
-    a: Sleep apnea risk increases during and after menopause.[^2]
+    a: Women may be at increased risk of sleep apnea during and after menopause.[^2]
   - q: Can women have sleep apnea without snoring?
-    a: Women with sleep apnea may not have snoring as a symptom.[^2]
+    a: Women with sleep apnea may not snore.[^2]
   - q: Can insomnia or morning headaches be sleep apnea symptoms?
     a: In women, symptoms can include insomnia, morning headaches and tiredness.[^2]
   - q: Should I mention waking gasping to my clinician?
@@ -67,7 +67,7 @@ sources:
     year: 2017
     url: https://doi.org/10.5664/jcsm.6506
 claims:
-  - text: Yes, it could be: sleep apnea risk increases during and after menopause.
+  - text: Women may be at increased risk of sleep apnea during and after menopause.
     source: 2
   - text: In women, symptoms can include insomnia, morning headaches and tiredness.
     source: 2
@@ -81,8 +81,6 @@ claims:
     source: 1
   - text: The NHS lists frequent waking and gasping, snorting or choking noises during sleep among sleep apnea symptoms.
     source: 5
-  - text: NHLBI says women's sleep apnea risk increases during and after menopause, partly because of hormonal changes.
-    source: 2
   - text: In the Wisconsin Sleep Cohort Study, postmenopausal women had higher odds of sleep-disordered breathing than premenopausal women after adjustment for age, body habitus, smoking and other potential confounding factors.
     source: 3
   - text: The study compared women at different menopausal stages.
@@ -91,7 +89,7 @@ claims:
     source: 3
   - text: NHLBI identifies insomnia, tiredness, morning headaches and frequent waking as symptoms women with sleep apnea report more often than men.
     source: 2
-  - text: Women with sleep apnea may not have snoring as a symptom.
+  - text: Women with sleep apnea may not snore.
     source: 2
   - text: NHLBI lists gasping for air and breathing that starts and stops during sleep as sleep apnea symptoms.
     source: 4
@@ -121,8 +119,6 @@ claims:
     source: 8
   - text: AASM supports home testing with a technically adequate device for uncomplicated adults whose signs and symptoms indicate increased risk of moderate to severe OSA.
     source: 8
-  - text: Sleep apnea risk increases during and after menopause.
-    source: 2
 ---
 Waking in the dark and wondering what just happened can feel lonely, especially when tomorrow is already on your mind. If you've been asking whether this is simply another thing to accept after menopause, I want you to have a more useful place to start: a clear question for your clinician.
 
@@ -136,7 +132,7 @@ My aim here is to make that conversation less mysterious. You don't need to arri
 
 ## Why does menopause belong in this conversation?
 
-NHLBI says women's sleep apnea risk increases during and after menopause, partly because of hormonal changes.[^2]
+Women may be at increased risk of sleep apnea during and after menopause.[^2]
 
 In the Wisconsin Sleep Cohort Study, postmenopausal women had higher odds of sleep-disordered breathing than premenopausal women after adjustment for age, body habitus, smoking and other potential confounding factors.[^3]
 
@@ -146,7 +142,7 @@ The study's authors recommended prioritizing evaluation for sleep-disordered bre
 
 ## What if I don't sound like the stereotypical snorer?
 
-NHLBI identifies insomnia, tiredness, morning headaches and frequent waking as symptoms women with sleep apnea report more often than men.[^2] Women with sleep apnea may not have snoring as a symptom.[^2]
+NHLBI identifies insomnia, tiredness, morning headaches and frequent waking as symptoms women with sleep apnea report more often than men.[^2] Women with sleep apnea may not snore.[^2]
 
 That is why I would avoid opening with, “I probably don't have it because nobody complains about my snoring.” Start with your actual experience instead.
 
@@ -164,7 +160,7 @@ If you sleep alone, I would simply tell the clinician that too. Don't invent an 
 
 ## What other details are worth writing down?
 
-NHLBI also lists dry mouth, daytime sleepiness, fatigue and waking often to urinate among possible sleep apnea symptoms.[^4] I would mention whichever of those you actually notice, without treating the list as a scorecard.
+NHLBI also lists dry mouth, daytime sleepiness, fatigue and waking often to urinate among possible sleep apnea symptoms.[^4] I would mention whichever of those you actually notice, using the list as a starting point for conversation.
 
 A sleep diary can track sleep duration, sleep quality and daytime sleepiness, and those details can inform a clinician's assessment.[^6]
 
@@ -200,7 +196,7 @@ I would also mention any worries about the appointment itself, including privacy
 
 ## Can a questionnaire or home test settle the question?
 
-The American Academy of Sleep Medicine (AASM) recommends against diagnosing OSA with questionnaires alone.[^8] I would treat a screening discussion as the beginning of the conversation and ask what comes next.
+The American Academy of Sleep Medicine (AASM) recommends against diagnosing OSA with questionnaires alone.[^8] After a screening discussion, I would ask what comes next.
 
 AASM recommends a laboratory sleep study after a home sleep apnea test that is negative, inconclusive or technically inadequate.[^8]
 
