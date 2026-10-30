@@ -4,8 +4,8 @@ slug: sleep-apnea-symptoms-women-menopause-waking-gasping
 description: Could sleep apnea explain waking after menopause? Learn about gasping, insomnia, morning headaches and fatigue, and what to ask a clinician about sleep testing.
 date: 2026-10-30
 updated: 2026-10-30
-status: draft
-approved_by:
+status: approved
+approved_by: auto-review (3:17 engine)
 primary_keyword: sleep apnea symptoms women menopause waking gasping
 secondary_keywords:
   - sleep apnea after menopause
