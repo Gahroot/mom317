@@ -4,8 +4,8 @@ slug: restless-legs-waking-me-up-menopause
 description: Restless legs waking you during menopause? Learn the urge-to-move pattern, how it differs from cramps and nighttime kicks, and when to talk with a clinician.
 date: 2026-11-01
 updated: 2026-11-01
-status: draft
-approved_by:
+status: approved
+approved_by: auto-review (3:17 engine)
 primary_keyword: restless legs waking me up menopause
 secondary_keywords:
   - restless legs syndrome during menopause
