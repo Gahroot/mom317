@@ -4,8 +4,8 @@ slug: sleep-tracker-misses-awake-time-menopause
 description: Sleep tracker misses awake time during menopause? Learn what estimates mean, how to keep a sleep diary, and what to bring to a clinician when reports disagree.
 date: 2026-11-02
 updated: 2026-11-02
-status: draft
-approved_by:
+status: approved
+approved_by: auto-review (3:17 engine)
 primary_keyword: sleep tracker misses awake time menopause
 secondary_keywords:
   - menopause sleep tracker accuracy
