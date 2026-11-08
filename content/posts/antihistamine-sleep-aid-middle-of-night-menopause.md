@@ -4,8 +4,8 @@ slug: antihistamine-sleep-aid-middle-of-night-menopause
 description: Awake in menopause and considering an antihistamine sleep aid? Read about next-day drowsiness, alcohol and what to ask a pharmacist before taking a medicine.
 date: 2026-11-08
 updated: 2026-11-08
-status: draft
-approved_by:
+status: approved
+approved_by: auto-review (3:17 engine)
 primary_keyword: antihistamine sleep aid middle of night menopause
 secondary_keywords:
   - diphenhydramine next-day drowsiness
