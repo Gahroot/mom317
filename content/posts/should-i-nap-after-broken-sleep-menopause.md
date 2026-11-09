@@ -12,7 +12,7 @@ secondary_keywords:
   - sleeping in after a bad night
   - menopause daytime sleepiness
   - menopause sleep schedule
-answer: Usually, skip the nap: NHS insomnia guidance advises against daytime naps and sleeping in after a bad night.[^1] I would make the day's commitments lighter where possible. Do not drive while sleepy.[^1] Ask your clinician about a plan for persistent disruption.[^1]
+answer: NHS insomnia guidance advises against daytime naps and sleeping in after a bad night.[^1] That would be my starting point. I would make the day's commitments lighter where possible. Do not drive while sleepy.[^1] Ask your clinician about a plan for persistent disruption.[^1]
 faq:
   - q: Should I sleep in after a broken night?
     a: NHS insomnia guidance advises against sleeping in after a bad night.[^1]
@@ -51,13 +51,11 @@ sources:
     year: 2021
     url: https://pubmed.ncbi.nlm.nih.gov/33164742/
 claims:
-  - text: Usually, skip the nap: NHS insomnia guidance advises against daytime naps and sleeping in after a bad night.
+  - text: NHS insomnia guidance advises against daytime naps and sleeping in after a bad night.
     source: 1
   - text: Do not drive while sleepy.
     source: 1
   - text: Ask your clinician about a plan for persistent disruption.
-    source: 1
-  - text: NHS insomnia advice is to avoid daytime naps and sleeping in after a bad night.
     source: 1
   - text: The NIH's National Heart, Lung, and Blood Institute says daytime napping may boost alertness and performance.
     source: 2
@@ -79,7 +77,7 @@ claims:
     source: 4
   - text: When assessing excessive daytime sleepiness, a GP may ask about health conditions and medicines, suggest a sleep diary, or refer to a sleep specialist.
     source: 4
-  - text: The American Academy of Sleep Medicine conditionally recommends against using sleep hygiene alone to treat chronic insomnia disorder in adults.
+  - text: The American Academy of Sleep Medicine conditionally recommends against using sleep hygiene alone for chronic insomnia disorder in adults.
     source: 5
   - text: It strongly recommends multicomponent cognitive behavioral therapy for insomnia for adults with chronic insomnia disorder.
     source: 5
@@ -87,20 +85,20 @@ claims:
     source: 1
   - text: NIH general guidance limits adult naps to 20 minutes.
     source: 2
+  - text: That is general advice, rather than a menopause-specific nap prescription.
+    source: 2
   - text: The NHS says sleep problems may be worse if you also have night sweats.
     source: 3
   - text: The NHS recommends seeing a GP if you often fall asleep during the day or sleepiness affects your life.
     source: 4
   - text: AASM strongly recommends multicomponent cognitive behavioral therapy for insomnia for adults with chronic insomnia disorder.
     source: 5
-  - text: That is general advice, rather than a menopause-specific nap prescription.
-    source: 2
 ---
 After a night of waking, waiting and watching the clock, the morning can feel like another problem to solve. I understand wanting someone to say, “Go back to bed.” You deserve a kind answer, with room for the actual day ahead.
 
 ## Should I nap after broken sleep during menopause?
 
-NHS insomnia advice is to avoid daytime naps and sleeping in after a bad night.[^1] That is the starting point I would use when deciding what to do the next day.
+NHS insomnia guidance advises against daytime naps and sleeping in after a bad night.[^1] That is the starting point I would use when deciding what to do the next day.
 
 I would also take a little pressure off the question. You do not have to turn today into a test of discipline. My suggestion is to make a small plan: look at your commitments, decide what can wait, and arrange another way to travel if needed. Leave the laundry. Send the shorter email. Ask someone else to do the shopping.
 
@@ -110,7 +108,7 @@ For me, kindness belongs in this conversation alongside the guidance. There is n
 
 The NIH's National Heart, Lung, and Blood Institute says daytime napping may boost alertness and performance.[^2] Its general guidance says adults should nap for no more than 20 minutes.[^2] For people who have trouble falling asleep at night, it advises limiting naps or taking them earlier in the afternoon.[^2]
 
-I would read these recommendations in context, rather than treat the shorter-nap advice as an instruction that everyone should nap.
+I would read these recommendations in context, rather than assume the shorter-nap advice means everyone should nap.
 
 For this article's question, my starting point remains the insomnia guidance above. If you are considering making naps a regular part of your week, I would bring that question to your clinician. You can ask plainly: “Given my broken nights and daytime responsibilities, what would you suggest for me?”
 
@@ -136,7 +134,7 @@ I would leave driving out of any bargain about getting everything done today. Th
 
 ## What can I do with the afternoon if I skip a nap?
 
-My suggestion is to leave some genuinely unassigned time. You might sit with a magazine, listen to something familiar, or let an unanswered message wait. I would choose something you can put down without having to finish it.
+My suggestion is to leave some unassigned time. You might sit with a magazine, listen to something familiar, or let an unanswered message wait. I would choose something you can put down without having to finish it.
 
 I mean permission to do less. I would not turn a quiet afternoon into another routine with targets, timers and a score at the end.
 
@@ -171,7 +169,7 @@ My suggested opening question is: “Can we look at what is happening, and agree
 
 ## Are sleep habits enough if this keeps happening?
 
-The American Academy of Sleep Medicine conditionally recommends against using sleep hygiene alone to treat chronic insomnia disorder in adults.[^5] It strongly recommends multicomponent cognitive behavioral therapy for insomnia for adults with chronic insomnia disorder.[^5]
+The American Academy of Sleep Medicine conditionally recommends against using sleep hygiene alone for chronic insomnia disorder in adults.[^5] It strongly recommends multicomponent cognitive behavioral therapy for insomnia for adults with chronic insomnia disorder.[^5]
 
 I include that distinction because I do not want this article to become another list you feel obliged to perfect. A conversation about ongoing disruption can go beyond whether you managed to skip an afternoon nap.
 
