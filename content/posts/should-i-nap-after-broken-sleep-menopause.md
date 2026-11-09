@@ -4,8 +4,8 @@ slug: should-i-nap-after-broken-sleep-menopause
 description: Should you nap after broken sleep during menopause? Read NHS guidance on naps, sleeping in, keeping a schedule, daytime safety and when to seek clinical advice.
 date: 2026-11-09
 updated: 2026-11-09
-status: draft
-approved_by:
+status: approved
+approved_by: auto-review (3:17 engine)
 primary_keyword: should i nap after broken sleep menopause
 secondary_keywords:
   - menopause naps after poor sleep
