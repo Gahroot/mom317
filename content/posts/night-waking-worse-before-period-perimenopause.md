@@ -4,8 +4,8 @@ slug: night-waking-worse-before-period-perimenopause
 description: Night waking worse before your period in perimenopause? Explore what cycle studies show, their limits, and what to record for a discussion with your clinician.
 date: 2026-11-15
 updated: 2026-11-15
-status: draft
-approved_by:
+status: approved
+approved_by: auto-review (3:17 engine)
 primary_keyword: night waking worse before period perimenopause
 secondary_keywords:
   - perimenopause sleep before period
