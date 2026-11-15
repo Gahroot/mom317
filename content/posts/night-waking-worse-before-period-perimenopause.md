@@ -12,7 +12,7 @@ secondary_keywords:
   - menstrual cycle and night waking
   - luteal phase sleep disruption
   - premenstrual sleep changes
-answer: Cycle timing may be part of the picture: a small study found more awakenings in the luteal phase during early perimenopause.[^1] A larger midlife study found poorer sleep measures premenstrually.[^2] I would treat those findings as a reason to record your pattern, rather than proof of your individual cause.
+answer: Cycle timing may be part of the picture: a small study found more awakenings in the luteal phase during early perimenopause.[^1] A larger midlife study found poorer sleep measures premenstrually.[^2] I would read those findings as a reason to record your pattern, rather than proof of your individual cause.
 faq:
   - q: Does waking before my period mean I have PMS?
     a: The NHS includes trouble sleeping among PMS symptoms.[^3] I'd describe your pattern to a clinician rather than give it a diagnosis yourself.
@@ -96,7 +96,7 @@ claims:
     source: 6
   - text: For adults with chronic insomnia disorder, the American Academy of Sleep Medicine strongly recommends multicomponent cognitive behavioral therapy for insomnia, or CBT-I.
     source: 7
-  - text: The same guideline conditionally advises against sleep hygiene as the only treatment for chronic insomnia disorder in adults.
+  - text: The same guideline conditionally advises against using sleep hygiene alone for chronic insomnia disorder in adults.
     source: 7
   - text: Please talk to a clinician about persistent symptoms, even while you're still working out whether there's a cycle pattern.
     source: 6
@@ -125,7 +125,7 @@ A study of 163 late-reproductive-age women used wrist actigraphy to measure slee
 
 I read that as a reason to bring your calendar into the conversation. I would be more cautious about using it to predict next Tuesday, or to explain one particular awakening.
 
-Here, when I talk about sleep continuity, I mean how unbroken your night feels. For your own notes, I'd distinguish waking briefly from lying awake wishing you could return to sleep. You don't have to turn either experience into a technical score.
+For your own notes, I'd distinguish waking briefly from lying awake wishing you could return to sleep. You don't have to turn either experience into a technical score.
 
 ## What did the small early-perimenopause study actually find?
 
@@ -200,7 +200,7 @@ If the appointment is short, I'd circle the main concern on the page before goin
 
 The NHS advises seeing a GP if sleep trouble has lasted for months or affects daily life enough to make coping difficult.[^6] Please talk to a clinician about persistent symptoms, even while you're still working out whether there's a cycle pattern.[^6]
 
-For adults with chronic insomnia disorder, the American Academy of Sleep Medicine strongly recommends multicomponent cognitive behavioral therapy for insomnia, or CBT-I.[^7] The same guideline conditionally advises against sleep hygiene as the only treatment for chronic insomnia disorder in adults.[^7]
+For adults with chronic insomnia disorder, the American Academy of Sleep Medicine strongly recommends multicomponent cognitive behavioral therapy for insomnia, or CBT-I.[^7] The same guideline conditionally advises against using sleep hygiene alone for chronic insomnia disorder in adults.[^7]
 
 You could ask, “Does my sleep problem need assessment for insomnia, and would CBT-I be appropriate?” I'd bring the cycle question and the sleep question to the same appointment. You deserve space to discuss both, without having to arrive with the answer already worked out.
 
