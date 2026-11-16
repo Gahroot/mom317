@@ -4,8 +4,8 @@ slug: still-waking-at-night-on-hrt
 description: Still waking at night on HRT? Learn what to discuss at your follow-up, how to describe your symptoms, and when to ask about other possible sleep problems.
 date: 2026-11-16
 updated: 2026-11-16
-status: draft
-approved_by:
+status: approved
+approved_by: auto-review (3:17 engine)
 primary_keyword: still waking at night on hrt
 secondary_keywords:
   - waking at night while taking HRT
