@@ -4,8 +4,8 @@ slug: vaginal-dryness-irritation-waking-at-night-menopause
 description: Waking with vaginal dryness, soreness or itching during menopause? Learn what to tell a clinician, when to seek assessment and why self-diagnosis can mislead.
 date: 2026-11-22
 updated: 2026-11-22
-status: draft
-approved_by:
+status: approved
+approved_by: auto-review (3:17 engine)
 primary_keyword: vaginal dryness discomfort waking at night menopause
 secondary_keywords:
   - vulval itching at night
