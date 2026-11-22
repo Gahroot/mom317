@@ -22,8 +22,8 @@ faq:
     a: The NHS advises against creams or moisturisers not intended for vaginal use because they can cause irritation or infection.[^1] Ask a pharmacist or clinician about a specific product.
   - q: Should I report bleeding after menopause if it happens only once?
     a: Yes: the NHS advises seeing a GP for vaginal bleeding after menopause even if it happens only once or is a small amount.[^5]
-  - q: Does vaginal oestrogen treat insomnia?
-    a: The NHS states that vaginal oestrogen does not treat insomnia.[^7] Discuss your sleep concerns as well as your vaginal symptoms at your appointment.
+  - q: Is vaginal oestrogen used for insomnia?
+    a: The NHS says vaginal oestrogen is used for menopause-related vaginal dryness and irritation, but not for insomnia.[^7] Discuss your sleep concerns as well as your vaginal symptoms at your appointment.
 sources:
   - id: 1
     title: Vaginal dryness
@@ -93,11 +93,9 @@ claims:
     source: 3
   - text: You can ask for an uncomfortable examination to stop at any point.
     source: 3
-  - text: The 2020 Menopause Society statement says treatment choice for GSM depends on symptom severity, individual treatment safety and effectiveness, and patient preference.
+  - text: The 2020 Menopause Society statement says the choice of therapy for GSM depends on symptom severity, the safety and effectiveness of options for the individual, and patient preference.
     source: 6
-  - text: The NHS describes vaginal oestrogen as a treatment for menopause-related vaginal dryness and irritation.
-    source: 7
-  - text: It also states that vaginal oestrogen does not treat insomnia.
+  - text: The NHS says vaginal oestrogen is used for menopause-related vaginal dryness and irritation, but not for insomnia.
     source: 7
   - text: Vulval itching can affect sleep, according to a clinical review.
     source: 2
@@ -111,8 +109,6 @@ claims:
     source: 1
   - text: Yes: the NHS advises seeing a GP for vaginal bleeding after menopause even if it happens only once or is a small amount.
     source: 5
-  - text: The NHS states that vaginal oestrogen does not treat insomnia.
-    source: 7
 ---
 Being awake in the dark with an intimate discomfort you do not quite know how to describe can feel lonely. I know how long the middle of the night can feel. You deserve to be heard without having to find the perfect words first.
 
@@ -122,7 +118,7 @@ A review of vulval pruritus, or vulval itching, reports that it can affect sleep
 
 It is also the limit of what I would claim here. The review concerns vulval itching broadly.[^2] I would not use that finding to decide why you woke on a particular night. I would describe what happened in the order you remember it: “I woke and noticed soreness,” or “I felt an itch and then became fully awake.” Either account is worth sharing, even if you cannot tell which came first.
 
-This article focuses on soreness, dryness and itching. If your main experience is waking to use the bathroom, I would take that question to our planned nocturia article. You do not need to fit every nighttime experience into this one explanation.
+This article focuses on soreness, dryness and itching. If your main experience is waking to use the bathroom, I would make a separate note of that for your appointment. You do not need to fit every nighttime experience into this one explanation.
 
 ## What does menopause have to do with vaginal dryness?
 
@@ -188,9 +184,9 @@ If I felt tongue-tied, I would hand over a short written summary: “I have noti
 
 ## What might a clinician discuss, and what should I expect about sleep?
 
-The 2020 Menopause Society statement says treatment choice for GSM depends on symptom severity, individual treatment safety and effectiveness, and patient preference.[^6] That puts your questions and preferences within the discussion.
+The 2020 Menopause Society statement says the choice of therapy for GSM depends on symptom severity, the safety and effectiveness of options for the individual, and patient preference.[^6] That puts your questions and preferences within the discussion.
 
-The NHS describes vaginal oestrogen as a treatment for menopause-related vaginal dryness and irritation.[^7] It also states that vaginal oestrogen does not treat insomnia.[^7] Keep that distinction in mind when discussing what you want from care.
+The NHS says vaginal oestrogen is used for menopause-related vaginal dryness and irritation, but not for insomnia.[^7] Keep that distinction in mind when discussing what you want from care.
 
 I would ask: “What are we addressing with this option?” “How will we review my discomfort?” and “When should I come back if I'm still waking?” Ask for the plan in words you can use at home, including who to contact with further questions.
 
