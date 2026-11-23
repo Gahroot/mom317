@@ -4,8 +4,8 @@ slug: nightmares-waking-me-up-perimenopause
 description: Nightmares waking you during perimenopause? Learn how to distinguish dreams from racing thoughts, consider possible contributors, and know when to seek care.
 date: 2026-11-23
 updated: 2026-11-23
-status: draft
-approved_by:
+status: approved
+approved_by: auto-review (3:17 engine)
 primary_keyword: nightmares waking me up perimenopause
 secondary_keywords:
   - menopause and nightmares
